@@ -181,7 +181,7 @@
 		},
 		created() {
   		this.routeChange()  
-     
+     console.log(this.$route)
 
 
   	},

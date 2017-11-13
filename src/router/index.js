@@ -15,6 +15,8 @@ import RecommSingleDetail from '@/views/recomm-single/detail'
 import RecommSongList from '@/views/recomm-songlist/index'
 import RecommSongListDetail from '@/views/recomm-songlist/detail'
 import BannerArticle from '@/views/banner/article'
+import Reward from '@/views/reward/index'
+import Player from '@/views/player/index'
 
 Vue.use(Router)
 export default new Router({
@@ -132,6 +134,22 @@ export default new Router({
         keepAlive: true
       },
       component: BannerArticle
+    },
+    {
+      path: '/reward/:id',
+      name: 'reward',
+      meta: {
+        keepAlive: true
+      },
+      component: Reward
+    },
+    {
+      path: '/player',
+      name: 'player',
+      meta: {
+        keepAlive: true
+      },
+      component: Player
     }
   ]
 })

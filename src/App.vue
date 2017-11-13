@@ -17,85 +17,40 @@
 
       <router-view></router-view>
 
-
-    <div class="m_audio" id="wa_audio" v-bind:class="{'show_songlist': isSongList}">
-    <img class="m_audio_cover" :src="playerData.res_cover + '?width=88'" />
-    <ul class="m_audio_info">
-      <li class="m_audio_songname bolder">{{playerData.songname}}</li>
-      <li class="m_audio_singer">{{playerData.singer}}</li>
-    </ul>
-    <span class="m_audio_btns">
+    <div>
+  
+      <div class="m_audio" id="wa_audio" v-bind:class="{'show_songlist': isSongList}" >
+        <img class="m_audio_cover" :src="playerData.res_cover + '?width=88'" @click="open(playerData.id)" />
+        <ul class="m_audio_info" @click="open(playerData.id)">
+          <li class="m_audio_songname bolder">{{playerData.songname}}</li>
+          <li class="m_audio_singer">{{playerData.singer}}</li>
+        </ul>
+        <span class="m_audio_btns">
           <i v-bind:class="playState ? 'icon-pause':'icon-play'" @click="playPause()"></i>   <!-- icon-pause -->
-          <i class="icon-player_list" id="audio_playlist" @click="songList()"></i> <!-- :class="singleState ? 'icon-list-state' : ''" -->
-    </span>
-    <!-- controls="controls" style="height: 25px;width:100%;display: block; position: fixed;" -->
-    <audio ref="audio" preload="auto" :src="playerData.file320"  @ended="audioEnd()"  >
-    </audio>  
-    
-    <div class="m_audio_playlist">
-      <h1>播放列表</h1>
+          <i class="icon-player_next" id="audio_playlist" @click="next()"></i> <!-- :class="singleState ? 'icon-list-state' : ''" -->
+        </span>     
       
-      <ul >
-        <li v-for="(item,index) in playList" :data-file="item.file320" :data-key="item.id" 
-        @click="player(item,index)" ><img :src="item.res_cover +'?width=100'"/>
-          <ul>
-            <li class="m_list_songname bolder">{{item.songname}}</li>
-            <li class="m_list_singer">{{item.singer}}</li>
-          </ul>
-          <span></span>
-        </li>
-
-      </ul>      
-
+        
+      </div>
+  
+      
     </div>
 
-
-    </div>
     <!-- 遮罩层导航菜单列表 -->
-    <div class="m_audio_playlist_demask-nav" id="navlist_demask" ref="demask" v-if="isDemaskNav" @click="hiddenNavList()"> 
+    <div class="m_audio_playlist_demask-nav" id="navlist_demask" ref="demask" v-if="isDemaskNav" @click="hiddenNavList()" @touchmove.prevent> 
     </div>
-    <!-- 遮罩层播放列表 -->
-    <div class="m_audio_playlist_demask" id="playlist_demask" ref="demask" v-if="isDemask" @click="hiddenList()"> 
-    </div>
-
-    <div id="container" ref="container">
-
-    </div>
+    <!-- 
+        preload="metadata" controls="controls" style="height: 20px;width:100%;display: block; position: fixed;bottom: 68px;"    -->
+    <audio ref="audio" id="audio" :src="playerData.file320" @ended="audioEnd()" >
+    </audio>
   </div>
 </template>
 
-<script type='es6'>
-  // var boxHTML = document.getElementById('boxHTML')
-  // var screenX = document.body.clientWidth / 16
-  // if (document.body.clientWidth < 640) {
-  //   boxHTML.style.fontSize = screenX + 'px'
-  // } else {
-  //   boxHTML.style.fontSize = 20 + 'px'
-  // }
-    function isMobile() {
-      if((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) 
-        return true;
-      else
-        return false;
-    }
-    console.log(11)
-    var urlMobile='http://wawa.fm/static/wawa/index.html#!home';//手机跳转的页面
-    if(isMobile() === false){
-      if(this.$route.path){
-        console.log(this.$route.path)
-      }
-    }else {
-      if(this.$route.path){
-        console.log(this.$route.path)
-      }
-    }
-    // window.location.href=urlMobile;
-
-</script>
 <script type="es6">
 import axios from 'axios'
 import md5 from 'js-md5'
 import { mapState, mapMutations } from 'vuex'
+import router from './router'
 import swipe from './components/home/swipe'
 import Scroll from './components/scroll/scroll'
 import { Swipe,SwipeItem,InfiniteScroll,Lazyload,Toast } from 'mint-ui'
@@ -117,12 +72,10 @@ export default {
       activeName: '', //导航菜单状态
       navToggle:false, //切换导航菜单icon
       isTr:false, //切换菜单的样式
+
       isSongList:true, //歌曲列表icon
-      isDemask:false, //播放列表显示的遮罩层
+      
       isDemaskNav:false, //菜单导航列表显示的遮罩层
-      // playState:true, //播放状态
-      //songListData: '', //播放列表
-      // singleState: true, //进入时有单曲
       defaultData: {
         res_cover: 'http://up.wawa.fm/18,01085cf606b183',
         songname: '挖哇电台',
@@ -133,11 +86,10 @@ export default {
   },
   computed: {
     ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
-
   },
 
   created() {
-    if(!isMobile()){
+    /*if(!isMobile()){
       if(this.$route.path === '/home'){
          window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
       } else if(this.$route.path === '/artist'){
@@ -165,8 +117,7 @@ export default {
       } else {
         window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
       }
-
-    }
+    }*/
     function isMobile () {
       if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
         return true
@@ -175,7 +126,7 @@ export default {
       }
     }
 
-    // this.$route.query.track =  17050001697  /*17050000132 */
+    // this.$route.query.track = 17050000132
     // 单曲进入
     if (this.$route.query.track) {
       const singId = this.$route.query.track
@@ -208,55 +159,45 @@ export default {
 
       //默认歌单
       this.playList.push(this.defaultData)
-      // console.log(this.playList)
       this.setPlayerData(this.playList[this.currentIndex+1])
-      // console.log(this.currentIndex)
+      // this.setPlayState(false)
       // currentIndex 默认为-1 
       //替换默认歌单(!!!在created 时才替换  如跳过会push)
       this.loadData()
     }
-
 
   },
   mounted() {
     this.setRouterUrl(this.$route.path)
   },
 
-  //  Q: 1. 初始播放按钮 2.初始播放列表
+  //  Q: 1. 初始播放按钮.. 2.初始播放列表... 3.播放状态只修改，不刷新时，自动播放
   methods: {
     
     ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
 
     init:function(){},
 
-
     //菜单
     nav: function () {
       if(!this.isSongList) {
         this.isSongList = true;
-        this.isDemask = false;
+        // this.isDemask = false;
       }
-      let bodyD = document.body
+      /*let bodyD = document.body
       if(this.isDemask === true){        
-        // bodyD.style.overflowY = 'hidden'
-        // console.log(document.body)
+
         this.$refs.app.style.position = 'fixed'
       }else {
-        // bodyD.style.overflowY = 'initial'
+
         this.$refs.app.style.position = 'initial'
-        // console.log(document.body)
-      }
+      }*/
       this.navToggle =!this.navToggle;
-      this.isTr =!this.isTr;      
+      this.isTr =!this.isTr;   
       this.isDemaskNav =!this.isDemaskNav;
-      // console.log(event.currentTarget)
-      // console.log(document.body)
-      
-      // console.log(document.body)
-      // bodyD.style.overflowY = 'initial'
     },
 
-    songList: function () {
+    /*songList: function () {
       if(this.navToggle) {
         this.navToggle = false;
         this.isTr = false;      
@@ -275,25 +216,10 @@ export default {
         // console.log(document.body)
         this.$refs.app.style.position = 'initial'
       }
-    },
+    },*/
 
     selected: function(navUrl) {
       this.activeName = navUrl
-    },
-
-    hiddenList: function() {
-      this.isSongList = !this.isSongList;
-      this.isDemask = !this.isDemask;
-      let bodyD = document.body
-      if(this.isDemask === true){        
-        // bodyD.style.overflowY = 'hidden'
-        this.$refs.app.style.position = 'fixed'
-        // console.log(document.body)
-      }else {
-        // bodyD.style.overflowY = 'initial'
-        this.$refs.app.style.position = 'initial'
-        // console.log(document.body)
-      }
     },
 
     hiddenNavList: function() {
@@ -302,6 +228,12 @@ export default {
       this.isDemaskNav = !this.isDemaskNav;      
     },
 
+    open(songId){
+      this.navToggle = false
+      this.isTr = false
+      this.isDemaskNav = false
+      router.push({name: 'player', params: { id:songId}})
+    },
     //加载播放列表
     loadData() {
       const timestamp = Date.parse(new Date()) / 1000
@@ -326,20 +258,9 @@ export default {
       })
     },
 
-    //播放列表项
-    player: function(item, index) {
-      let instance = this.$toast('即将播放..')
-      setTimeout(() => {
-        instance.close()
-      }, 2500)
-      this.setCurrentIndex(index)
-      this.setPlayerData(this.playList[index])
-      this.setPlayState(true)
-    },
-
     // 播放暂停
     playPause: function(){
-      const audio = this.$refs.audio
+      let audio = this.$refs.audio
       if(this.playState){
         // console.log(22) 点击后暂停
         audio.pause()
@@ -372,16 +293,15 @@ export default {
         }
         this.setCurrentIndex(index)
         this.setPlayerData(this.playList[index])
-      }
-      
-      // this.setPlayerData(this.playList)
+        this.setPlayState(true)
+      }      
+
     },
     
     //播放结束
     audioEnd: function() {
       
       if(this.playList.length){        
-        
         this.next()
       } else{
         this.setPlayState(false)
@@ -394,8 +314,13 @@ export default {
   watch: {
     playState(newState){
       let audio = this.$refs.audio
+
       this.$nextTick(() => {
         newState ? audio.play() : audio.pause()
+        /*audio.preload = "metadata"
+        audio.load()*/
+        // console.log(audio.duration)
+        // console.log(audio.currentTime)
       })
     },
 
@@ -420,7 +345,18 @@ export default {
       } else {
         this.selected('')
       }
-    }
+
+      /*if (window.history && window.history.pushState && this.fullScreen) {
+        window.history.forward(1)
+        this.setFullScreen(false)
+      }*/
+    },
+
+    /*fullScreen(newVal) {
+      if (!newVal) {
+      }
+      
+    }*/
 
   }
 
@@ -428,128 +364,89 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/*app*/
+  #app {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
+/* nav-fade*/
+  .fade-enter-active {
+    transition: all .3s cubic-bezier(1.0, 1.0, 0.5, 0.5);
+  }
+  .fade-leave-active {
+    transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  }
+  .fade-enter {
+    padding-left: 100px;
+    opacity: 0;
+  }
+  .fade-leave-active {
+    padding-left: 100px;
+    opacity: 0;
+  }
 
-#menu_list>li:nth-child(5){
-  display: inline-block;
-  overflow: hidden;
-  width: 100%;
-  height: 1px;
-  margin-top: 7px;
-}
-#menu_list>li:nth-child(5)> a{
-    height: 1px;
-    float: left;
-    background: white;
-    overflow: hidden;
-    opacity: 0.6;
-}
+/*nav菜单*/
+  .m_nav{ background-color: #000; border-radius: 50%; opacity: 0.8;position: fixed; top: 0.6rem; right: 0.6rem; height: 42px; width: 42px;/* overflow: hidden;*/ transition: width .4s, height .3s ease-out; z-index: 100;}
+  .m_nav.open{ width: calc(100% - 24x); height: calc(100% - 92px); box-shadow: 0 0 10px rgba(177, 163, 163, 0.44);}
+  .m_menu{ height: 42px; width: 42px; line-height: 42px; text-align: center; float: right; position: relative;}
+  .m_menu:after,.m_menu:before{ content: ""; position: absolute; left: 0.511rem;}
+  .m_menu:before{ top: 14px;}
+  .m_menu:after{ bottom: 14px;}
+  .m_menu.trans:before{ -webkit-transform: rotate(45deg) translate(4px, 4px); }
+  .m_menu.trans span{background-color: transparent}
+  .m_menu.trans:after{ -webkit-transform: rotate(-45deg) translate(4px, -4px);}
   
-.fade-enter-active {
-  transition: all .3s cubic-bezier(1.0, 1.0, 0.5, 0.5);
-}
-.fade-leave-active {
-  transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
-.fade-enter {
-  padding-left: 100px;
-  opacity: 0;
-}
-.fade-leave-active {
-  padding-left: 100px;
-  opacity: 0;
-}
+  .m_menu span { position: relative; display: block; margin: 20px auto 0 auto;}
+  .m_menu span,.m_menu:after,.m_menu:before { width: calc(100% - 1rem); height: 3px; background-color: white; transition: all 0.3s; backface-visibility: hidden; border-radius: 4px; z-index: 99999;}
 
-.m_nav{ background-color: #000; border-radius: 50%; opacity: 0.8;position: fixed; top: 0.6rem; right: 0.6rem; height: 42px; width: 42px;/* overflow: hidden;*/ transition: width .4s, height .3s ease-out; z-index: 100;}
-.m_nav.open{ width: calc(100% - 24x); height: calc(100% - 92px); box-shadow: 0 0 10px rgba(177, 163, 163, 0.44);}
-.m_menu{ height: 42px; width: 42px; line-height: 42px; text-align: center; float: right; position: relative;}
-.m_menu:after,.m_menu:before{ content: ""; position: absolute; left: 0.511rem;}
-.m_menu:before{ top: 14px;}
-.m_menu:after{ bottom: 14px;}
-.m_menu.trans:before{ -webkit-transform: rotate(45deg) translate(4px, 4px); }
-.m_menu.trans span{background-color: transparent}
-.m_menu.trans:after{ -webkit-transform: rotate(-45deg) translate(4px, -4px);}
-
-.m_menu span { position: relative; display: block; margin: 20px auto 0 auto;}
-.m_menu span,.m_menu:after,.m_menu:before { width: calc(100% - 1rem); height: 3px; background-color: white; transition: all 0.3s; backface-visibility: hidden; border-radius: 4px; z-index: 99999;}
-
-.m_menu_list { font-size: 20px; position: absolute; right: 0px; z-index: 800;  width: 14.88rem; background-color: #000;  box-sizing: border-box;   padding-top: 66px; padding-bottom: 30px; border-radius: 10px}
-.m_menu_list >li{    color: #ffffff;   text-align: left;    width: calc(100%-62px);    padding-left: 31px;padding-right: 31px;    box-sizing: border-box; padding-top: 10px;padding-bottom: 10px;}
-.m_menu_list >li > a { font-size: 18px; height: 21px; font-family: "PingFangSC-Semibold";width:100%; color:inherit;}
-.m_menu_list >li.cur { color:rgba(98,107,237,1); }
-.m_menu_list >li > a > span{ font-size: 0.6rem; box-sizing: border-box;padding-bottom: 3px; font-weight: normal;letter-spacing: 1px; font-family: "Avenir";}
-.m_menu_list >li > a > i {float: right; font-family: normal;line-height: 21px;font-size: 16px;}
-.m_menu_list >.m_menu_line{ display: block;height: 1px;background: #fff; width: calc(100%-62px); 
-margin: 21px 31px;}
-
-.m_audio{ height: 408px; width: 100%; background-color: #fff; position: fixed; bottom: 0; left: 0; overflow: hidden; box-shadow: 0 -1px 10px rgba(177, 163, 163, 0.23);  z-index: 90; transition: all .4s}
-.m_audio.show_songlist{ margin-bottom: -340px;transition: all .7s ease-in;transition: all .5s ease-out}
-.m_audio.open{ bottom: 400px; }
-.m_audio_cover{ float: left; height: 44px; width: 44px; border-radius: 4px; margin: 12px }
-.m_audio_info{ float: left; height: 44px; overflow: hidden; width: calc(100% - 168px); margin: 12px 0; font-size: 15px;}
-.m_audio_info>li{ width: 100%; text-align: left; overflow: hidden;}
-.m_audio_songname{ height: 28px; line-height: 28px; color: #555; font-size: 15px }
-.m_audio_singer{ height: 16px; line-height: 16px; color: #999; font-size: 12px; }
-.m_audio_btns{ float: right; width: 94px; height: 48px; margin: 10px 0px 10px 0; overflow: hidden; }
-.m_audio_btns>i{ height: 48px; width: 44px; float: left; text-align: center; line-height: 48px;  color: #666 }
-.m_audio_btns .icon-list-state{ opacity: 0.4 }
-.m_audio_btns>i:nth-child(1){ margin-right: 6px; color: #666; font-size: 18px; }
-.m_audio_btns>i:nth-child(2){ font-size: 17px }
-.m_audio_playlist{ height: 400px; clear: both; padding-top: 16px; box-sizing: border-box; overflow: auto;}
-.m_audio_playlist>h1{ height: 20px; line-height: 20px; font-size: 12px; color: #999; padding:0 12px; margin-bottom: 2px; text-align: left;}
-.m_audio_playlist>ul{
-  margin-bottom: 65px;
-}
-.m_audio_playlist>ul>li{ height: 60px; line-height: 60px; font-size: 14px; overflow: hidden;white-space: nowrap; }
-.m_audio_playlist>ul>li>img{ float: left; height: 44px; width: 44px; margin:8px 12px; border-radius: 4px}
-.m_audio_playlist>ul> li>ul{ float: left; height: 44px; overflow: hidden; width: calc(100% - 122px); margin: 8px 0;}
-.m_list_songname{ height: 28px; line-height: 28px; color: #555; font-size: 15px; width: 100% ;text-align: left;}
-.m_list_singer{ height: 16px; line-height: 12px; color: #999; font-size: 12px; width: 100%; text-align: left; white-space: nowrap;}
-.m_audio_playlist_demask{ width: 100%; height: 100%; position: fixed; top: 0; left: 0; background-color: rgba(255,255,255,.6); z-index: 20; }
-.m_audio_playlist_demask-nav{ width: 100%; height: 100%; position: fixed; top: 0; left: 0; background-color: transparent; z-index: 20; }
-
-
-
-#app {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-#nav-list{
-  float: right;
-  height: 0;
-}
-.icon-menu{
-  width: 50px;
-  height: 50px;
-  font-size: 50px;
-}
-.el-dropdown{position: relative !important;}
-
-ul.el-dropdown-menu{
-    background-color: #000000 !important;
-    opacity: 0.7 !important;
-    left: 12px !important;
-    top: 12px !important;
-    right: 12px !important;
-    z-index: 98 !important;
-    position: absolute! important;
-}
-.el-dropdown-menu >li{ margin-top: 22px; }
-
-.el-dropdown-menu >li a{text-decoration: none; color: rgba(255,255,255,1);font-size: 22px;}
-.line{
+  .m_menu_list { font-size: 20px; position: absolute; right: 0px; z-index: 800;  width: 14.88rem; background-color: #000;  box-sizing: border-box;   padding-top: 66px; padding-bottom: 30px; border-radius: 10px}
+  .m_menu_list >li{    color: #ffffff;   text-align: left;    width: calc(100%-62px);    padding-left: 31px;padding-right: 31px;    box-sizing: border-box; padding-top: 10px;padding-bottom: 10px;}
+  .m_menu_list >li > a { font-size: 18px; height: 21px; font-family: "PingFangSC-Semibold";width:100%; color:inherit;}
+  .m_menu_list >li.cur { color:rgba(98,107,237,1); }
+  .m_menu_list >li > a > span{ font-size: 0.6rem; box-sizing: border-box;padding-bottom: 3px; font-weight: normal;letter-spacing: 1px; font-family: "Avenir";}
+  .m_menu_list >li > a > i {float: right; font-family: normal;line-height: 21px;font-size: 16px;}
+  .m_menu_list >.m_menu_line{ display: block;height: 1px;background: #fff; width: calc(100%-62px); margin: 21px 31px;}
+  #menu_list>li:nth-child(5){
+    display: inline-block;
+    overflow: hidden;
     width: 100%;
-    height: 2px;
-}
-#player{
-    /*position: absolute;*/
-    height: 50px;
-    left: 2%;
-    right: 2%;
-    bottom: 0px;
-    width: 90%;
-    background: #abcedf; 
-}
+    height: 1px;
+    margin-top: 7px;
+  }
+  #menu_list>li:nth-child(5)> a{
+      height: 1px;
+      float: left;
+      background: white;
+      overflow: hidden;
+      opacity: 0.6;
+  }
+
+/*播放列表*/
+  .m_audio{ height: 408px; width: 100%; background-color: #fff; position: fixed; bottom: 0; left: 0; overflow: hidden; box-shadow: 0 -1px 10px rgba(177, 163, 163, 0.23);  z-index: 90; transition: all .4s}
+  .m_audio.show_songlist{ margin-bottom: -340px;transition: all .7s ease-in;transition: all .5s ease-out}
+  .m_audio.open{ bottom: 400px; }
+  .m_audio_cover{ float: left; height: 44px; width: 44px; border-radius: 4px; margin: 12px }
+  .m_audio_info{ float: left; height: 44px; overflow: hidden; width: calc(100% - 168px); margin: 12px 0; font-size: 15px;}
+  .m_audio_info>li{ width: 100%; text-align: left; overflow: hidden;}
+  .m_audio_songname{ height: 28px; line-height: 28px; color: #555; font-size: 15px }
+  .m_audio_singer{ height: 16px; line-height: 16px; color: #999; font-size: 12px; }
+  .m_audio_btns{ float: right; width: 94px; height: 48px; margin: 10px 0px 10px 0; overflow: hidden; }
+  .m_audio_btns>i{ height: 48px; width: 44px; float: left; text-align: center; line-height: 48px;  color: #666 }
+  .m_audio_btns .icon-list-state{ opacity: 0.4 }
+  .m_audio_btns>i:nth-child(1){ margin-right: 6px; color: #666; font-size: 18px; }
+  .m_audio_btns>i:nth-child(2){ font-size: 17px }
+  .m_audio_playlist{ height: 400px; clear: both; padding-top: 16px; box-sizing: border-box; overflow: auto;}
+  .m_audio_playlist>h1{ height: 20px; line-height: 20px; font-size: 12px; color: #999; padding:0 12px; margin-bottom: 2px; text-align: left;}
+  .m_audio_playlist>ul{    margin-bottom: 65px;  }
+  .m_audio_playlist>ul>li{ height: 60px; line-height: 60px; font-size: 14px; overflow: hidden;white-space: nowrap; }
+  .m_audio_playlist>ul>li>img{ float: left; height: 44px; width: 44px; margin:8px 12px; border-radius: 4px}
+  .m_audio_playlist>ul> li>ul{ float: left; height: 44px; overflow: hidden; width: calc(100% - 122px); margin: 8px 0;}
+  .m_list_songname{ height: 28px; line-height: 28px; color: #555; font-size: 15px; width: 100% ;text-align: left;}
+  .m_list_singer{ height: 16px; line-height: 12px; color: #999; font-size: 12px; width: 100%; text-align: left; white-space: nowrap;}
+  .m_audio_playlist_demask{ width: 100%; height: 100%; position: fixed; top: 0; left: 0; background-color: rgba(255,255,255,.6); z-index: 20; }
+  .m_audio_playlist_demask-nav{ width: 100%; height: 100%; position: fixed; top: 0; left: 0; background-color: transparent; z-index: 20; }
+
 </style>
 
 

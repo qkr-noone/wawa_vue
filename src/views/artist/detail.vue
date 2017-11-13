@@ -223,6 +223,7 @@ export default {
       }
       this.setCurrentIndex(0)
       this.setPlayerData(this.playList[this.currentIndex])
+      this.setPlayState(true)
     },
 
     allContent: function() {

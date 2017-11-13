@@ -77,11 +77,20 @@ export default {
   methods: {
     ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
     playPause: function() {
-      /*if(this.playList.id !=this.detailData.track.id){
-        this.setPlayerData(this.detailData.track)
-
-      }*/
+      
       this.setPlayerData(this.detailData.track)
+
+      let tip = false
+      this.playList.forEach((item)=>{
+        if(item.id === this.detailData.track.id){
+          return tip = true
+        }
+      })
+
+      if(!tip){
+        this.playList.splice(this.currentIndex+1, 0,this.detailData.track)  
+      }
+      
       if(!this.iconState) {
         let instance = this.$toast('即将播放')
         setTimeout(() =>{

@@ -13,6 +13,9 @@ export default {
   },
   setRouterUrl (state, routerUrl) {
     state.routerUrl = routerUrl
+  },
+  setFullScreen (state, fullScreen) {
+    state.fullScreen = fullScreen
   }
 }
 
