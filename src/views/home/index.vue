@@ -3,7 +3,7 @@
 
     <keep-alive>
       <router-view></router-view>
-    </keep-alive>   
+    </keep-alive>
 
     <div class="container" >    
 
@@ -91,14 +91,14 @@
         </header>
         <ul class="m_blist" id="tracks">
           <div>
-            <li v-for ="(item,index) in tracks" to="">
+            <li v-for ="(item,index) in tracks">
             <router-link :to="{ path:'/recomm-single/detail',query:{id: item.id} }">
               <div>
                 <img :src="item['res_cover']+'?width=300'" />
               </div>
               <h1 class="bolder">{{item['songname']}}</h1>
               <h2>{{item['singer']}}</h2>
-              <button><i class="icon-play"></i></button>
+              <button><i class="icon-play" @click.stop="recomPlay(item)"  @click.prevent></i></button>
               </router-link>
             </li>
           </div>          
@@ -191,30 +191,48 @@ export default {
         this.userPlayList = this.homeData.user_playlist.splice(0, 6)        
     })
   },
+  activated() {
+    this.setRouterUrl(this.$route.path)
+  },
+  deactivated() {
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+  },
   mounted() {
     if(this.$route.path){
       this.setRouterUrl(this.$route.path)
     }
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
   },
   methods: {
     ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
     getH: function (Uid){
       router.push({name: 'bannerArticle', params: { id: Uid }})
+    },
+    recomPlay(item){
+      this.setPlayerData(item)
+      let tip = false
+      this.playList.forEach((data)=>{
+        if(data.id === item.id){
+          return tip = true
+        }
+      })
+
+      if(!tip){
+        this.playList.splice(this.currentIndex+1, 0,item)
+        let instance = this.$toast('即将播放')
+        setTimeout(() =>{
+          instance.close()
+        },2500)
+      }
+      this.setPlayState(true)
     }
   }
 }
 </script>
 <style lang='scss' scoped>
-
-  .container{
-    margin-bottom: 88px;
-    font-size: 15px;
-    -webkit-overflow-scrolling: touch;
-    -moz-overflow-scrolling: touch;
-    -ms-overflow-scrolling: touch;
-    -o-overflow-scrolling: touch;
-    overflow-scrolling: touch;
-  }
+/*banner*/
   div.mint-swipe{
     height: 55VW;
     visibility: visible;
@@ -224,40 +242,69 @@ export default {
   .mint-swipe-items-wrap > div >img{  
     width:100%;
   }
-  div.mint-swipe>.mint-swipe-indicators > div.mint-swipe-indicator {
+/*  div.mint-swipe>.mint-swipe-indicators > div.mint-swipe-indicator {
     background-color: rgba(98,107,237,1) !important;
     background: rgba(98,107,237,1) !important;
     z-index: 555;
   }
-    
+  
+  div.mint-swipe>.mint-swipe-indicators>.mint-swipe-indicator.is-active{ background: rgba(98,107,237,1) !important;
+    opacity: 1 !important;}*/
 
-@font-face{ font-family: "AvenirLTStd-Light"; src: url('../../../../fonts/AvenirLTStd-Light.otf')}   
-@font-face{ font-family: "AvenirLTStd-Medium"; src: url('../../../../fonts/AvenirLTStd-Medium.otf')}
-@font-face{ font-family: "AvenirLTStd-Black"; src: url('../../../../fonts/AvenirLTStd-Black.otf')}
+  .mint-swipe-indicators {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    background: transparent;
+  }
+  .mint-swipe-indicator {
+    width: 8px;
+    height: 2px;
+    display: inline-block;
+    background: transparent;
+    opacity: 1;
+    margin: 0 0;
+    flex-grow: 1;
+  }
+  .mint-swipe-indicator.is-active {
+    background: #6F83ED;
+  }
 
+  
 
-.center{ text-align: center; }
-.clear{ height: 1%; clear: both;} .fl{ float: left; } .fr{ float: right; } .hide{ display:none} .show{ display:block} .fc333{ color: #333 } .fc555{ color: #555 } .fc666{ color: #666 } .fc999{ color: #999 } .fmajor{ color: #6F84EE } .active{ color: #6178F0 } .fs18{ font-size: 18px } .fs16{ font-size: 16px } .fs14{ font-size: 14px }
+/*公共样式*/
+  .container{
+    margin-bottom: 88px;
+    font-size: 15px;
+    -webkit-overflow-scrolling: touch;
+    -moz-overflow-scrolling: touch;
+    -ms-overflow-scrolling: touch;
+    -o-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
 
-.fs12{ font-size: 12px }
-.touch:active{ box-shadow: inset 0 0 1000px rgba(0, 0, 0, .1);}
-.hide{ display: none }
-.page{ opacity: 0; -webkit-transition: opacity .3s ease-out; }
-.page.show{ opacity: 1; }
-.bolder{ font-weight: bolder; font-family: "AvenirLTStd-Medium","Roboto-Light","PingFangSC-Medium","Microsoft YaHei",Helvetica,sans-serif;}
-.m24{ margin: 24px 0 }
+  @font-face{ font-family: "AvenirLTStd-Light"; src: url('../../../../fonts/AvenirLTStd-Light.otf')}   
+  @font-face{ font-family: "AvenirLTStd-Medium"; src: url('../../../../fonts/AvenirLTStd-Medium.otf')}
+  @font-face{ font-family: "AvenirLTStd-Black"; src: url('../../../../fonts/AvenirLTStd-Black.otf')}
 
-div.mint-swipe>.mint-swipe-indicators>.mint-swipe-indicator.is-active{ background: rgba(98,107,237,1) !important;
-    opacity: 1 !important;}
-.m_banner_index{ height: 5px; width: 100%; overflow: hidden; position: absolute; bottom: 0; left: 0; background-color:rgba(0,0,0,.6);}
-.m_banner_index>li{ width: 20%; height: 5px; float: left; }
-.m_banner_index>li.cur{ background-color: #6178F0 }
+  .center{ text-align: center; }
+  .clear{ height: 1%; clear: both;} .fl{ float: left; } .fr{ float: right; } .hide{ display:none} .show{ display:block} .fc333{ color: #333 } .fc555{ color: #555 } .fc666{ color: #666 } .fc999{ color: #999 } .fmajor{ color: #6F84EE } .active{ color: #6178F0 } .fs18{ font-size: 18px } .fs16{ font-size: 16px } .fs14{ font-size: 14px }
 
+  .fs12{ font-size: 12px }
+  .touch:active{ box-shadow: inset 0 0 1000px rgba(0, 0, 0, .1);}
+  .hide{ display: none }
+  .page{ opacity: 0; -webkit-transition: opacity .3s ease-out; }
+  .page.show{ opacity: 1; }
+  .bolder{ font-weight: bolder; font-family: "AvenirLTStd-Medium","Roboto-Light","PingFangSC-Medium","Microsoft YaHei",Helvetica,sans-serif;}
+  .m24{ margin: 24px 0 }
 
-.m_box{ box-sizing: border-box; }
-.m_box_title{ height: 60px; overflow: hidden; }
-.m_box_title>h1{ height: 60px; line-height: 62px; margin-left: 12px; font-size: 20px; float: left; color: #555; }
-.m_box_title>a{ height: 44px; padding: 0 12px 0 40px; margin: 8px 0; float: right; color: #bbb; text-align: center; line-height: 44px; }
+  .m_box{ box-sizing: border-box; }
+  .m_box_title{ height: 60px; overflow: hidden; }
+  .m_box_title>h1{ height: 60px; line-height: 62px; margin-left: 12px; font-size: 20px; float: left; color: #555; }
+  .m_box_title>a{ height: 44px; padding: 0 12px 0 40px; margin: 8px 0; float: right; color: #bbb; text-align: center; line-height: 44px; }
 
 /* 最新入驻 推荐单曲*/
   .m_blist{ box-sizing: border-box; overflow: hidden; }
@@ -265,6 +312,9 @@ div.mint-swipe>.mint-swipe-indicators>.mint-swipe-indicator.is-active{ backgroun
   .m_blist> div > li{ width: 32%; float: left; margin-right: 28px;  }
   .m_blist> div > li >a{ position: relative; }
   .m_blist> div > li>a>button{ height: 36px; width: 36px; position: absolute; bottom: 50px; right: 0;     background: transparent;}
+  .m_blist> div > li:last-child>a>button{
+    margin-right: 8px;
+  }
   .m_blist> div > li>a>button>i{ width: 22px; height: 24px; background-color: rgba(0,0,0,.4); border-radius: 24px; margin: 6px; color: #fff; text-align: center; line-height: 24px; font-size: 10px; padding-left: 2px }
   .m_blist> div > li>a>div{
     border-radius: 8px;
@@ -278,7 +328,6 @@ div.mint-swipe>.mint-swipe-indicators>.mint-swipe-indicator.is-active{ backgroun
   .m_blist> div > li>a>div> img:after{width: 100%;height: 100%;background-repeat: no-repeat center;min-height: 4rem; content: url('/static/img/placeholder_1.png?width=500');}
   .m_blist> div > li>a>h1{ line-height: 20px; height: 20px; overflow: hidden; color: #555; font-size: 13px; margin-top:8px; text-align: left;}
   .m_blist> div > li>a>h2{ line-height: 20px; height: 20px; font-size: 12px; color: #999999; margin-bottom:2px;  text-align: left;}
-
 
 /* 隐藏滚动条*/
   #musician_news,#tracks {overflow: hidden;}
@@ -397,8 +446,6 @@ div.mint-swipe>.mint-swipe-indicators>.mint-swipe-indicator.is-active{ backgroun
       margin-right:1.5px;
     }
 
-
-
 /*推荐歌单*/
   .m_clist {
     box-sizing: border-box;
@@ -485,3 +532,4 @@ div.mint-swipe>.mint-swipe-indicators>.mint-swipe-indicator.is-active{ backgroun
   }
 
 </style>
+

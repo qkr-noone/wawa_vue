@@ -1,11 +1,11 @@
 <template>
 	<div id="hun-detail">
 		<keep-alive>
-      <router-view></router-view>
-    </keep-alive> 
+      <router-view v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
 		<div class="hun-detail-header">
 			<div class="wrap">
-				<img :src="huntDetail.res_cover">
+				<img :src="huntDetail.cut_cover">
 			</div>
 			<div class="play">
 				<i class="playtrack"><i class="icon-play" @click="addPlayList()"></i></i>
@@ -23,7 +23,7 @@
 
 		<div class="hun-list">
 			<ul>
-				<li v-for="(item, index) in huntDetail.tracks"  >
+				<li v-for="(item, index) in huntDetail.tracks" >
 					<a @click="playSong(index),selected(item)">
 						<span>{{index+1}}</span>
 						<div>
@@ -211,17 +211,56 @@
         		this.scrollbar()
     			})*/
     		})
-  	  }
+  	  },
+  	 /* preloadImages: function(arr) {
+            var newimages = [],
+                loadedimages = 0,
+                postaction = function() {};
+            arr = (typeof arr != "object") ? [arr] : arr;
+
+            function imageloadpost() {
+                loadedimages++
+                if (loadedimages == arr.length) {
+                    postaction(newimages);
+                }
+            }
+            for (var i = 0; i < arr.length; i++) {
+                newimages[i] = new Image()
+                newimages[i].src = arr[i]
+                newimages[i].onload = function() {
+                    imageloadpost()
+                }
+                newimages[i].onerror = function() {
+                    imageloadpost()
+                }
+            }
+            return {
+                done: function(f) {
+                    postaction = f || postaction
+                }
+            }
+        },*/
 		},
+		/*beforeCreate() {
+			this.preloadImages([
+           'http://up.wawa.fm/18,e0e2b2ce7111',   //灰1.64
+           'http://up.wawa.fm/15,e0e5dc7fcbc1',  //灰1                
+           'http://up.wawa.fm/20,e0e40b52d9ab',  //蓝1                
+           'http://up.wawa.fm/20,e0e341bffeb3',  //蓝1.64
+           'http://up.wawa.fm/20,e0e7b919093c'   //二维码
+       ]);
+		},*/
 		created() {
 			document.title = '猎乐 - 独立文艺的音阅社区'
   		this.routeChange()
   	},
+  	deactivated () {
+			this.$destroy()
+		},
   	mounted() {
     	this.setRouterUrl(this.$route.path)
-  	},
-  	watch:{
-  		'$route':['scrollbar','routeChange']
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
   	}
 	}
 </script>
@@ -234,14 +273,23 @@
 		position: relative;
 	}
 	.hun-detail-header .wrap {
-		width: 100%;
-		height: 100%;
+		width: 16rem;
+		height: 9.77rem;
 		overflow: hidden;
 	}
 	.hun-detail-header .wrap >img {
 		width: 100%;
 		height: 100%;
 		background-repeat: no-repeat center;
+		position: relative;
+	}
+	.hun-detail-header .wrap >img:after {
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		content: url('/static/img/placeholder_1.png?width=320');
 	}
 	.hun-detail-header .play {
 		position: absolute;
@@ -295,6 +343,7 @@
 	}
 	.hun-content >p>i{
 		color: #cccccc;
+		font-size: 0.45rem;
 	}
 	.hun-content >div pre{
 		margin-top: 0.8rem;

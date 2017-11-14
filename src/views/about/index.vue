@@ -69,6 +69,8 @@
 
 		mounted() {
       this.setRouterUrl(this.$route.path)
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
   	},
 		computed: {
       ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])

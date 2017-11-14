@@ -1,15 +1,13 @@
 <template>
   <div id="article-detail">
-  <keep-alive>
-      <router-view></router-view>
-    </keep-alive> 
     <div class="header-artic-detail">
       <div class="header-song">
         <div ref="rotaD" class="rotate" :class=" iconState ? 'running' :'pause'">
-          <img :src="detailData.res_cover">
+          <img ref="imgContent" src="static/img/placeholder_1.png"> <!-- detailData.res_cover -->
         </div>
-        <i class="playtrack"><i :class=" iconState ? 'icon-pause' :'icon-play'" @click="playPause()"></i></i>
-      </div>
+        <i class="playtrack"><i class="icon-play"  @click="playPause()"></i></i> 
+        <!-- :class=" iconState ? 'icon-pause' :'icon-play'" -->
+      </div> 
       <h1 class="bolder">
         <p>{{detailData.from_user_nickname}} : </p><p>{{detailData.title}}</p>
       </h1>
@@ -40,34 +38,17 @@ export default {
 	},
   created() {
     document.title = '乐文 - 独立文艺的音阅社区'
-  	const user_id = 0
-    const timestamp = Date.parse(new Date()) / 1000
-    const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/doc/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
-    
-    axios({
-      method: 'get',
-      // urlApi=http://wawa.fm
-      url: 'urlApi/app/v1/doc/info',
-      params: {
-	      api_key: '0fcf845a413e11beb5606448eb8abbc4',
-        timestamp: timestamp,
-        user_id: user_id,
-        id: this.$route.query.id
-      },
-      headers:{
-        'X-Requested-With': 'XMLHttpRequest',
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        // 'Access-Control-Allow-Origin':'http://localhost:8080',
-        'Authorization':'wawa ' + token
-      }
-    }).then( rtn => {
-        this.detailData = rtn.data
-        // console.log(this.detailData)
-    })    
   },
-
+  deactivated () {
+    this.$destroy()
+  },
   mounted() {
+    this.routeChange()    
     this.setRouterUrl(this.$route.path)
+    console.log(this.$refs.imgContent)
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+    // this.$refs.imgContent.style.content = 'url(this.detailData.res_cover)'
   },
 
   computed: {
@@ -88,27 +69,49 @@ export default {
       })
 
       if(!tip){
-        this.playList.splice(this.currentIndex+1, 0,this.detailData.track)  
-      }
-      
-      if(!this.iconState) {
+        this.playList.splice(this.currentIndex+1, 0,this.detailData.track)
         let instance = this.$toast('即将播放')
         setTimeout(() =>{
           instance.close()
         },2500)
+      }
+      this.setPlayState(true)
+      
+      /*if(!this.iconState) {
+        
         this.iconState = true
-        this.setPlayState(true)
-        // console.log('播放')
       } else {
         this.iconState = false
         this.setPlayState(false)
-        // console.log('暂停')
-      }
+      }*/
+    },
+    routeChange() {
+      const user_id = 0
+      const timestamp = Date.parse(new Date()) / 1000
+      const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/doc/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
+    
+      axios({
+        method: 'get',
+        url: 'urlApi/app/v1/doc/info',
+        params: {
+          api_key: '0fcf845a413e11beb5606448eb8abbc4',
+          timestamp: timestamp,
+          user_id: user_id,
+          id: this.$route.query.id
+        },
+        headers:{
+          'X-Requested-With': 'XMLHttpRequest',
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization':'wawa ' + token
+        }
+      }).then( rtn => {
+          this.detailData = rtn.data
+          this.$refs.imgContent.style.content = 'url('+this.detailData.res_cover+')'
+          this.$refs.imgContent.style.marginLeft = '-4.4rem'
+      })
     },
 
     addSongPlay(event){
-        // console.log(event.srcElement.id.length)
-        // console.log(event.srcElement.id)
         if(event.srcElement.id.length===11&&event.target.nodeName === 'I'){
           let instance = this.$toast('即将播放..')
           setTimeout( () => {
@@ -119,7 +122,6 @@ export default {
           const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/track/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
           axios({
             method: 'get',
-            // urlApi=http://wawa.fm
             url: 'urlApi/app/v1/track/info',
             params: {
               api_key: '0fcf845a413e11beb5606448eb8abbc4',
@@ -130,7 +132,6 @@ export default {
             headers:{
               'X-Requested-With': 'XMLHttpRequest',
               'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-              // 'Access-Control-Allow-Origin':'http://localhost:8080',
               'Authorization':'wawa ' + token
             }
           }).then( rtn => {
@@ -146,20 +147,20 @@ export default {
       this.activeName = item
     },
   },
-  watch: {
-    //按钮同步
+  /*watch: {
+    // 按钮同步
     playState(newState){
       this.$nextTick(()=>{
         newState ? this.iconState =true : this.iconState = false
       })
     },
-    //结束停止CD
+    // 结束停止CD
     currentIndex(newIndex){
       if(this.playerData.id !=this.detailData.track.id){
         this.iconState = false
       }
     }
-  }
+  }*/
 }
 </script>
 <style lang="scss" scoped>
@@ -197,7 +198,7 @@ export default {
     height: 100%;
     background-repeat: no-repeat;
     background-size: auto 100%;
-    margin-left: -7rem;
+    /*margin-left: -4.4rem;*/
   }
   
   .header-song>i.playtrack {
@@ -286,13 +287,14 @@ export default {
     color: rgba(153, 153, 153, 1);
     font-family: "PingFangSC-Regular";
     padding-top: 14px;
+    font-size: 0.6rem;
   }
   
   .icon-view {
     padding-left: 20px;
     color: rgba(189, 189, 189, 1);
     padding-right: 10px;
-    font-size: 12px;
+    font-size: 0.45rem;
   }
   
   </style>

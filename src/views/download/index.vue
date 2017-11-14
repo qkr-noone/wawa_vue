@@ -35,6 +35,8 @@
     },
     mounted() {
       this.setRouterUrl(this.$route.path)
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
   	},
 		methods:{
 			...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),

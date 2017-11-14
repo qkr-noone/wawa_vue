@@ -1,7 +1,7 @@
 <template>
   <div id="article">
-<keep-alive>
-      <router-view></router-view>
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive"></router-view>
     </keep-alive> 
 
     <div class="m_box m24">
@@ -39,7 +39,8 @@ export default {
     return {
       articleData:[],
       newLoad: '',
-      page: 1
+      page: 1,
+      flag: true
     }
   },
   created() {
@@ -72,7 +73,12 @@ export default {
       console.log(rtn.error)
     })
   },
-
+  activated() {
+    this.flag = true
+  },
+  deactivated() {
+    this.flag = false
+  },
   computed: {
     ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
   },
@@ -84,8 +90,9 @@ export default {
   methods:{
     ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
     loadMore() {
-      this.loading = true;
-      setTimeout(() => {
+      if (this.flag) {
+        this.loading = true;
+        setTimeout(() => {
         this.page++
         const timestamp = Date.parse(new Date()) / 1000
         const category = 4
@@ -113,7 +120,6 @@ export default {
             if (rtnData.data.length) {
               // console.log(rtnData.data.length)
               this.newLoad = rtnData.data
-              console.log(this.articleData)
               for (let i =0; i < rtnData.data.length; i++) {
                 this.articleData.push(this.newLoad[i]);
               }
@@ -122,7 +128,8 @@ export default {
             }              
           this.loading = false;
         })
-      }, 2500);
+        }, 2500);
+      }
     }
   }
 }

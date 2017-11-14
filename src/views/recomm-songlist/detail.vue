@@ -1,10 +1,10 @@
 <template>
 	<div id="songlist-detail">
-<keep-alive>
+		<keep-alive>
       <router-view></router-view>
     </keep-alive> 
 		<div class="songlist-header">
-			<div class="wrap">
+			<div class="wrap" >
 				<img :src="songListDetail.res_cover + '?width=500'">
 			</div>
 
@@ -92,8 +92,13 @@ export default {
     })
 
 	},
+	deactivated () {
+    this.$destroy()
+  },
 	mounted() {
     this.setRouterUrl(this.$route.path)
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
   },
 
 	computed: {
@@ -164,8 +169,17 @@ export default {
 	.songlist-header> .wrap img{
 		width: 100%;
 		height: 100%;
-		background-repeat: no-repeat center;
+		
 	}
+	.songlist-header> .wrap img:after{
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		left: 0;
+		top: 0;
+		content: url('/static/img/placeholder_2.png');
+	}
+			
 	.songlist-header>.tip-wrap{
 		position: absolute;
 		left: 0;
@@ -181,11 +195,11 @@ export default {
 		overflow: hidden;
 		margin: 0.6rem;
 		float: left;
+		background-color:url('/static/img/placeholder_1.png'); 
 	}
 	.songlist-header>.tip-wrap >.img-wrap  img{
 		width: 100%;
 		height: 100%;
-		background-repeat: no-repeat center;
 		float: left;
 	}
 	.descr {

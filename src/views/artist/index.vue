@@ -1,7 +1,8 @@
 <template>
 	<div id="artist">
-
-      <router-view></router-view>
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
 
 		<ul class="artist-list"
       v-infinite-scroll="loadMore"
@@ -30,7 +31,8 @@ export default {
 		return {
 			artistData:'',
       newLoad:'',
-      page: 1
+      page: 1,
+      flag: true
 		}
 	},
   created() {
@@ -61,17 +63,26 @@ export default {
         this.artistData = rtn.data
     })
   },
+  activated() {
+    this.flag = true
+    console.log(document.documentElement.scrollTop)
+  },
+  deactivated() {
+    this.flag = false
+  },
   computed: {
     ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
   },
   mounted() {
     this.setRouterUrl(this.$route.path)
+    document.documentElement.scrollTop = 0
   },
   methods: {
     ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
     loadMore() {
-      this.loading = true;
-      setTimeout(() => {
+      if(this.flag){
+        this.loading = true;
+        setTimeout(() => {
         this.page++
         const timestamp = Date.parse(new Date()) / 1000
         const category = 3
@@ -106,7 +117,8 @@ export default {
           }
           this.loading = false;
         })        
-      }, 2500);
+        }, 2500);
+      }
     }
   }
 }

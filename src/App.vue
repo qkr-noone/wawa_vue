@@ -1,5 +1,8 @@
 <template ref="template">
   <div id="app" ref="app">
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
     <div class="m_nav" id="nav">
         <div class="m_menu" id="menu" @click="nav()" v-bind:class="{'trans': isTr}"><span></span></div>
         <transition name="fade">
@@ -11,11 +14,8 @@
                 </router-link>
             </li>
           </ul>
-        </transition>
-        
+        </transition>        
     </div>
-
-      <router-view></router-view>
 
     <div>
   
@@ -33,7 +33,6 @@
         
       </div>
   
-      
     </div>
 
     <!-- 遮罩层导航菜单列表 -->
@@ -167,6 +166,7 @@ export default {
     }
 
   },
+
   mounted() {
     this.setRouterUrl(this.$route.path)
   },

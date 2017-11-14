@@ -1,8 +1,8 @@
 <template>
   <div id="songlist">
     <keep-alive>
-      <router-view></router-view>
-    </keep-alive>  
+      <router-view  v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
     <div>
       <ul class="m_clist" 
       v-infinite-scroll="loadMore"
@@ -43,7 +43,8 @@ export default {
 		return {
 			songList: '',
 			page: 1,
-			databaseList: true //判断是否还有请求的数据,防止持续请求
+			databaseList: true, //判断是否还有请求的数据,防止持续请求
+      flag: true
 		}
 	},
 	created() {
@@ -73,7 +74,13 @@ export default {
         this.songList = rtn.data
     }) 
   },
-
+  // 防止跳出页面后滚动继续加载
+  activated () {
+    this.flag = true
+  },
+  deactivated () {
+    this.flag = false
+  },
   mounted() {
     this.setRouterUrl(this.$route.path)
   },
@@ -83,8 +90,9 @@ export default {
 	methods: {
     ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
     loadMore() {
-      this.loading = true;
-      setTimeout(() => {
+      if (this.flag) {
+        this.loading = true;
+        setTimeout(() => {
         this.page++
         const timestamp = Date.parse(new Date()) / 1000
         const category = 1
@@ -92,36 +100,37 @@ export default {
         const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/playlist/list@3ad3ebb04b5c94cd234e16a6aef9c8ae')
        
        if(this.databaseList){
-       		axios({
-          	method: 'get',
-          	// urlApi=http://wawa.fm
-          	url: 'urlApi/app/v1/playlist/list',
-          	params: {
-          	  api_key: '0fcf845a413e11beb5606448eb8abbc4',
-          	  timestamp: timestamp,
-          	  page: this.page,
-          	  category: category,
-          	  size: size
-          	},
-          	headers:{
+          axios({
+            method: 'get',
+            // urlApi=http://wawa.fm
+            url: 'urlApi/app/v1/playlist/list',
+            params: {
+              api_key: '0fcf845a413e11beb5606448eb8abbc4',
+              timestamp: timestamp,
+              page: this.page,
+              category: category,
+              size: size
+            },
+            headers:{
             'X-Requested-With': 'XMLHttpRequest',
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Access-Control-Allow-Origin':'http://localhost:8080',
             'Authorization':'wawa ' + token
-          	}
-        	}).then( rtnData => {
-        	    if (rtnData.data.length) {
-        	      this.newLoad = rtnData.data
-        	      for (let i =0; i < rtnData.data.length; i++) {
-        	        this.songList.push(this.newLoad[i]);
-        	      }
-        	    } else {
-        	      return this.databaseList=false
-        	    }
-        	    this.loading = false;
-        	})
-       	}       
-      }, 2500);
+            }
+          }).then( rtnData => {
+              if (rtnData.data.length) {
+                this.newLoad = rtnData.data
+                for (let i =0; i < rtnData.data.length; i++) {
+                  this.songList.push(this.newLoad[i]);
+                }
+              } else {
+                return this.databaseList=false
+              }
+              this.loading = false;
+          })
+        }       
+        }, 2500);
+      }
     }
   }
 }

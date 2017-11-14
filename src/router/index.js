@@ -45,7 +45,7 @@ export default new Router({
     {
       path: '/artist/detail',
       meta: {
-        keepAlive: true
+        keepAlive: false
       },
       component: ArtistDetail
     },
@@ -59,7 +59,7 @@ export default new Router({
     {
       path: '/article/detail',
       meta: {
-        keepAlive: true
+        keepAlive: false
       },
       component: ArticleDetail
     },
@@ -73,7 +73,7 @@ export default new Router({
     {
       path: '/hunting/detail',
       meta: {
-        keepAlive: true
+        keepAlive: false
       },
       component: HuntingDetail
     },
@@ -109,7 +109,7 @@ export default new Router({
     {
       path: '/recomm-single/detail',
       meta: {
-        keepAlive: true
+        keepAlive: false
       },
       component: RecommSingleDetail
     },
@@ -123,7 +123,7 @@ export default new Router({
     {
       path: '/recomm-songlist/detail',
       meta: {
-        keepAlive: true
+        keepAlive: false
       },
       component: RecommSongListDetail
     },
@@ -131,7 +131,7 @@ export default new Router({
       path: '/banner/article/:id',
       name: 'bannerArticle',
       meta: {
-        keepAlive: true
+        keepAlive: false
       },
       component: BannerArticle
     },
@@ -139,7 +139,7 @@ export default new Router({
       path: '/reward/:id',
       name: 'reward',
       meta: {
-        keepAlive: true
+        keepAlive: false
       },
       component: Reward
     },

@@ -1,8 +1,8 @@
 <template>
   <div id="hunting">
     <keep-alive>
-      <router-view></router-view>
-    </keep-alive>   
+      <router-view  v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
     <div>
       <ul class="m_alist" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
         <li to="" v-for="item in huntingData">
@@ -35,7 +35,8 @@ export default {
 		return {
 			huntingData:'',
       page: 1,
-      newLoad: ''
+      newLoad: '',
+      flag: true
 		}
 	},
   computed: {
@@ -74,6 +75,7 @@ export default {
       }
     }).then( rtn => {
         this.huntingData = rtn.data
+        console.log(this.$route.meta.keepAlive)
     })
 
     /*window.scroll(function () {
@@ -86,6 +88,13 @@ export default {
     })*/
   },
 
+  // 防止跳出页面后滚动继续加载
+  activated () {
+    this.flag = true
+  },
+  deactivated () {
+    this.flag = false
+  },
   mounted() {
     this.setRouterUrl(this.$route.path)
   },
@@ -94,8 +103,11 @@ export default {
     ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
 
     loadMore() {
-      this.loading = true;
-      setTimeout(() => {
+      // 防止跳出页面后滚动继续加载
+      if (this.flag) {
+        this.loading = true;
+
+        setTimeout(() => {
         this.page++
         const timestamp = Date.parse(new Date()) / 1000
         const category = 1
@@ -133,6 +145,7 @@ export default {
             this.loading = false;
         })        
       }, 2500);
+      }
     }
   }
 }

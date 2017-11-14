@@ -188,6 +188,8 @@
   	mounted() {
   		this.addSongPlay(event)
       this.setRouterUrl(this.$route.path)
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
   	},
   	watch:{
   		'$route':'routeChange'
@@ -213,6 +215,8 @@
 		font-size: 0.9rem;
 		font-family: "PingFangSC-Semibold"
 		letter-spacing：0.213rem;
+    min-height: 1.25rem;
+    padding: 0 1rem;
 	}
 	.ban-article >p:nth-child(2){
 		text-align: center;
@@ -229,13 +233,24 @@
 	}
 	.ban-article >div{
 		width: 100%;
+    height: 8.87rem;
 		overflow: hidden;
 		margin-top: 0.81rem;
+    background-color: url('/static/img/placeholder_1.png?width=375');
 	}
 	.ban-article >div>img{
 		width: 100%;
 		height: 100%;
+    position: relative;
 	}
+  .ban-article >div>img:after{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: url('/static/img/placeholder_1.png?width=375');
+  }
 
 /*相似推荐*/
   .m_blist{

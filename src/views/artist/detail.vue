@@ -25,9 +25,9 @@
         <span v-for="item in labelsData"><img :src="item.res_cover"></span>
       </p>
       <div class="a-cate">
-        <span><i class="bolder">&nbsp;{{detailList.dynamic_count}}&nbsp;&nbsp;</i>动态</span>
-        <span><i class="bolder">&nbsp;{{detailList.video_count}}&nbsp;&nbsp;</i>视频</span>
-        <span><i class="bolder">&nbsp;{{detailList.photo_count}}&nbsp;&nbsp;</i>相册</span>
+        <span><i class="bolder">&nbsp;{{detailList.dynamic_count?detailList.dynamic_count:'-'}}&nbsp;&nbsp;</i>动态</span>
+        <span><i class="bolder">&nbsp;{{detailList.video_count?detailList.video_count:'-'}}&nbsp;&nbsp;</i>视频</span>
+        <span><i class="bolder">&nbsp;{{detailList.photo_count?detailList.photo_count:'-'}}&nbsp;&nbsp;</i>相册</span>
       </div>
       <div class="scroll" v-if="detailList.sign">
         <div class=""></div>
@@ -155,45 +155,15 @@ export default {
   },
   created() {
     document.title = '乐人 - 独立文艺的音阅社区'
-    const timestamp = Date.parse(new Date()) / 1000
-    const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/user/musician_homepage@3ad3ebb04b5c94cd234e16a6aef9c8ae')
-    axios({
-      method: 'post',
-      // urlApi=http://wawa.fm
-      url: 'urlApi/app/v1/user/musician_homepage',
-      data: {
-      	id: this.$route.query.id,
-	      api_key: '0fcf845a413e11beb5606448eb8abbc4',
-        timestamp: timestamp        
-      },
-      //转格式
-      transformRequest: [
-      	function(data){
-      		let ret = ''
-      		for (let it in data){
-      			ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-      		}
-      		return ret
-      	}
-      ],
-      headers:{
-        'X-Requested-With': 'XMLHttpRequest',
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Authorization':'wawa ' + token
-      }
-    }).then( rtn => {
-        this.detailData = rtn.data
-        this.detailList = this.detailData.user
-        console.log(this.detailList)
-
-        if(this.detailData.user){
-          this.labelsData = this.detailData.user.labels
-        }
-    })
+    this.routeChange()
   },
-
+  deactivated () {
+    this.$destroy()
+  },
   mounted() {
-    this.setRouterUrl(this.$route.path)    
+    this.setRouterUrl(this.$route.path)
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
   },
 
   methods: {
@@ -233,6 +203,50 @@ export default {
     selected: function(item) {
       this.activeName = item
     },
+    routeChange(){
+      const timestamp = Date.parse(new Date()) / 1000
+      const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/user/musician_homepage@3ad3ebb04b5c94cd234e16a6aef9c8ae')
+      axios({
+        method: 'post',
+        // urlApi=http://wawa.fm
+        url: 'urlApi/app/v1/user/musician_homepage',
+        data: {
+          id: this.$route.query.id,
+          api_key: '0fcf845a413e11beb5606448eb8abbc4',
+          timestamp: timestamp        
+        },
+        //转格式
+        transformRequest: [
+          function(data){
+            let ret = ''
+            for (let it in data){
+              ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+            }
+            return ret
+          }
+        ],
+        headers:{
+          'X-Requested-With': 'XMLHttpRequest',
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization':'wawa ' + token
+        }
+      }).then( rtn => {
+          this.detailData = rtn.data
+          console.log(this.detailData)
+          this.detailList = this.detailData.user
+
+          if(this.detailData.user){
+            this.labelsData = this.detailData.user.labels
+          }
+      })
+    },
+    scrollbar:function() {
+      this.$nextTick(() => {
+        document.body.scrollbar = 10
+        console.log(document.body.scrollbar)
+      })
+    }
+
   }
 }
 </script>
@@ -283,7 +297,15 @@ export default {
   .a-detail-header> img {
     height: 100%;
     width: 100%;
-    background-repeat: no-repeat;
+    position: relative;
+  }
+  .a-detail-header> img:after {
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    content: url('/static/img/placeholder_2.png?width=320');
   }
   
   .a-detail-header> div {
@@ -500,12 +522,17 @@ export default {
   .ahot-song > ul >li> a >div:nth-child(2){
     margin-left: 0.9rem;
     float: left;
+    overflow:hidden;
   }
   .ahot-song > ul >li> a >div:nth-child(2) h4{
     font-size: 0.7rem;
     color: #555555;
     padding-top: 0.44rem;
     padding-left: 0.15rem;
+    width: 10.5rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
    .ahot-song > ul >li> a >div:nth-child(2) span{
     color: #999999;

@@ -1,8 +1,8 @@
 <template >
 	<div id="singleDetail">
-<keep-alive>
-      <router-view></router-view>
-    </keep-alive> 
+    <keep-alive>
+      <router-view  v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
 		<section class="single-header">
 			<div class="wrap-img"><img :src="singleSong.res_cover + '?with=500'"></div>
 			<div class="single-mask"></div>
@@ -70,9 +70,15 @@ export default {
     })
 
 	},
-
+  deactivated () {
+    this.$destroy()
+  },
   mounted() {
     this.setRouterUrl(this.$route.path)
+    // 进入定位到顶端
+    console.log( document.body.scrollTop)
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
   },
 
 	methods: {
@@ -121,7 +127,16 @@ export default {
 	.single-header >.wrap-img >img{
 		width: 100%;
 		height: 100%;
+    position: relative;
 	}
+  .single-header >.wrap-img >img:after{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: url('/static/img/placeholder_2.png?width=320');
+  }
 	.single-header > .single-mask{
 		width: 100%;
 		height: 100%;
