@@ -16,6 +16,15 @@ export default {
   },
   setFullScreen (state, fullScreen) {
     state.fullScreen = fullScreen
+  },
+  setNavToggle (state, navToggle) {
+    state.navToggle = navToggle
+  },
+  setIsTr (state, isTr) {
+    state.isTr = isTr
+  },
+  setIsDemaskNav (state, isDemaskNav) {
+    state.isDemaskNav = isDemaskNav
   }
 }
 

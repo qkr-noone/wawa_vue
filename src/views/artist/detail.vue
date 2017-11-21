@@ -4,10 +4,8 @@
       <img :src="detailData.user | imgFormat">
       <span class="mask"></span>
       <div>
-        <div class="p-tip">
-          <i class="playtracks">
-            <i class="icon-play" @click="addPlayList()"></i>
-          </i>
+        <div class="p-tip" @click="addPlayList()">
+            <i class="icon-play"></i>
           <span>播放音乐人电台</span>
         </div>
         <div class="view">
@@ -31,7 +29,8 @@
       </div>
       <div class="scroll" v-if="detailList.sign">
         <div class=""></div>
-        <p>{{detailList.sign}}</p>
+        <p v-if="detailList.sign.length>34"><marquee behavior="scroll" scrollamount="4"><span>{{detailList.sign}}</span></marquee></p>
+        <p v-else>{{detailList.sign}}</p>
       </div>
       <div class="a-headerimg" v-for="(item, index) in detailData.musicians">
         <div><img :src="item.headimg"></div>
@@ -40,13 +39,13 @@
         {{detailList.description}}
       </p>
 
-      <div v-if="detailList.description.length > 118">
+      <div v-if="descriptionL.length > 118">
         <a class="all-info" @click="allContent()"><span v-if="over">查看</span><span v-else>收起</span>乐人完整介绍</a>
       </div>
     </div>
 
-    <div class="ahot-song" v-if="detailData.tracks.length">
-      <h2 class="adetail-title bolder">热门歌曲(<span>{{detailData.tracks.length}}</span>)</h2>
+    <div class="ahot-song" v-if="tracksL.length">
+      <h2 class="adetail-title bolder">热门歌曲(<span>{{detailData.tracks | formatLength}}</span>)</h2>
       <ul>
         <li v-for="(item, index) in detailData.tracks">
           <a @click="playSong(index),selected(item)">
@@ -64,11 +63,11 @@
       </div> -->
     </div>
 
-    <div class="album-list all-info" v-if="detailData.albums.length">
-      <h2 class="adetail-title bolder">专辑列表 (<span>{{detailData.albums.length}}</span>)</h2>
+    <div class="album-list all-info" v-if="albumsL.length">
+      <h2 class="adetail-title bolder">专辑列表 (<span>{{detailData.albums | formatLength}}</span>)</h2>
       <ul>
         <li v-for="(item, index) in detailData.albums">
-          <router-link :to="{path: '/hunting/detail', query:{id: item.id} }">
+          <router-link :to="{name: 'albumDetail', params:{id: item.id} }">
             <div><img :src="item.res_cover + '?width=200'"></div>
             <h4>{{item.title}}</h4>
             <p>{{item.release_at}}</p>
@@ -80,8 +79,8 @@
       </div> -->
     </div>
 
-    <div class="relate-art all-info" v-if="detailData.documents.length">
-      <h2 class="adetail-title bolder">相关乐文 (<span>{{detailData.documents.length}}</span>)</h2>
+    <div class="relate-art all-info" v-if="documentsL.length">
+      <h2 class="adetail-title bolder">相关乐文 (<span>{{detailData.documents | formatLength}}</span>)</h2>
       <ul class="m_alist">
         <li v-for="(item, index) in detailData.documents">
           <router-link :to="{ path:'/article/detail', query: {id: item.id} }">
@@ -126,15 +125,19 @@ export default {
 	data(){
 		return{
 			detailData: {},
-      detailList: {},
+      detailList: [],
       over:true,
       oneTime: true,
       activeName: '',
-      labelsData: ''
+      labelsData: '',
+      descriptionL: '',
+      tracksL: '',
+      albumsL: '',
+      documentsL: ''
 		}
 	},
   computed: {
-    ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
+    ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
   },
   filters: {
     imgFormat(value){
@@ -151,23 +154,32 @@ export default {
       if(value){
         return value.nickname
       }
+    },
+    formatLength(value) {
+      if (value) {
+        return value.length
+      }
     }
   },
   created() {
-    document.title = '乐人 - 独立文艺的音阅社区'
     this.routeChange()
   },
   deactivated () {
+    this.setNavToggle(false)
+    this.setIsTr(false)
+    this.setIsDemaskNav(false)
     this.$destroy()
   },
   mounted() {
     this.setRouterUrl(this.$route.path)
     document.documentElement.scrollTop = 0
     document.body.scrollTop = 0
+    this.addCount()
   },
 
+
   methods: {
-    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
+    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
 
     playSong: function(index) {
       if(this.playList!=this.detailData.tracks){
@@ -199,7 +211,60 @@ export default {
     allContent: function() {
       this.over = !this.over
     },
-
+    getGuid(){
+      var data = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+            j = 0,
+            k = 0,
+            res1 = '',
+            res2 = '';
+        for (var i = 0; i < 10; i++) {
+            j = Math.floor(Math.random() * 36);
+            k = Math.floor(Math.random() * 36);
+            res1 += data[j];
+            res2 += data[k];
+        }
+        return res1 + new Date().getTime() + res2;
+    },
+    addCount(){
+      const timestamp = Date.parse(new Date()) / 1000
+      const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/log/add@3ad3ebb04b5c94cd234e16a6aef9c8ae')
+      if(!localStorage.getItem('GUID')){
+        localStorage.setItem('GUID', this.getGuid())
+      }
+      axios({
+        method: 'post',
+        url: 'urlApi/app/v1/log/add',
+        data: {
+          api_key: '0fcf845a413e11beb5606448eb8abbc4',
+          timestamp: timestamp,
+          user_id: 0,
+          product: 1,
+          platform: 3,
+          unionid: localStorage.getItem('GUID'),
+          source_type: 5,
+          source_id: this.$route.query.id,
+          category: 7
+        },
+        transformRequest: [
+          function(data){
+            let ret = ''
+            for (let it in data){
+              ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+            }
+            return ret
+          }
+        ],
+        headers:{
+          'X-Requested-With': 'XMLHttpRequest',
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization':'wawa ' + token
+        }
+      }).then( rtn => {
+        // console.log(rtn.data)
+      }).catch( rtn => {
+        // console.log(rtn.error)
+      })
+    },
     selected: function(item) {
       this.activeName = item
     },
@@ -232,21 +297,16 @@ export default {
         }
       }).then( rtn => {
           this.detailData = rtn.data
-          console.log(this.detailData)
           this.detailList = this.detailData.user
-
+          this.descriptionL = this.detailList.description
+          this.tracksL = this.detailData.tracks
+          this.albumsL = this.detailData.albums
+          this.documentsL = this.detailData.documents
           if(this.detailData.user){
             this.labelsData = this.detailData.user.labels
           }
       })
-    },
-    scrollbar:function() {
-      this.$nextTick(() => {
-        document.body.scrollbar = 10
-        console.log(document.body.scrollbar)
-      })
     }
-
   }
 }
 </script>
@@ -313,7 +373,6 @@ export default {
     left: 0.775rem;
     right: 0.6rem;
     bottom: 0.6rem;
-    /*border: 1px solid*/
   }
   
   .a-detail-header> div> .p-tip {
@@ -326,12 +385,11 @@ export default {
     border-radius: 2.5rem;
   }
   
-  .a-detail-header> div>.p-tip >.playtracks{
+ /* .a-detail-header> div>.p-tip >.playtracks{
     position: relative;
     width: 1.5rem;
     height: 1.5rem;
     line-height: 1.5rem;
-    /*background: rgba(0,0,0,1) no-repeat center;*/
     opacity: 0.724;
     border-radius: 50%;
     background-size: 100%;
@@ -339,8 +397,8 @@ export default {
     margin-left: 0.6rem;
     margin-right: 0.3rem;
     float: left;
-  }
-  .a-detail-header> div>.p-tip >.playtracks>i.icon-play {
+  }*/
+  /*  .a-detail-header> div>.p-tip >.playtracks>i.icon-play {
     line-height: 0.89rem;
     color: rgba(255,255,255,1);
     font-size:0.8rem;
@@ -348,11 +406,17 @@ export default {
     top:0.3rem;
     left: 0.3rem;
     
+  }*/
+  .icon-play{
+    margin-left: 0.9rem;
+    line-height: 1.5rem;
+
   }
   .a-detail-header> div>.p-tip >span{
     font-size: 0.5rem;
     margin-right: 0.9rem;
     line-height: 1.5rem;
+    margin-left: 0.6rem;
   }
       
   .a-detail-header> div> .view {
@@ -362,7 +426,9 @@ export default {
     line-height: 40px;
     color: #ffffff;
   }
-
+  .a-detail-header> div> .view >span{
+    font-size: 0.6rem;
+  }
   .a-detail-header> div> .view >.icon-listen{
     padding-left: 0.6rem;
     box-sizing: border-box;
@@ -433,7 +499,8 @@ export default {
     z-index: 20;
     line-height: 1.5rem;
     height: 100%;
-    width: 200%;
+    width: 13.6rem;
+    float: right;
     color: #555555;
     font-family: "PingFangSC-Light";
     font-size: 12px;

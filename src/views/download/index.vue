@@ -31,15 +31,20 @@
 			}
 		},
 		computed: {
-      ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
+      ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
     },
     mounted() {
       this.setRouterUrl(this.$route.path)
       document.documentElement.scrollTop = 0
       document.body.scrollTop = 0
   	},
+  	deactivated(){
+      this.setNavToggle(false)
+      this.setIsTr(false)
+      this.setIsDemaskNav(false)
+    },
 		methods:{
-			...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
+			...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
 			loadWa: function() {
 				window.location.href = 'https://wawa.fm/static/app/wawa/download.html'
 			},

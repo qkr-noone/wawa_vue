@@ -1,5 +1,6 @@
 <template>
   <transition name="normal">
+    
     <div class="play-detail">
     <!-- <label style="background: #abcdef;color: #000000;font-size: 18px;">{{test.dd}}</label>
     <input type="" name="input" ref='input' placeholder="11" v-model:value='test.dd'> -->
@@ -42,21 +43,23 @@
       <transition name="list">
       <div class="m_audio_playlist" v-show="list">
         <h1 class="bolder">播放列表</h1>
-        <ul>
+        <div>
+          <ul>
           <li v-for="(item,index) in playList" :data-file="item.file320" :data-key="item.id" >
-            <a @click="player(item,index),selected(index)">
-              <span :class="{click: activeName==index }">{{index+1}}</span>
+            <a @click="player(item,index),selected(item.id)">
+              <span :class="{click: activeName==item.id }">{{index+1}}</span>
               <div>
                 <img :src="item.res_cover +'?width=100'"/>
               </div>
               <div>
-                <h4 class="bolder" :class="{click: activeName==index }">{{item.songname}}</h4>
-                <p :class="{click: activeName==index }">{{item.singer}}</p>
+                <h4 class="bolder" :class="{click: activeName==item.id }">{{item.songname}}</h4>
+                <p :class="{click: activeName==item.id }">{{item.singer}}</p>
               </div>
               <i class="icon-close" @click.stop="removeSong(index)"></i>
             </a>
           </li>
         </ul>
+        </div>
 
       </div>
       </transition>
@@ -84,6 +87,15 @@
     created() {
       
     },
+    activated(){
+      this.list = false
+      this.isDemask = false
+    },
+    deactivated(){
+      this.setNavToggle(false)
+      this.setIsTr(false)
+      this.setIsDemaskNav(false)
+    },
     mounted() {
       let audio = document.getElementById("audio")
       this.audio = audio
@@ -91,33 +103,28 @@
         this.currentTime = e.target.currentTime
         this.duration = this.audio.duration
       })
+      if (this.playerData.id===this.playList[this.currentIndex].id) {
+        this.selected(this.playerData.id)
+      }
+      
     },
     computed: {
-      ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
+      ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
     },
     methods: {
-      ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
+      ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
 
       hiddenList: function() {
         this.list = false
         this.isDemask = false
-        
-        /*let bodyD = document.body
-        if(this.isDemask === true){        
-          // bodyD.style.overflowY = 'hidden'
-          this.$refs.app.style.position = 'fixed'
-        }else {
-          // bodyD.style.overflowY = 'initial'
-          this.$refs.app.style.position = 'initial'
-        }*/
       },
 
       listShow(){
         this.list = true
         this.isDemask = true
       },
-      selected: function(index) {
-        this.activeName = index
+      selected: function(id) {
+        this.activeName = id
       },
       //播放列表项
       player: function(item, index) {
@@ -140,27 +147,42 @@
         }
         
       },
+      //这里currentIndex不变，涉及到的相关修改
       removeSong(index){
-        console.log(this.playList[index].id)
-        console.log(this.playerData.id)
         if(this.playList[index].id == this.playerData.id){
-          console.log(this.currentIndex)
-          this.next()
-          // this.setCurrentIndex(this.currentIndex-1)
-          console.log(this.currentIndex)
+          if (this.playList.length===1) {
+            this.playList.splice(index, 1)
+            this.setPlayState(false)
+            return false
+          }
+          this.playList.splice(index, 1)
+          if (this.playList.length===index) {
+            index = 0
+          }
+          this.setPlayerData(this.playList[index])
+          this.selected(this.playerData.id)
+          this.addCount()
+          this.setPlayState(true)
+          return false
+        } else {
+          if (index<this.currentIndex) {
+            this.setCurrentIndex(this.currentIndex-1)
+          }
+          
         }
         this.playList.splice(index, 1)
       },
 
       loop(){
+        this.audio.currentTime = 0
         this.setPlayState(true)
       },
       next(){
-        if(this.playList.length === 1){
+        if((this.playList.length === 1) ||(this.playList.length === 0&&this.playerData.id)){
           this.loop()
         } else {
           let index = this.currentIndex + 1
-          if (index === this.playList.length){
+          if (index === this.playList.length||index>this.playList.length){
             index = 0
           }
 
@@ -171,7 +193,7 @@
 
       },
       pre(){
-        if (this.playList.length === 1) {
+        if ((this.playList.length === 1) ||(this.playList.length === 0&&this.playerData.id)) {
           this.loop()
           return
         } else {
@@ -222,17 +244,71 @@
         if(!this.playerData.ctcc_code){
           this.playerData.ctcc_code = null
         }
-        window.location.href = 'http://wawa.fm:8088/static/app/wawa/isp.html'+'?cucc=' + this.playerData.cucc_code +'?cmcc='+ this.playerData.cmcc_code + '?ctcc=' + this.playerData.ctcc_code 
+        window.location.href = '//wawa.fm:8088/static/app/wawa/isp.html'+'?cucc=' + this.playerData.cucc_code +'&cmcc='+ this.playerData.cmcc_code + '&ctcc=' + this.playerData.ctcc_code +'&uid=0'
       },
-
+      //生成电脑随机的GUID
+      getGuid(){
+        var data = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+              j = 0,
+              k = 0,
+              res1 = '',
+              res2 = '';
+          for (var i = 0; i < 10; i++) {
+              j = Math.floor(Math.random() * 36);
+              k = Math.floor(Math.random() * 36);
+              res1 += data[j];
+              res2 += data[k];
+          }
+          return res1 + new Date().getTime() + res2;
+      },
+      addCount(){
+        const timestamp = Date.parse(new Date()) / 1000
+        const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/log/add@3ad3ebb04b5c94cd234e16a6aef9c8ae')
+        if(!localStorage.getItem('GUID')){
+          localStorage.setItem('GUID', this.getGuid())
+        }
+        
+        axios({
+          method: 'post',
+          url: 'urlApi/app/v1/log/add',
+          data: {
+            api_key: '0fcf845a413e11beb5606448eb8abbc4',
+            timestamp: timestamp,
+            user_id: 0,
+            product: 1,
+            platform: 3,
+            source_type: 1,
+            source_id: this.playerData.id,
+            unionid: localStorage.getItem('GUID'),
+            category: 1
+          },
+          transformRequest: [
+            function(data){
+              let ret = ''
+              for (let it in data){
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+              }
+              return ret
+            }
+          ],
+          headers:{
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization':'wawa ' + token
+          }
+        }).then( rtn => {
+          console.log(rtn.data)
+        }).catch( rtn => {
+          console.log(rtn.error)
+        })
+      }
     },
     watch: {
       playState(newState){
         newState ? this.setPlayState(true) : this.setPlayState(false)
       },
       currentIndex(chooseIndex){
-        this.selected(chooseIndex)
-        
+        this.selected(this.playerData.id)
       },
       currentTime() {
         const barWidth = this.$refs.progressBar.clientWidth
@@ -280,6 +356,16 @@
     height: 10.667rem;
   }
   .detail-wrap>img {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: center no-repeat;
+  }
+  .detail-wrap>img::after {
+    position: absolute;
+    left: 0;
+    top: 0;
+    content: url('/static/img/placeholder_2.png?width=200');
     width: 100%;
     height: 100%;
   }
@@ -380,37 +466,45 @@
   }
    .play-detail>.play-nav>div:nth-child(2)>i{
     color: #ffffff;
-    margin-left: 0.02rem;
+   }
+   .icon-play{
+    margin-left: 0.06rem;
    }
 
 /*播放列表*/
   .m_audio_playlist{ 
     position:absolute; bottom:0; left:0; right:0; z-index: 200;
     height: 14.5rem;background: #ffffff; clear: both; 
-    padding-top: 16px; 
-    box-sizing: border-box; overflow: auto;
+    padding-top: 0.4rem; 
+    box-sizing: border-box;
   }
   .m_audio_playlist>h1{
     margin-left: 12px;
     font-size: 0.85rem;
+    padding-bottom: 0.4rem;
     font-family: "PingFangSC-Semibold";
   }
-  .m_audio_playlist ul{
+  .m_audio_playlist>div{
+    width: 100%;
+    height: calc( 100% - 1.65rem);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .m_audio_playlist>div> ul{
     width: 100%;
     overflow: hidden;
   }
-  .m_audio_playlist >ul >li{
+  .m_audio_playlist >div>ul >li{
     margin: 0.8rem 0;
-    
   }
-  .m_audio_playlist ul >li >a{
+  .m_audio_playlist >div>ul >li >a{
     margin-left: 0.6rem;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     color: #555555;
   }
-  .m_audio_playlist >ul >li >a span{
+  .m_audio_playlist >div>ul >li >a span{
     width: 0.5rem;
     font-size: 0.6rem;
     color: #999999;
@@ -419,19 +513,19 @@
     justify-content: center;
     align-items: center;
   }
-  .m_audio_playlist >ul >li >a div:nth-child(2){
+  .m_audio_playlist >div>ul >li >a div:nth-child(2){
     width: 2.25rem !important;
     height: 2.25rem !important;
     border-radius: 0.3rem;
     margin-left: 0.6rem;
     overflow: hidden;
   }
-  .m_audio_playlist >ul >li >a div:nth-child(2) >img{
+  .m_audio_playlist >div>ul >li >a div:nth-child(2) >img{
     width: 100%;
     height: 100%;
     background-repeat: no-repeat center;
   }
-  .m_audio_playlist >ul >li >a div:nth-child(3){
+  .m_audio_playlist >div>ul >li >a div:nth-child(3){
     margin-left: 0.6rem;
     width: 11rem;
     overflow: hidden;
@@ -439,7 +533,7 @@
     flex-direction: column;
     justify-content: space-around;
   }
-  .m_audio_playlist> ul >li >a div:nth-child(3) >h4 {
+  .m_audio_playlist>div> ul >li >a div:nth-child(3) >h4 {
     font-size: 0.65rem;
     font-family: "PingFangSC-Medium";
     display: -webkit-box;
@@ -448,12 +542,12 @@
     overflow: hidden;
     text-align: left;
   }
-  .m_audio_playlist >ul >li >a div:nth-child(3) >p {
+  .m_audio_playlist >div>ul >li >a div:nth-child(3) >p {
     font-size: 12px;
     color:#999999;
     font-family: "PingFangSC-Regular";
   }
-  .m_audio_playlist >ul >li >a>i.icon-close{
+  .m_audio_playlist >div>ul >li >a>i.icon-close{
     font-size: 0.47rem;
     color: #999;
     margin-right: 0.618rem;

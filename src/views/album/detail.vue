@@ -1,43 +1,43 @@
 <template>
-	<div id="songlist-detail">
+	<div id="album">
 		<keep-alive>
       <router-view></router-view>
     </keep-alive> 
-		<div class="songlist-header">
+		<div class="albumlist-header">
 			<div class="wrap" >
-				<img :src="songListDetail.res_cover + '?width=500'">
+				<img :src="albumData.res_cover + '?width=500'">
 			</div>
 
-			<div class="tip-wrap" >
+			<div class="tip-wrap">
 				<div class="p-tip"  @click="addPlayList()">
 					<i class="icon-play"></i>
-					<span>播放推荐歌单</span>
+					<span>播放专辑歌单</span>
 				</div>
 			</div>
+
 		</div>
 
-		<div class="songlist-title">
-			<h2 class="bolder">{{songListDetail.title}}</h2>
-			<p>{{songListDetail.tracks | lengthFormat}}	首 	In {{songListDetail.update_at | dateFormat}}&nbsp;&nbsp;	共有{{songListDetail.play_count}}人听过</p>
+		<div class="albumlist-title">
+			<h2 class="bolder">{{albumData.title}}</h2>
+			<p>{{albumData.tracks | lengthFormat}}	首 	In {{albumData.update_at | dateFormat}}&nbsp;&nbsp;	共有{{albumData.play_count}}人听过</p>
 		</div>
 
-		<div class="songlist-content">
-			
+		<div class="albumlist-content">
 			<div class="list-tip">
 				<div class="img-wrap">
-					<img :src="songListDetail.from_user_headimg">
+					<img :src="albumData.from_user_headimg">
 				</div>
 
 				<div class="descr">
-					<h4>{{songListDetail.from_user_nickname}}</h4>
-					<p><img v-bind:src=" sex ? 'static/img/male.png': 'static/img/female.png'"></p>
+					<h4>{{albumData.from_user_nickname}}</h4>
+					<p><img v-bind:src=" sex ? 'static/img/male.png':'static/img/female.png'"></p>
 				</div>
 			</div>
 
 			<div class="line"></div>
 
 			<ul>
-				<li v-for="(item, index) in songListDetail.tracks"  >
+				<li v-for="(item, index) in albumData.tracks"  >
 					<a :class="{click: activeName==item }" @click="playSong(index),selected(item)">
 						<span>{{index+1}}</span>
 						<div>
@@ -61,8 +61,7 @@ import { mapState, mapMutations } from 'vuex'
 export default {
 	data() {
 		return {
-			songListDetail:'', //全部数据
-			songList: '', //播放列表
+			albumData:'', //全部数据
 			iconState: false,
 			oneTime:true,
 			activeName: '', //状态
@@ -72,29 +71,28 @@ export default {
 	},
 	created() {
 		const timestamp = Date.parse(new Date()) / 1000
-    const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/playlist/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
+    const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/album/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
     axios({
       method: 'get',
       // urlApi=http://wawa.fm
-      url: 'urlApi/app/v1/playlist/info',
+      url: 'urlApi/app/v1/album/info',
       params: {
 	      api_key: '0fcf845a413e11beb5606448eb8abbc4',
         timestamp: timestamp,
-        id: this.$route.query.id
+        id: this.$route.params.id
       },
       headers:{
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        // 'Access-Control-Allow-Origin':'http://localhost:8080',
         'Authorization':'wawa ' + token
       }
     }).then( rtn => {
-        this.songListDetail = rtn.data
-        if (this.songListDetail.from_user_sex===1) {
-        	this.sex = true
-        } else {
-        	this.sex = false
-        }
+        this.albumData = rtn.data
+        if (this.albumData.from_user_sex===1) {
+					this.sex = true
+				} else {
+					this.sex = false
+				}
     })
 
 	},
@@ -128,11 +126,11 @@ export default {
 	methods: {
 		...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
 		playSong: function(index) {
-			if(this.setPlayList != this.songListDetail.tracks){
-				this.setPlayList(this.songListDetail.tracks)
+			if(this.setPlayList != this.albumData.tracks){
+				this.setPlayList(this.albumData.tracks)
 			}
 			this.setCurrentIndex(index)
-			this.setPlayerData(this.songListDetail.tracks[index])
+			this.setPlayerData(this.albumData.tracks[index])
 			this.iconState = true
       this.setPlayState(true)
       let instance = this.$toast('即将播放..')
@@ -146,7 +144,7 @@ export default {
 		},
 
 		addPlayList: function() {
-			this.setPlayList(this.songListDetail.tracks)
+			this.setPlayList(this.albumData.tracks)
 			if (this.oneTime) {
 				let instance = this.$toast('即将播放..')
   	   	setTimeout(() => {
@@ -154,20 +152,14 @@ export default {
   	   	},2500)
   	   	this.oneTime = false
 			}
-			this.setPlayState(true)
 			this.setCurrentIndex(0)
       this.setPlayerData(this.playList[this.currentIndex])
       if(this.countState){
         this.addCount()
         this.countState = false
       }
-
 		},
-
-		selected: function(item) {
-      this.activeName = item
-    },
-    getGuid(){
+		getGuid(){
         var data = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
             j = 0,
             k = 0,
@@ -197,8 +189,8 @@ export default {
             product: 1,
             platform: 3,
             unionid: localStorage.getItem('GUID'),
-            source_type: 3,
-            source_id: this.$route.query.id,      
+            source_type: 2,
+            source_id: this.$route.params.id,      
             category: 1
           },
           transformRequest: [
@@ -217,33 +209,35 @@ export default {
           }
         }).then( rtn => {
           // console.log(rtn.data)
-        })/*.catch( rtn => {
-          console.log(rtn.error)
-        })*/
+        }).catch( rtn => {
+          // console.log(rtn.error)
+        })
     },
+		selected: function(item) {
+      this.activeName = item
+    }
 	}
 }
 </script>
 <style lang='scss' scoped>
-	#songlist-detail{
+	#album{
 		margin-bottom: 4rem;
 	}
 /*头部header*/
-	.songlist-header {
+	.albumlist-header {
 		width: 16rem;
 		height: 16rem;
 		position: relative;
 	}
-	.songlist-header> .wrap {
+	.albumlist-header> .wrap {
 		width: 100%;
 		height: 100%;
 	}
-	.songlist-header> .wrap img{
+	.albumlist-header> .wrap img{
 		width: 100%;
 		height: 100%;
-		
 	}
-	.songlist-header> .wrap img:after{
+	.albumlist-header> .wrap img:after{
 		position: absolute;
 		width: 100%;
 		height: 100%;
@@ -252,7 +246,7 @@ export default {
 		content: url('/static/img/placeholder_2.png');
 	}
 			
-	.songlist-header>.tip-wrap{
+	.albumlist-header>.tip-wrap{
 		position: absolute;
 		left: 0;
 		bottom: 0;
@@ -332,11 +326,11 @@ export default {
   }
 
 /*标题title*/
-	.songlist-title{
+	.albumlist-title{
 	   color: rgba(85,85,85,1);
 	   margin-top: 0.6rem;
 	}
-	.songlist-title > h2{
+	.albumlist-title > h2{
 		padding-left: 0.6rem;
 		padding-right: 0.6rem;
 	  font-size: 0.9rem;
@@ -345,7 +339,7 @@ export default {
 	  text-align: left;
 	}
 	
-	.songlist-title > p{
+	.albumlist-title > p{
 		font-size: 0.6rem;
 		margin-top: 0.2rem;
 		padding-left: 0.6rem;
@@ -353,11 +347,11 @@ export default {
 	}
 
 /*内容content*/
-	.songlist-content{
+	.albumlist-content{
 
 	}
-	.songlist-content > .play{
-		margin-top: 0.85rem;
+	.albumlist-content > .play{
+		margin-top: 0.6rem;
     /*overflow: hidden;*/
     float: left;
 	}
@@ -384,15 +378,15 @@ export default {
     font-size: 0.6rem;
     top: 10.8px;
   }
-  .songlist-content >div.all{
+  .albumlist-content >div.all{
   	float: left;
     font-size: 0.6rem;
     font-family: "PingFangSC-Light";
     color: #555555;
-    margin-top: 1.15rem;
+    margin-top: 0.9rem;
     margin-left: 0.6rem;
   }
-  .songlist-content> .line{
+  .albumlist-content> .line{
   	width: 100%;
   	background-color: #f0f0f0;
   	height: 1px;
@@ -400,22 +394,22 @@ export default {
   	margin-bottom: 0.45rem;
   	float: left;
   }
-  .songlist-content ul{
+  .albumlist-content ul{
   	width: 100%;
   	overflow: hidden;
   }
-  .songlist-content ul >li{
+  .albumlist-content ul >li{
   	margin: 0.9rem 0;
   	
   }
-  .songlist-content ul >li >a{
+  .albumlist-content ul >li >a{
   	margin-left: 0.6rem;
   	display: flex;
   	flex-direction: row;
   	justify-content: flex-start;
   	color: #555555;
   }
-  .songlist-content ul >li >a span{
+  .albumlist-content ul >li >a span{
   	width: 0.5rem;
   	font-size: 0.6rem;
   	color: #999999;
@@ -424,19 +418,19 @@ export default {
   	justify-content: center;
   	align-items: center;
   }
-  .songlist-content ul >li >a div:nth-child(2){
+  .albumlist-content ul >li >a div:nth-child(2){
   	width: 2.25rem !important;
   	height: 2.25rem !important;
   	border-radius: 0.3rem;
   	margin-left: 0.6rem;
   	overflow: hidden;
   }
-  .songlist-content ul >li >a div:nth-child(2) >img{
+  .albumlist-content ul >li >a div:nth-child(2) >img{
   	width: 100%;
   	height: 100%;
   	background-repeat: no-repeat center;
   }
-  .songlist-content ul >li >a div:nth-child(3){
+  .albumlist-content ul >li >a div:nth-child(3){
   	margin-left: 0.6rem;
   	width: 11rem;
   	overflow: hidden;
@@ -444,7 +438,7 @@ export default {
   	flex-direction: column;
   	justify-content: space-around;
   }
-  .songlist-content ul >li >a div:nth-child(3) >h4 {
+  .albumlist-content ul >li >a div:nth-child(3) >h4 {
   	font-size: 0.65rem;
   	font-family: "PingFangSC-Medium";
   	display: -webkit-box;
@@ -453,7 +447,7 @@ export default {
     overflow: hidden;
     text-align: left;
   }
-	.songlist-content ul >li >a div:nth-child(3) >p {
+	.albumlist-content ul >li >a div:nth-child(3) >p {
 		font-size: 12px;
 		color:#999999;
   	font-family: "PingFangSC-Regular";

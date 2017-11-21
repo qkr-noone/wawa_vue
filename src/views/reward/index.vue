@@ -36,7 +36,7 @@
 			<div class="sub-bt">
 				<i class="icon-close" @click="closeOther()"></i>
 				<h2 class="bolder">其他金额</h2>
-				<input ref="personPri" type="number" name="" placeholder="可输入1-888整数">
+				<input ref="personPri" type="tel" name="" placeholder="可输入1-888整数">
 				<button @click="submitOther()">赞赏</button>
 			</div>
 		</section>
@@ -59,7 +59,6 @@
 			}
 		},
 		created() {
-			console.log(this.$route.params.id)
       let timestamp = Date.parse(new Date()) / 1000
       let token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/track/reward_users@3ad3ebb04b5c94cd234e16a6aef9c8ae') 
       axios({
@@ -103,14 +102,20 @@
       		console.log(this.rewardHead)
       })
 		},
+		deactivated () {
+			this.setNavToggle(false)
+      this.setIsTr(false)
+      this.setIsDemaskNav(false)
+    	this.$destroy()
+ 		},
 		mounted() {
     	this.setRouterUrl(this.$route.path)
   	},
   	computed: {
-    	...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
+    	...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
   	},
   	methods: {
-  		...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
+  		...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
   		selected: function(item,index) {
         this.activeName = item
         this.priceRew = parseInt(item.price)
@@ -118,7 +123,7 @@
       },
       submit(){
       	if(this.priceRew){
-      		window.location.href = 'http://wawa.fm/jsapi/weixi/pay/h5pay'+'?body='+this.rewardHead.songname+'&product=3&total_fee='+this.priceRew+'&track_id='+this.rewardHead.id
+      		window.location.href = 'http://wawa.fm/jsapi/weixi/pay/h5pay'+'?body='+this.rewardHead.songname+'&product=1&total_fee='+this.priceRew+'&track_id='+this.rewardHead.id
       	}else {
       		let instance = this.$toast('请选择赞赏金额')
       		setTimeout( () => {
@@ -129,9 +134,9 @@
       },
       submitOther(){
       	let nuM = this.$refs.personPri.value
-      	if(nuM<888&&nuM>=1&&parseInt(nuM)==nuM){
+      	if(nuM<=888&&nuM>=1&&parseInt(nuM)==nuM){
       		this.otherRew = false
-      		window.location.href = 'http://wawa.fm/jsapi/weixi/pay/h5pay'+'?body='+this.rewardHead.songname+'&product=3&total_fee='+nuM+'&track_id='+this.rewardHead.id
+      		window.location.href = '//wawa.fm/jsapi/weixi/pay/h5pay'+'?body='+this.rewardHead.songname+'&product=1&total_fee='+nuM+'&track_id='+this.rewardHead.id
       	} else {
 					let instance = this.$toast('请输入正确的数字')
       		setTimeout( () => {
@@ -244,7 +249,7 @@
 		width: 4.31rem;
 		height: 4.31rem;
 		background: #ffffff;
-		border-radius: 12px;
+		border-radius: 6px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -278,7 +283,7 @@
 
 	.choose{
 		box-sizing: border-box;
-		border:0.064rem solid rgba(111,131,237,1);
+		border:1px solid rgba(111,131,237,1);
 	}
 	.reward-cont>p{
 		color: rgba(97,120,240,1);
@@ -291,7 +296,7 @@
 		margin-top: 1.6rem;
 		margin-left: 12px;
 		margin-right: 12px;
-		border-radius: 12px;
+		border-radius: 6px;
 		background: rgba(111,131,237,1);
 		font-size: 0.767rem;
 		color: #ffffff;

@@ -12,7 +12,8 @@
         <p>{{detailData.from_user_nickname}} : </p><p>{{detailData.title}}</p>
       </h1>
       <div class="m_listtags ">
-        <span>文 / {{detailData.author}} </span><span> <i class="icon-view"></i><a>{{detailData.view_count}}</a>
+        <span>文 / {{detailData.author}} </span>
+        <span><i class="icon-view"></i><a>{{detailData.view_count}}</a>
         </span>
       </div>
     </div>
@@ -37,53 +38,48 @@ export default {
 		}
 	},
   created() {
-    document.title = '乐文 - 独立文艺的音阅社区'
+    this.routeChange() 
   },
   deactivated () {
+    this.setNavToggle(false)
+    this.setIsTr(false)
+    this.setIsDemaskNav(false)
     this.$destroy()
   },
   mounted() {
-    this.routeChange()    
     this.setRouterUrl(this.$route.path)
-    console.log(this.$refs.imgContent)
     document.documentElement.scrollTop = 0
     document.body.scrollTop = 0
-    // this.$refs.imgContent.style.content = 'url(this.detailData.res_cover)'
+    this.addCount()
   },
 
   computed: {
-    ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
+    ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
   },
   // Q  1.按钮同步...  2.旋转暂停...  3. 嵌套播放单曲...
   methods: {
-    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
+    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
     playPause: function() {
-      
       this.setPlayerData(this.detailData.track)
-
+      this.filterID(this.detailData.track)
+      this.setCurrentIndex(this.currentIndex+1)
+      this.setPlayState(true)
+    },
+    filterID(data){
       let tip = false
       this.playList.forEach((item)=>{
-        if(item.id === this.detailData.track.id){
+        if(item.id === data.id){
           return tip = true
         }
       })
 
       if(!tip){
-        this.playList.splice(this.currentIndex+1, 0,this.detailData.track)
+        this.playList.splice(this.currentIndex+1, 0,data)
         let instance = this.$toast('即将播放')
         setTimeout(() =>{
           instance.close()
         },2500)
       }
-      this.setPlayState(true)
-      
-      /*if(!this.iconState) {
-        
-        this.iconState = true
-      } else {
-        this.iconState = false
-        this.setPlayState(false)
-      }*/
     },
     routeChange() {
       const user_id = 0
@@ -113,10 +109,7 @@ export default {
 
     addSongPlay(event){
         if(event.srcElement.id.length===11&&event.target.nodeName === 'I'){
-          let instance = this.$toast('即将播放..')
-          setTimeout( () => {
-            instance.close()
-          },2500)
+          
           const user_id = 0
           const timestamp = Date.parse(new Date()) / 1000
           const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/track/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
@@ -137,30 +130,71 @@ export default {
           }).then( rtn => {
             this.data = rtn.data
             this.setPlayerData(rtn.data)
-            this.playList.push(rtn.data)
+            this.filterID(this.data)
+            this.setCurrentIndex(this.currentIndex+1)
             this.setPlayState(true)
           })
         }
         
     },
+    getGuid(){
+      var data = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+            j = 0,
+            k = 0,
+            res1 = '',
+            res2 = '';
+        for (var i = 0; i < 10; i++) {
+            j = Math.floor(Math.random() * 36);
+            k = Math.floor(Math.random() * 36);
+            res1 += data[j];
+            res2 += data[k];
+        }
+        return res1 + new Date().getTime() + res2;
+    },
+    addCount(){
+      const timestamp = Date.parse(new Date()) / 1000
+      const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/log/add@3ad3ebb04b5c94cd234e16a6aef9c8ae')
+      if(!localStorage.getItem('GUID')){
+        localStorage.setItem('GUID', this.getGuid())
+      }      
+      axios({
+        method: 'post',
+        url: 'urlApi/app/v1/log/add',
+        data: {
+          api_key: '0fcf845a413e11beb5606448eb8abbc4',
+          timestamp: timestamp,
+          user_id: 0,
+          product: 1,
+          platform: 3,
+          unionid: localStorage.getItem('GUID'),
+          source_type: 4,
+          source_id: this.$route.query.id,      
+          category: 7
+        },
+        transformRequest: [
+          function(data){
+            let ret = ''
+            for (let it in data){
+              ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+            }
+            return ret
+          }
+        ],
+        headers:{
+          'X-Requested-With': 'XMLHttpRequest',
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization':'wawa ' + token
+        }
+      }).then( rtn => {
+        // console.log(rtn.data)
+      }).catch( rtn => {
+        // console.log(rtn.error)
+      })
+    },
     selected: function(item) {
       this.activeName = item
     },
-  },
-  /*watch: {
-    // 按钮同步
-    playState(newState){
-      this.$nextTick(()=>{
-        newState ? this.iconState =true : this.iconState = false
-      })
-    },
-    // 结束停止CD
-    currentIndex(newIndex){
-      if(this.playerData.id !=this.detailData.track.id){
-        this.iconState = false
-      }
-    }
-  }*/
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -289,13 +323,42 @@ export default {
     padding-top: 14px;
     font-size: 0.6rem;
   }
-  
-  .icon-view {
-    padding-left: 20px;
-    color: rgba(189, 189, 189, 1);
-    padding-right: 10px;
-    font-size: 0.45rem;
-  }
+  .m_listtags>span {
+      height: 0.8rem;
+      line-height: 0.8rem;
+      overflow: hidden;
+      font-size: 0.6rem;
+      color: #999999;
+    }
+    .m_listtags>span:nth-child(1) {
+      float: left;
+      margin-right: 1.024rem;
+    }
+    .m_listtags>span:nth-child(2){
+      width: 10rem;
+    }
+    .m_listtags>span:nth-child(2)>i {
+      float: left;
+      margin-right: 0.256rem;
+      line-height: 0.8rem;
+    }
+    .m_listtags>span>a,
+    .m_listtags>span>i {
+      height: 0.8rem;
+      line-height:0.8rem;
+    }
+    .m_listtags>span>i {
+      margin-right: 0.15rem;
+      color: #cccccc;
+      font-size: 0.45rem;
+    }
+    .m_listtags>span>img {
+      float: left;
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 0.45rem;
+      margin-right:1.5px;
+    }
   
   </style>
 

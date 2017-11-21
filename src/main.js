@@ -21,6 +21,7 @@ Vue.use(ElementUI)
 Vue.use(VueResource)
 
 Vue.config.productionTip = false
+Vue.config.silent = true
 /* eslint-disable no-new */
 /* render: h => h(App), */
 new Vue({

@@ -1,4 +1,4 @@
-<template>
+  <template>
 	<div id="hun-detail">
 		<keep-alive>
       <router-view v-if="$route.meta.keepAlive"></router-view>
@@ -14,7 +14,7 @@
 
 		<div class="hun-content">
 			<h1 class="bolder">{{huntDetail.title}}</h1>
-			<p>{{huntDetail.create_at | dateFormat}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <i class="icon-listen"></i>&nbsp;{{huntDetail.play_count}}</p>
+			<p>第{{huntDetail.number}}期<i class="icon-listen"></i>{{huntDetail.play_count}}</p>
 			<div>
 				<pre>{{huntDetail.description}}
 				</pre>
@@ -42,7 +42,7 @@
 						<img :src="item.headimg">
 					</li>
 				</ul>
-				<p>下载挖哇App一起聆听</p><!-- {{huntDetail.number}}人听过该期猎乐 -->
+				<p @click="loadWa()">下载挖哇App一起聆听</p>
 			</div>
 		</div>
 
@@ -102,21 +102,15 @@
 				huntDetail: '',
 				commentList: '',
 				activeName: '', //状态
-				page: 1
+				page: 1,
+        countState: true
 			}
 		},
 		computed: {
-  	  ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
-  	},
-  	filters:{
-  		dateFormat(value){
-  			if(value) {
-  				return value.slice(0, 10)
-  			}
-  		}
+  	  ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
   	},
 		methods: {
-			...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
+			...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
 			playSong: function(index) {
         if(this.huntDetail.tracks!=this.playList){
           this.setPlayList(this.huntDetail.tracks)
@@ -129,6 +123,10 @@
   	    setTimeout(() => {
   	    	instance.close()
   	    },2500)
+        if(this.countState){
+          this.addCount()
+          this.countState = false
+        }
 			},
 
 			addPlayList: function() {
@@ -143,23 +141,70 @@
         this.setCurrentIndex(0)
         this.setPlayerData(this.playList[this.currentIndex])
         this.setPlayState(true)
+        if(this.countState){
+          this.addCount()
+          this.countState = false
+        }
 			},
-
-      defaulPlayList: function() {
-
-      },
 
 			selected: function(item) {
   	    this.activeName = item
   	  },
 
-  	  scrollbar:function() {
-  	  	this.$nextTick(() => {
-        	document.body.scrollbar = 10
-        	console.log(document.body.scrollbar)
-      	})
-  	  },
-
+      getGuid(){
+        var data = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+            j = 0,
+            k = 0,
+            res1 = '',
+            res2 = '';
+        for (var i = 0; i < 10; i++) {
+            j = Math.floor(Math.random() * 36);
+            k = Math.floor(Math.random() * 36);
+            res1 += data[j];
+            res2 += data[k];
+        }
+        return res1 + new Date().getTime() + res2;
+      },
+      addCount(){
+        const timestamp = Date.parse(new Date()) / 1000
+        const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/log/add@3ad3ebb04b5c94cd234e16a6aef9c8ae')
+        if(!localStorage.getItem('GUID')){
+          localStorage.setItem('GUID', this.getGuid())
+        }      
+        axios({
+          method: 'post',
+          url: 'urlApi/app/v1/log/add',
+          data: {
+            api_key: '0fcf845a413e11beb5606448eb8abbc4',
+            timestamp: timestamp,
+            user_id: 0,
+            product: 1,
+            platform: 3,
+            unionid: localStorage.getItem('GUID'),
+            source_type: 2,
+            source_id: this.$route.query.id,      
+            category: 1
+          },
+          transformRequest: [
+            function(data){
+              let ret = ''
+              for (let it in data){
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+              }
+              return ret
+            }
+          ],
+          headers:{
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization':'wawa ' + token
+          }
+        }).then( rtn => {
+          // console.log(rtn.data)
+        })/*.catch( rtn => {
+          console.log(rtn.error)
+        })*/
+      },
   	  routeChange() {
   	  	document.title = '猎乐专辑'
     		let timestamp = Date.parse(new Date()) / 1000
@@ -212,6 +257,9 @@
     			})*/
     		})
   	  },
+      loadWa() {
+        window.location.href = 'https://wawa.fm/static/app/wawa/download.html'
+      },
   	 /* preloadImages: function(arr) {
             var newimages = [],
                 loadedimages = 0,
@@ -251,16 +299,19 @@
        ]);
 		},*/
 		created() {
-			document.title = '猎乐 - 独立文艺的音阅社区'
   		this.routeChange()
   	},
   	deactivated () {
+      this.setNavToggle(false)
+      this.setIsTr(false)
+      this.setIsDemaskNav(false)
 			this.$destroy()
 		},
   	mounted() {
     	this.setRouterUrl(this.$route.path)
       document.documentElement.scrollTop = 0
       document.body.scrollTop = 0
+      
   	}
 	}
 </script>
@@ -344,6 +395,8 @@
 	.hun-content >p>i{
 		color: #cccccc;
 		font-size: 0.45rem;
+    padding-left: 1.024rem;
+    padding-right: 0.256rem;
 	}
 	.hun-content >div pre{
 		margin-top: 0.8rem;
@@ -449,7 +502,7 @@
 	}
 	.hun-list >.listen-person >p{
 		display: block;
-		width: 50%;
+		width: 43%;
 		float: right;
 		box-sizing: border-box;
 		padding-right: 0.6rem;

@@ -10,13 +10,10 @@
 				<i :class="iconState ? 'icon-pause' :'icon-play'" @click="playPause()"></i>
 			</i>
 			<div class="header-info">
-				<h4 class="bolder">{{singleSong.singer}}</h4>
-				<p>
-					{{singleSong.songname}}
+				<h4 class="bolder">{{singleSong.songname}}</h4>
+				<p>{{singleSong.singer}}					
 					<span>
-						<i class="icon-listen"></i>
-						{{singleSong.play_count}}
-					</span>
+						<i class="icon-view"></i>{{singleSong.view_count}}</span>
 				</p>
 			</div>
 		</section>
@@ -26,9 +23,8 @@
 		</section>
 
 		<section class="single-footer">
-			<div class="small-header"><img :src="singleSong.headimg + '?with=500'"></div>
-			<p class="bolder">{{singleSong.songname}}</p>
-			<p>挖哇音乐原创内容	·	报错</p>
+			<div class="small-header" @click='artist(singleSong.from_user)'><img :src="singleSong.headimg + '?with=500'"></div>
+			<p class="bolder">{{singleSong.singer}}</p>
 		</section>
 	</div>
 </template>
@@ -36,18 +32,17 @@
 import axios from 'axios'
 import md5 from 'js-md5'
 import { mapState, mapMutations } from 'vuex'
+import router from '../../router'
 export default {
 	data() {
 		return {
-			singleSong: '',
-			iconState: false
+			singleSong: ''
 		}
 	},
   computed: {
-    ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
+    ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
   },
 	created() {
-		document.title = '推荐单曲'
 		const timestamp = Date.parse(new Date()) / 1000
     const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/track/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
     axios({
@@ -71,6 +66,9 @@ export default {
 
 	},
   deactivated () {
+    this.setNavToggle(false)
+    this.setIsTr(false)
+    this.setIsDemaskNav(false)
     this.$destroy()
   },
   mounted() {
@@ -79,35 +77,95 @@ export default {
     console.log( document.body.scrollTop)
     document.documentElement.scrollTop = 0
     document.body.scrollTop = 0
+    this.addCount()
   },
 
 	methods: {
 		// Q 1.缩进
-		...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
+		...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
 		playPause: function() {
       this.setPlayerData(this.singleSong)
-      if(!this.iconState) {
-        this.iconState = true
-        this.setPlayState(true)
-        let instance = this.$toast('即将播放..')
-  	    setTimeout(() => {
-  	    	instance.close()
-  	    },2500)
-      } else {
-        this.iconState = false
-        this.setPlayState(false)
+      this.filterID(this.singleSong)
+      this.setCurrentIndex(this.currentIndex+1)
+      this.setPlayState(true)
+
+    },
+    filterID(data){
+      let tip = false
+      this.playList.forEach((item)=>{
+        if(item.id === data.id){
+          return tip = true
+        }
+      })
+
+      if(!tip){
+        this.playList.splice(this.currentIndex+1, 0,data)
+        let instance = this.$toast('即将播放')
+        setTimeout(() =>{
+          instance.close()
+        },2500)
       }
+    },
+
+    getGuid(){
+      var data = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+            j = 0,
+            k = 0,
+            res1 = '',
+            res2 = '';
+        for (var i = 0; i < 10; i++) {
+            j = Math.floor(Math.random() * 36);
+            k = Math.floor(Math.random() * 36);
+            res1 += data[j];
+            res2 += data[k];
+        }
+        return res1 + new Date().getTime() + res2;
+    },
+    addCount(){
+      const timestamp = Date.parse(new Date()) / 1000
+      const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/log/add@3ad3ebb04b5c94cd234e16a6aef9c8ae')
+      if(!localStorage.getItem('GUID')){
+        localStorage.setItem('GUID', this.getGuid())
+      }      
+      axios({
+        method: 'post',
+        url: 'urlApi/app/v1/log/add',
+        data: {
+          api_key: '0fcf845a413e11beb5606448eb8abbc4',
+          timestamp: timestamp,
+          user_id: 0,
+          product: 1,
+          platform: 3,
+          unionid: localStorage.getItem('GUID'),
+          source_type: 1,
+          source_id: this.$route.query.id,      
+          category: 7
+        },
+        transformRequest: [
+          function(data){
+            let ret = ''
+            for (let it in data){
+              ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+            }
+            return ret
+          }
+        ],
+        headers:{
+          'X-Requested-With': 'XMLHttpRequest',
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization':'wawa ' + token
+        }
+      }).then( rtn => {
+        // console.log(rtn.data)
+      }).catch( rtn => {
+        // console.log(rtn.error)
+      })
+    },
+    artist(user_id){
+      router.push({path: '/artist/detail', query: { id: user_id }})
     }
 	},
 
-	watch: {
-    //按钮同步
-    playState(newState){
-      this.$nextTick(() => {
-        newState ? this.iconState=true : this.iconState=false
-      })
-    }
-  }
 }
 </script>
 <style lang="scss" scoped>
@@ -180,15 +238,19 @@ export default {
   }
   .single-header> .header-info >p {
   	font-size: 0.6rem;
+    font-family: "PingFangSC-Regular";
+    padding-top: 8px;
+    height: 0.8rem;
+    line-height: 0.8rem;
+    overflow: hidden;
     color: #ffffff;
-    font-family: "PingFangSC-Light";
-    padding-top: 0.125rem;
   }
   .single-header> .header-info >p >span{
-  	margin-left: 1.2rem;
+  	margin-left: 1.024rem;
   }
-  .single-header> .header-info >p >span >i.icon-listen{
-  	font-size: 0.45rem
+  .single-header> .header-info >p >span >i.icon-view{
+  	font-size: 0.45rem;
+    margin-right: 0.256rem;
   }
   .single-header> .header-info >p >span>i{
   	font-size: 0.5rem;

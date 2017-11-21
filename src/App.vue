@@ -7,7 +7,7 @@
         <div class="m_menu" id="menu" @click="nav()" v-bind:class="{'trans': isTr}"><span></span></div>
         <transition name="fade">
           <ul class="m_menu_list" id="menu_list" v-show="navToggle" @touchmove.prevent >
-            <li class="bolder goto" v-for="(item,index) in navList" @click="nav()"  :class="{cur: activeName == item.url }" >
+            <li class="bolder goto" v-for="(item,index) in navList" :class="{cur: activeName == item.url }" @click="navTip()"  >
                 <router-link :to="'/'+item.url">{{item['name']}}
                   <span>{{item['nameE']}}</span>
                   <i class="icon-next"></i>
@@ -69,12 +69,9 @@ export default {
         {name:'关于 · ',nameE:'ABOUT',url:'about'}
       ],
       activeName: '', //导航菜单状态
-      navToggle:false, //切换导航菜单icon
-      isTr:false, //切换菜单的样式
-
+      
       isSongList:true, //歌曲列表icon
       
-      isDemaskNav:false, //菜单导航列表显示的遮罩层
       defaultData: {
         res_cover: 'http://up.wawa.fm/18,01085cf606b183',
         songname: '挖哇电台',
@@ -84,11 +81,11 @@ export default {
     }
   },
   computed: {
-    ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
+    ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
   },
 
   created() {
-    /*if(!isMobile()){
+    if(!isMobile()){
       if(this.$route.path === '/home'){
          window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
       } else if(this.$route.path === '/artist'){
@@ -116,7 +113,7 @@ export default {
       } else {
         window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
       }
-    }*/
+    }
     function isMobile () {
       if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
         return true
@@ -131,7 +128,7 @@ export default {
       const singId = this.$route.query.track
       const user_id = 0
       const timestamp = Date.parse(new Date()) / 1000
-      const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/track/info@3ad3ebb04b5c94cd234e16a6aef9c8ae') 
+      const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/track/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
       axios({
         method: 'get',
         // urlApi=http://wawa.fm
@@ -145,13 +142,11 @@ export default {
         headers:{
           'X-Requested-With': 'XMLHttpRequest',
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          // 'Access-Control-Allow-Origin':'http://localhost:8080',
           'Authorization':'wawa ' + token
         }
       }).then( rtn => {
           this.setPlayerData(rtn.data)
           this.setPlayState(true)
-          // this.setPlayList(rtn.data)
       })
     } else {
       // 歌单
@@ -169,69 +164,44 @@ export default {
 
   mounted() {
     this.setRouterUrl(this.$route.path)
+
   },
 
-  //  Q: 1. 初始播放按钮.. 2.初始播放列表... 3.播放状态只修改，不刷新时，自动播放
+  //  Q: 1. 初始播放按钮.. 2.初始播放列表... 3.播放状态只修改，不刷新时，自动播放...
   methods: {
     
-    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
-
-    init:function(){},
+    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
 
     //菜单
     nav: function () {
       if(!this.isSongList) {
         this.isSongList = true;
-        // this.isDemask = false;
       }
-      /*let bodyD = document.body
-      if(this.isDemask === true){        
-
-        this.$refs.app.style.position = 'fixed'
-      }else {
-
-        this.$refs.app.style.position = 'initial'
-      }*/
-      this.navToggle =!this.navToggle;
-      this.isTr =!this.isTr;   
-      this.isDemaskNav =!this.isDemaskNav;
+      this.setNavToggle(!this.navToggle)
+      this.setIsTr(!this.isTr) 
+      this.setIsDemaskNav(!this.isDemaskNav)
     },
 
-    /*songList: function () {
-      if(this.navToggle) {
-        this.navToggle = false;
-        this.isTr = false;      
-        this.isDemaskNav = false;
-      }
-      
-      this.isSongList = !this.isSongList
-      this.isDemask = !this.isDemask
-      let bodyD = document.body
-      if(this.isDemask === true){        
-        // bodyD.style.overflowY = 'hidden'
-        this.$refs.app.style.position = 'fixed'
-        // console.log(document.body)
-      }else {
-        // bodyD.style.overflowY = 'initial'
-        // console.log(document.body)
-        this.$refs.app.style.position = 'initial'
-      }
-    },*/
+    navTip() {
+      this.setNavToggle(false)
+      this.setIsTr(false)
+      this.setIsDemaskNav(false)
+    },
 
     selected: function(navUrl) {
       this.activeName = navUrl
     },
 
     hiddenNavList: function() {
-      this.navToggle =!this.navToggle;
-      this.isTr =!this.isTr;      
-      this.isDemaskNav = !this.isDemaskNav;      
+      this.setNavToggle(!this.navToggle)
+      this.setIsTr(!this.isTr)
+      this.setIsDemaskNav(!this.isDemaskNav)
     },
 
     open(songId){
-      this.navToggle = false
-      this.isTr = false
-      this.isDemaskNav = false
+      this.setNavToggle(false)
+      this.setIsTr(false)
+      this.setIsDemaskNav(false)
       router.push({name: 'player', params: { id:songId}})
     },
     //加载播放列表
@@ -277,7 +247,6 @@ export default {
         }
       }
     },
-
     loop: function(){
       this.$refs.audio.play()
       this.setPlayState(true)
@@ -307,6 +276,62 @@ export default {
         this.setPlayState(false)
         console.log('..播放结束')
       }
+    },
+    //生成电脑随机的GUID
+    getGuid(){
+        var data = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+          j = 0,
+          k = 0,
+          res1 = '',
+          res2 = '';
+          for (var i = 0; i < 10; i++) {
+              j = Math.floor(Math.random() * 36);
+              k = Math.floor(Math.random() * 36);
+              res1 += data[j];
+              res2 += data[k];
+          }
+          return res1 + new Date().getTime() + res2;
+    },
+    addCount(){
+        const timestamp = Date.parse(new Date()) / 1000
+        const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/log/add@3ad3ebb04b5c94cd234e16a6aef9c8ae')
+        if(!localStorage.getItem('GUID')){
+          localStorage.setItem('GUID', this.getGuid())
+        }
+        
+        axios({
+          method: 'post',
+          url: 'urlApi/app/v1/log/add',
+          data: {
+            api_key: '0fcf845a413e11beb5606448eb8abbc4',
+            timestamp: timestamp,
+            user_id: 0,
+            product: 1,
+            platform: 3,
+            source_type: 1,
+            source_id: this.playerData.id,
+            unionid: localStorage.getItem('GUID'),
+            category: 1
+          },
+          transformRequest: [
+            function(data){
+              let ret = ''
+              for (let it in data){
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+              }
+              return ret
+            }
+          ],
+          headers:{
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization':'wawa ' + token
+          }
+        }).then( rtn => {
+          // console.log(rtn.data)
+        }).catch( rtn => {
+          // console.log(rtn.error)
+        })
     }
 
   },
@@ -314,13 +339,8 @@ export default {
   watch: {
     playState(newState){
       let audio = this.$refs.audio
-
       this.$nextTick(() => {
         newState ? audio.play() : audio.pause()
-        /*audio.preload = "metadata"
-        audio.load()*/
-        // console.log(audio.duration)
-        // console.log(audio.currentTime)
       })
     },
 
@@ -331,6 +351,7 @@ export default {
       }, 1000)
     },
 
+    //nav导航样式
     routerUrl(newUrl){
       if (this.$route.path=='/artist'||this.$route.path=='/artist/detail') {
         this.selected('artist')
@@ -345,19 +366,10 @@ export default {
       } else {
         this.selected('')
       }
-
-      /*if (window.history && window.history.pushState && this.fullScreen) {
-        window.history.forward(1)
-        this.setFullScreen(false)
-      }*/
     },
-
-    /*fullScreen(newVal) {
-      if (!newVal) {
-      }
-      
-    }*/
-
+    currentIndex(chooseIndex){
+      this.addCount()
+    }
   }
 
 }

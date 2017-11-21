@@ -64,19 +64,23 @@
 		},
 
 		created() {
-			document.title = 'WAWA TEAM'
 		},
 
 		mounted() {
       this.setRouterUrl(this.$route.path)
       document.documentElement.scrollTop = 0
-      document.body.scrollTop = 0
+      document.body.scrollTop = 0			
+  	},
+  	deactivated(){
+  		this.setNavToggle(false)
+			this.setIsTr(false)
+			this.setIsDemaskNav(false)
   	},
 		computed: {
-      ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
+      ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
     },
 		methods: {
-			...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
+			...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
 			mapT: function (){
 				window.location.href = 'http://map.baidu.com/?shareurl=1&poiShareUid=eabce2547790eaaf08f5eb3e'
 			}

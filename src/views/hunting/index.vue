@@ -40,11 +40,10 @@ export default {
 		}
 	},
   computed: {
-    ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
+    ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
   },
 
   created() {
-    document.title = '猎乐 - 独立文艺的音阅社区'
     // console.log(this.$route.path)
     // console.log(this.$route)
     // var self = this
@@ -75,7 +74,6 @@ export default {
       }
     }).then( rtn => {
         this.huntingData = rtn.data
-        console.log(this.$route.meta.keepAlive)
     })
 
     /*window.scroll(function () {
@@ -93,6 +91,9 @@ export default {
     this.flag = true
   },
   deactivated () {
+    this.setNavToggle(false)
+    this.setIsTr(false)
+    this.setIsDemaskNav(false)
     this.flag = false
   },
   mounted() {
@@ -100,7 +101,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
+    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
 
     loadMore() {
       // 防止跳出页面后滚动继续加载
@@ -196,7 +197,7 @@ export default {
 
 .m_alist>li>a>.wrap-img {
   width: 14.8rem;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
   background: url('/static/img/placeholder_2.png?width=500');
 }
@@ -211,7 +212,7 @@ export default {
   line-height: 27px;
   color: #555;
   font-size: 18px;
-  padding: 14px 0 8px 0;
+  padding: 14px 0 4px 0;
   text-align: justify;
 }
 
@@ -243,7 +244,7 @@ export default {
   }
   .m_listtags>span:nth-child(1) {
     float: left;
-    margin-right: 0.6rem;
+    margin-right: 1.024rem;
   }
   .m_listtags>span:nth-child(2){
     width: 10rem;
@@ -251,7 +252,7 @@ export default {
   .m_listtags>span:nth-child(2)>i {
     float: left;
     line-height: 0.8rem;
-    margin-right: 0.325rem;
+    margin-right: 0.256rem;
   }
   .m_listtags>span>a,
   .m_listtags>span>i {

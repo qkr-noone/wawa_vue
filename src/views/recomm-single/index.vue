@@ -36,7 +36,6 @@ export default {
 		}
 	},
   created() {
-  	document.title = '推荐单曲'
     const timestamp = Date.parse(new Date()) / 1000
     const size = 10
     const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/track/recommend_list@3ad3ebb04b5c94cd234e16a6aef9c8ae')
@@ -66,17 +65,20 @@ export default {
     this.flag = true
   },
   deactivated () {
+    this.setNavToggle(false)
+    this.setIsTr(false)
+    this.setIsDemaskNav(false)
     this.flag = false
   },
   mounted() {
     this.setRouterUrl(this.$route.path)
   },
   computed: {
-    ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
+    ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
   },
 
   methods: {
-    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
+    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
   	//  Q 1.到底了不要请求
     loadMore() {
     	if (this.flag) {

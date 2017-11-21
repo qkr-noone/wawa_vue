@@ -76,7 +76,7 @@
 			}
 		},
     computed: {
-      ...mapState(['playerData','playState','playList','currentIndex','routerUrl']),
+      ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
     },
     filters: {
       dateFormat(value){
@@ -86,10 +86,9 @@
       }
     },
 		methods: {
-			...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
+			...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
 
   	  routeChange() {
-  	  	// document.title = '猎乐专辑'
     		let timestamp = Date.parse(new Date()) / 1000
     		let token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/doc/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
 
@@ -176,20 +175,77 @@
       	  })
   	  	  }
         }
-  	  }
+  	  },
+      getGuid(){
+        var data = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+            j = 0,
+            k = 0,
+            res1 = '',
+            res2 = '';
+        for (var i = 0; i < 10; i++) {
+            j = Math.floor(Math.random() * 36);
+            k = Math.floor(Math.random() * 36);
+            res1 += data[j];
+            res2 += data[k];
+        }
+        return res1 + new Date().getTime() + res2;
+      },
+      addCount(){
+        const timestamp = Date.parse(new Date()) / 1000
+        const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/log/add@3ad3ebb04b5c94cd234e16a6aef9c8ae')
+        if(!localStorage.getItem('GUID')){
+          localStorage.setItem('GUID', this.getGuid())
+        }      
+        axios({
+          method: 'post',
+          url: 'urlApi/app/v1/log/add',
+          data: {
+            api_key: '0fcf845a413e11beb5606448eb8abbc4',
+            timestamp: timestamp,
+            user_id: 0,
+            product: 1,
+            platform: 3,
+            unionid: localStorage.getItem('GUID'),
+            source_type: 4,
+            source_id: this.$route.params.id,      
+            category: 7
+          },
+          transformRequest: [
+            function(data){
+              let ret = ''
+              for (let it in data){
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+              }
+              return ret
+            }
+          ],
+          headers:{
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Authorization':'wawa ' + token
+          }
+        }).then( rtn => {
+          // console.log(rtn.data)
+        }).catch( rtn => {
+          // console.log(rtn.error)
+        })
+      }
 
 		},
 		created() {
   		this.routeChange()  
-     console.log(this.$route)
-
-
   	},
+    deactivated(){
+      this.setNavToggle(false)
+      this.setIsTr(false)
+      this.setIsDemaskNav(false)
+    },
   	mounted() {
   		this.addSongPlay(event)
       this.setRouterUrl(this.$route.path)
       document.documentElement.scrollTop = 0
       document.body.scrollTop = 0
+      this.addCount()
   	},
   	watch:{
   		'$route':'routeChange'

@@ -20,6 +20,9 @@
         </router-link>				
 			</li>
 		</ul>
+    <div class="load-state" v-show="loadState">
+      <img src="http://wawa.fm/static/img/app/loading.gif">
+    </div>
 	</div>
 </template>
 <script type="es6">
@@ -32,11 +35,11 @@ export default {
 			artistData:'',
       newLoad:'',
       page: 1,
-      flag: true
+      flag: true,
+      loadState: false
 		}
 	},
   created() {
-    document.title = '乐人 - 独立文艺的音阅社区'
     const timestamp = Date.parse(new Date()) / 1000
     const category = 3
     // const page = 1
@@ -65,58 +68,62 @@ export default {
   },
   activated() {
     this.flag = true
-    console.log(document.documentElement.scrollTop)
   },
   deactivated() {
+    this.setNavToggle(false)
+    this.setIsTr(false)
+    this.setIsDemaskNav(false)
     this.flag = false
   },
   computed: {
-    ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
+    ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
   },
   mounted() {
     this.setRouterUrl(this.$route.path)
     document.documentElement.scrollTop = 0
   },
   methods: {
-    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
+    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
     loadMore() {
       if(this.flag){
-        this.loading = true;
+        this.loading = true
+        this.loadState = true
         setTimeout(() => {
-        this.page++
-        const timestamp = Date.parse(new Date()) / 1000
-        const category = 3
-        const size = 10
-        const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/musician/list@3ad3ebb04b5c94cd234e16a6aef9c8ae')
+          this.page++
+          const timestamp = Date.parse(new Date()) / 1000
+          const category = 3
+          const size = 10
+          const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/musician/list@3ad3ebb04b5c94cd234e16a6aef9c8ae')
        
-        axios({
-          method: 'get',
-          // urlApi=http://wawa.fm
-          url: 'urlApi/app/v1/musician/list',
-          params: {
-            api_key: '0fcf845a413e11beb5606448eb8abbc4',
-            timestamp: timestamp,
-            page: this.page,
-            size: size,
-            category: category
-          },
-          headers:{
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Access-Control-Allow-Origin':'http://localhost:8080',
-            'Authorization':'wawa ' + token
-          }
-        }).then( rtnData => {
-          if (rtnData.data.length) {
-            this.newLoad = rtnData.data
-            for (let i = 0; i < rtnData.data.length; i++) {
-              this.artistData.push(this.newLoad[i]);
+          axios({
+            method: 'get',
+            // urlApi=http://wawa.fm
+            url: 'urlApi/app/v1/musician/list',
+            params: {
+              api_key: '0fcf845a413e11beb5606448eb8abbc4',
+              timestamp: timestamp,
+              page: this.page,
+              size: size,
+              category: category
+            },
+            headers:{
+              'X-Requested-With': 'XMLHttpRequest',
+              'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+              'Access-Control-Allow-Origin':'http://localhost:8080',
+              'Authorization':'wawa ' + token
             }
-          } else {
-            return false
-          }
-          this.loading = false;
-        })        
+          }).then( rtnData => {
+            if (rtnData.data.length) {
+              this.newLoad = rtnData.data
+              for (let i = 0; i < rtnData.data.length; i++) {
+                this.artistData.push(this.newLoad[i]);
+              }
+            } else {
+              return false
+            }
+            this.loading = false
+            this.loadState = false
+          })        
         }, 2500);
       }
     }
@@ -141,4 +148,6 @@ export default {
 .artist-list li >a> div > h4{ color: #595959; text-align: left;font-size: 15px;}
 .artist-list li >a> div > p{ color: #9a9a9a; box-sizing: border-box;font-size: 12px;text-align: left;}
 .artist-list li >a> i{ width: 5%; display: flex;  align-items: center; color: #bbb; font-size: 12px;}
+.load-state{ height: 30px; }
+.load-state >img{height: 100%;text-align: center; margin: auto;}
 </style>

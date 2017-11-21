@@ -159,10 +159,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
+    ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
   },
   created() {
-    document.title = '挖哇 - 独立文艺的音阅社区'
 
     const timestamp = Date.parse(new Date()) / 1000
     const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/home/listen@3ad3ebb04b5c94cd234e16a6aef9c8ae') 
@@ -197,6 +196,9 @@ export default {
   deactivated() {
     document.documentElement.scrollTop = 0
     document.body.scrollTop = 0
+    this.setNavToggle(false)
+    this.setIsTr(false)
+    this.setIsDemaskNav(false)
   },
   mounted() {
     if(this.$route.path){
@@ -206,7 +208,7 @@ export default {
     document.body.scrollTop = 0
   },
   methods: {
-    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
+    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
     getH: function (Uid){
       router.push({name: 'bannerArticle', params: { id: Uid }})
     },
@@ -367,7 +369,7 @@ export default {
   
   .m_alist>li>a>.wrap-img {
     width: 14.8rem;
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
     background: url('/static/img/placeholder_2.png?width=500');
     min-height: 8.5rem;
@@ -387,7 +389,7 @@ export default {
     line-height: 27px;
     color: #555;
     font-size: 18px;
-    padding: 14px 0 8px 0;
+    padding: 14px 0 4px 0;
     text-align: justify;
   }
   
@@ -419,14 +421,14 @@ export default {
     }
     .m_listtags>span:nth-child(1) {
       float: left;
-      margin-right: 0.6rem;
+      margin-right: 1.024rem;
     }
     .m_listtags>span:nth-child(2){
       width: 10rem;
     }
     .m_listtags>span:nth-child(2)>i {
       float: left;
-      margin-right: 0.325rem;
+      margin-right: 0.256rem;
     }
     .m_listtags>span>a,
     .m_listtags>span>i {
@@ -473,7 +475,7 @@ export default {
   .m_clist>li>a>.wrap {
     width: 7.1rem;
     height: 7.1rem;
-    border-radius: 0.2rem;
+    border-radius: 10px;
     overflow: hidden;
     background-color: url('/static/img/placeholder_1.png?width=500');
   }
@@ -491,7 +493,8 @@ export default {
     height:  1.8rem;
     width: 100%;
     font-size: 0.6rem;
-    margin: 0.2rem 0 0.1rem;
+    margin: 8px 0;
+    line-height: 0.9rem;
     color: #555555;
     font-family: "PingFangSC-Light";
   }
@@ -505,6 +508,7 @@ export default {
   }
   .m_clist>li a>.m_c>span:nth-child(1){
     float: left;
+    height: 100%;
   }
   .m_clist>li a>.m_c>span:nth-child(1)> .mc-wrap{
     width: 1.023rem;
@@ -518,6 +522,7 @@ export default {
     width: 3.5rem;
     overflow: hidden;
     text-align: left;
+    height: 100%;
   }
   .m_clist>li a>.m_c>span:nth-child(1)> .mc-wrap>img{
     width: 100%;

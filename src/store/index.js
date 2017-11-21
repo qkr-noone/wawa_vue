@@ -11,8 +11,10 @@ const store = new Vuex.Store({
     playList: [],
     currentIndex: -1,
     routerUrl: '',
-    fullScreen: false
-
+    fullScreen: false,
+    navToggle: false,
+    isTr: false,
+    isDemaskNav: false
   },
   mutations,
   actions

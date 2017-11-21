@@ -44,7 +44,6 @@ export default {
     }
   },
   created() {
-    document.title = '乐文 - 独立文艺的音阅社区'
     const timestamp = Date.parse(new Date()) / 1000
     const category = 4
     // const page = 1
@@ -77,10 +76,13 @@ export default {
     this.flag = true
   },
   deactivated() {
+    this.setNavToggle(false)
+    this.setIsTr(false)
+    this.setIsDemaskNav(false)
     this.flag = false
   },
   computed: {
-    ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
+    ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
   },
 
   mounted() {
@@ -88,7 +90,7 @@ export default {
   },
 
   methods:{
-    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
+    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
     loadMore() {
       if (this.flag) {
         this.loading = true;
@@ -171,7 +173,7 @@ export default {
   
   .m_alist>li>a>.wrap-img {
     width: 14.8rem;
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
     background: url('/static/img/placeholder_2.png?width=500');
   }
@@ -186,7 +188,7 @@ export default {
     line-height: 27px;
     color: #555;
     font-size: 18px;
-    padding: 14px 0 8px 0;
+    padding: 14px 0 4px 0;
     text-align: justify;
   }
   
@@ -218,14 +220,14 @@ export default {
     }
     .m_listtags>span:nth-child(1) {
       float: left;
-      margin-right: 0.6rem;
+      margin-right: 1.024rem;
     }
     .m_listtags>span:nth-child(2){
       width: 10rem;
     }
     .m_listtags>span:nth-child(2)>i {
       float: left;
-      margin-right: 0.325rem;
+      margin-right: 0.256rem;
       line-height: 0.8rem;
     }
     .m_listtags>span>a,

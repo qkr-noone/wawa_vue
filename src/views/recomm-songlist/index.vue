@@ -48,7 +48,6 @@ export default {
 		}
 	},
 	created() {
-  	document.title = '推荐歌单'
     const timestamp = Date.parse(new Date()) / 1000
     const size = 10
     const category = 1
@@ -79,16 +78,19 @@ export default {
     this.flag = true
   },
   deactivated () {
+    this.setNavToggle(false)
+    this.setIsTr(false)
+    this.setIsDemaskNav(false)
     this.flag = false
   },
   mounted() {
     this.setRouterUrl(this.$route.path)
   },
   computed: {
-    ...mapState(['playerData','playState','playList','currentIndex','routerUrl'])
+    ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
   },
 	methods: {
-    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl']),
+    ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
     loadMore() {
       if (this.flag) {
         this.loading = true;
@@ -167,7 +169,7 @@ export default {
   .m_clist>li>a>.wrap {
     width: 7.1rem;
     height: 7.1rem;
-    border-radius: 0.2rem;
+    border-radius: 10px;
     overflow: hidden;
   }
   
@@ -184,7 +186,8 @@ export default {
     height:  1.8rem;
     width: 100%;
     font-size: 0.6rem;
-    margin: 0.2rem 0 0.1rem;
+    margin: 8px 0;
+    line-height: 0.9rem;
     color: #555555;
     font-family: "PingFangSC-Light";
   }
@@ -198,6 +201,7 @@ export default {
   }
   .m_clist>li a>.m_c>span:nth-child(1){
     float: left;
+    height: 100%;
   }
   .m_clist>li a>.m_c>span:nth-child(1)> .mc-wrap{
     width: 1.023rem;
@@ -211,6 +215,7 @@ export default {
     width: 3.5rem;
     text-align: left;
     overflow: hidden;
+    height: 100%;
   }
   .m_clist>li a>.m_c>span:nth-child(1)> .mc-wrap>img{
     width: 100%;

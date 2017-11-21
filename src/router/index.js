@@ -17,6 +17,7 @@ import RecommSongListDetail from '@/views/recomm-songlist/detail'
 import BannerArticle from '@/views/banner/article'
 import Reward from '@/views/reward/index'
 import Player from '@/views/player/index'
+import AlbumDetail from '@/views/album/detail'
 
 Vue.use(Router)
 export default new Router({
@@ -150,6 +151,14 @@ export default new Router({
         keepAlive: true
       },
       component: Player
+    },
+    {
+      path: '/album/detail/:id',
+      name: 'albumDetail',
+      meta: {
+        keepAlive: true
+      },
+      component: AlbumDetail
     }
   ]
 })
