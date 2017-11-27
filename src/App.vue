@@ -85,7 +85,7 @@ export default {
   },
 
   created() {
-    if(!isMobile()){
+    /*if(!isMobile()){
       if(this.$route.path === '/home'){
          window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
       } else if(this.$route.path === '/artist'){
@@ -113,7 +113,7 @@ export default {
       } else {
         window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
       }
-    }
+    }*/
     function isMobile () {
       if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
         return true
@@ -353,7 +353,7 @@ export default {
 
     //nav导航样式
     routerUrl(newUrl){
-      if (this.$route.path=='/artist'||this.$route.path=='/artist/detail') {
+      if (this.$route.path=='/artist'||this.$route.path=='/artist/detail'||this.$route.path=='/artist/photo') {
         this.selected('artist')
       } else if (this.$route.path=='/article'||this.$route.path=='/article/detail') {
         this.selected('article')
@@ -406,9 +406,16 @@ export default {
   .m_menu:before{ top: 14px;}
   .m_menu:after{ bottom: 14px;}
   .m_menu.trans:before{ -webkit-transform: rotate(45deg) translate(4px, 4px); }
+  .m_menu.trans:before{ -moz-transform: rotate(45deg) translate(4px, 4px); }
+  .m_menu.trans:before{ -ms-transform: rotate(45deg) translate(4px, 4px); }
+  .m_menu.trans:before{ -o-transform: rotate(45deg) translate(4px, 4px); }
+  .m_menu.trans:before{ transform: rotate(45deg) translate(4px, 4px); }
   .m_menu.trans span{background-color: transparent}
   .m_menu.trans:after{ -webkit-transform: rotate(-45deg) translate(4px, -4px);}
-  
+  .m_menu.trans:after{ -moz-transform: rotate(-45deg) translate(4px, -4px); }
+  .m_menu.trans:after{ -ms-transform: rotate(-45deg) translate(4px, -4px); }
+  .m_menu.trans:after{ -o-transform: rotate(-45deg) translate(4px, -4px); }
+  .m_menu.trans:after{ transform: rotate(-45deg) translate(4px, -4px);}
   .m_menu span { position: relative; display: block; margin: 20px auto 0 auto;}
   .m_menu span,.m_menu:after,.m_menu:before { width: calc(100% - 1rem); height: 3px; background-color: white; transition: all 0.3s; backface-visibility: hidden; border-radius: 4px; z-index: 99999;}
 

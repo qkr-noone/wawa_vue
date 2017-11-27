@@ -9,7 +9,8 @@
 			<div class="reward-person" v-if="rewardChild.length">
 				<ul>
 					<li v-for="(item, index) in rewardData.users" v-if="index < 5">
-						<img :src="item.headimg">
+						<img v-if="item.headimg" :src="item.headimg">
+						<img v-else src="static/img/reward_noone.png">
 					</li>
 				</ul>
 			</div>
@@ -60,7 +61,7 @@
 		},
 		created() {
       let timestamp = Date.parse(new Date()) / 1000
-      let token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/track/reward_users@3ad3ebb04b5c94cd234e16a6aef9c8ae') 
+      let token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/track/reward_users@3ad3ebb04b5c94cd234e16a6aef9c8ae')
       axios({
         method: 'get',
         // urlApi=http://wawa.fm
@@ -99,7 +100,6 @@
         }
       }).then( rtn => {
       		this.rewardHead = rtn.data
-      		console.log(this.rewardHead)
       })
 		},
 		deactivated () {
@@ -119,11 +119,12 @@
   		selected: function(item,index) {
         this.activeName = item
         this.priceRew = parseInt(item.price)
-        console.log(this.priceRew)
       },
       submit(){
       	if(this.priceRew){
-      		window.location.href = 'http://wawa.fm/jsapi/weixi/pay/h5pay'+'?body='+this.rewardHead.songname+'&product=1&total_fee='+this.priceRew+'&track_id='+this.rewardHead.id
+      		this.priceRew = this.priceRew*100
+
+      		window.location.href = 'http://wawa.fm/jsapi/weixi/pay/h5pay'+'?body='+this.rewardHead.songname+'&product=3&total_fee='+this.priceRew+'&track_id='+this.rewardHead.id
       	}else {
       		let instance = this.$toast('请选择赞赏金额')
       		setTimeout( () => {
@@ -136,7 +137,9 @@
       	let nuM = this.$refs.personPri.value
       	if(nuM<=888&&nuM>=1&&parseInt(nuM)==nuM){
       		this.otherRew = false
-      		window.location.href = '//wawa.fm/jsapi/weixi/pay/h5pay'+'?body='+this.rewardHead.songname+'&product=1&total_fee='+nuM+'&track_id='+this.rewardHead.id
+      		nuM = nuM*100
+
+      		window.location.href = '//wawa.fm/jsapi/weixi/pay/h5pay'+'?body='+this.rewardHead.songname+'&product=3&total_fee='+nuM+'&track_id='+this.rewardHead.id
       	} else {
 					let instance = this.$toast('请输入正确的数字')
       		setTimeout( () => {

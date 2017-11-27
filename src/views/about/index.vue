@@ -42,9 +42,11 @@
 				<p>@挖哇音乐</p>
 			</div>
 			<div class="ab-share">
-				<div><img src="static/img/qq.png"></div>
-				<h4 class="bolder">QQ</h4>
-				<p>挖哇官方群:191476923</p>
+				<div>
+					<div><img src="static/img/qq.png"></div>
+					<h4 class="bolder">QQ</h4>
+					<p>挖哇官方群:191476923</p>
+				</div>				
 			</div>
 		</div>
 
@@ -199,6 +201,29 @@
 		margin-top: 0.6rem;
 	}
 	.more >.ab-share>p{
+		text-align: center;
+		color: #9B9B9B ;
+		font-size: 0.5rem;
+		font-family: "PingFangSC-Regular";
+		margin-top: 0.4rem;
+	}
+	.more >.ab-share>div >div{
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+	}
+	.more >.ab-share>div >div>img{
+		width: 100%;
+		height: 100%;
+	}
+	.more >.ab-share>div >h4{
+		text-align: center;
+		color: #555;
+		font-size: 0.7rem;
+		font-family: "PingFangSC-Semibold";
+		margin-top: 0.6rem;
+	}
+	.more >.ab-share>div >p{
 		text-align: center;
 		color: #9B9B9B ;
 		font-size: 0.5rem;

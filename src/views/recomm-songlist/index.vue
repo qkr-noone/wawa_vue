@@ -177,12 +177,23 @@ export default {
     width: 100%;
     height: 100%;
     background-repeat: no-repeat center;
+    position: relative;
   }
-  
+  .m_clist>li>a>.wrap>img:after {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: url('/static/img/placeholder_2.png');
+  }
   .m_clist>li>a>h1 {
     overflow: hidden;
     color: #555;
     text-align: left;
+    overflow: hidden;
+    width: 100%;
+    text-overflow: ellipsis;
     height:  1.8rem;
     width: 100%;
     font-size: 0.6rem;
@@ -216,10 +227,23 @@ export default {
     text-align: left;
     overflow: hidden;
     height: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
   }
   .m_clist>li a>.m_c>span:nth-child(1)> .mc-wrap>img{
     width: 100%;
     height: 100%;
+    position: relative;
+  }
+  .m_clist>li a>.m_c>span:nth-child(1)> .mc-wrap>img:after{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: url('/static/img/placeholder_2.png');
   }
   .m_clist>li a>.m_c>span:nth-child(2){
     float: right;

@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import Home from '@/views/home/index'
 import Artist from '@/views/artist/index'
 import ArtistDetail from '@/views/artist/detail'
+import ArtistPhoto from '@/views/artist/photo'
+import ArtistDynamic from '@/views/artist/dynamic'
 import Article from '@/views/article/index'
 import ArticleDetail from '@/views/article/detail'
 import Hunting from '@/views/hunting/index'
@@ -49,6 +51,20 @@ export default new Router({
         keepAlive: false
       },
       component: ArtistDetail
+    },
+    {
+      path: '/artist/photo',
+      meta: {
+        keepAlive: false
+      },
+      component: ArtistPhoto
+    },
+    {
+      path: '/artist/dynamic',
+      meta: {
+        keepAlive: false
+      },
+      component: ArtistDynamic
     },
     {
       path: '/article',

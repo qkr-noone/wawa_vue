@@ -10,8 +10,9 @@
 
 			<div class="tip-wrap">
 				<div class="p-tip"  @click="addPlayList()">
-					<i class="icon-play"></i>
-					<span>播放专辑歌单</span>
+					<!-- <i class="icon-play"></i>
+					<span>播放专辑歌单</span> -->
+          <img src="static/img/album_tip.png">
 				</div>
 			</div>
 
@@ -38,14 +39,14 @@
 
 			<ul>
 				<li v-for="(item, index) in albumData.tracks"  >
-					<a :class="{click: activeName==item }" @click="playSong(index),selected(item)">
+					<a @click="playSong(index)">
 						<span>{{index+1}}</span>
 						<div>
 							<img :src="item.res_cover">
 						</div>
 						<div>
-							<h4 class="bolder" :class="{click: activeName==item }">{{item.songname}}</h4>
-							<p :class="{click: activeName==item }">{{item.singer}}</p>
+							<h4 class="bolder" >{{item.songname}}</h4>
+							<p >{{item.singer}}</p>
 						</div>
 					</a>
 				</li>
@@ -64,7 +65,6 @@ export default {
 			albumData:'', //全部数据
 			iconState: false,
 			oneTime:true,
-			activeName: '', //状态
 			sex: false,
 			countState: true
 		}
@@ -212,9 +212,6 @@ export default {
         }).catch( rtn => {
           // console.log(rtn.error)
         })
-    },
-		selected: function(item) {
-      this.activeName = item
     }
 	}
 }
@@ -272,7 +269,16 @@ export default {
 		width: 100%;
 		height: 100%;
 		float: left;
+    position: relative;
 	}
+  .img-wrap  img:after{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: url('/static/img/placeholder_2.png');
+  }
 	.descr {
 		float: left;
 		height: 100%;
@@ -307,22 +313,15 @@ export default {
 		bottom: 0.6rem;
 		left: 0.6rem;
     height: 1.5rem;
-    color: #ffffff;
-    font-family: "PingFangSC-Medium";
-    font-size: 0.5rem;
-    border: 0.075rem solid #ffffff;
-    border-radius: 2.5rem;
+    overflow: hidden;
   }
   .icon-play{
     margin-left: 0.9rem;
     line-height: 1.5rem;
 
   }
-	.p-tip >span{
-    font-size: 0.5rem;
-    margin-right: 0.9rem;
-    line-height: 1.5rem;
-    margin-left: 0.6rem;
+	.p-tip >img{
+    height: 100%;
   }
 
 /*标题title*/
@@ -429,6 +428,15 @@ export default {
   	width: 100%;
   	height: 100%;
   	background-repeat: no-repeat center;
+    position: relative;
+  }
+  .albumlist-content ul >li >a div:nth-child(2) >img:after{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: url('/static/img/placeholder_2.png')
   }
   .albumlist-content ul >li >a div:nth-child(3){
   	margin-left: 0.6rem;
@@ -441,16 +449,20 @@ export default {
   .albumlist-content ul >li >a div:nth-child(3) >h4 {
   	font-size: 0.65rem;
   	font-family: "PingFangSC-Medium";
-  	display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
     overflow: hidden;
     text-align: left;
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 	.albumlist-content ul >li >a div:nth-child(3) >p {
 		font-size: 12px;
 		color:#999999;
   	font-family: "PingFangSC-Regular";
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 	}
 	.click{
 		color: #6178F0 !important;

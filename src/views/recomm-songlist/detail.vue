@@ -10,8 +10,7 @@
 
 			<div class="tip-wrap" >
 				<div class="p-tip"  @click="addPlayList()">
-					<i class="icon-play"></i>
-					<span>播放推荐歌单</span>
+					<img src="static/img/songlist_tip.png">
 				</div>
 			</div>
 		</div>
@@ -38,14 +37,14 @@
 
 			<ul>
 				<li v-for="(item, index) in songListDetail.tracks"  >
-					<a :class="{click: activeName==item }" @click="playSong(index),selected(item)">
+					<a @click="playSong(index)">
 						<span>{{index+1}}</span>
 						<div>
 							<img :src="item.res_cover">
 						</div>
 						<div>
-							<h4 class="bolder" :class="{click: activeName==item }">{{item.songname}}</h4>
-							<p :class="{click: activeName==item }">{{item.singer}}</p>
+							<h4 class="bolder" >{{item.songname}}</h4>
+							<p >{{item.singer}}</p>
 						</div>
 					</a>
 				</li>
@@ -65,7 +64,6 @@ export default {
 			songList: '', //播放列表
 			iconState: false,
 			oneTime:true,
-			activeName: '', //状态
 			sex: false,
 			countState: true
 		}
@@ -164,9 +162,6 @@ export default {
 
 		},
 
-		selected: function(item) {
-      this.activeName = item
-    },
     getGuid(){
         var data = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
             j = 0,
@@ -313,22 +308,14 @@ export default {
 		bottom: 0.6rem;
 		left: 0.6rem;
     height: 1.5rem;
-    color: #ffffff;
-    font-family: "PingFangSC-Medium";
-    font-size: 0.5rem;
-    border: 0.075rem solid #ffffff;
-    border-radius: 2.5rem;
   }
   .icon-play{
     margin-left: 0.9rem;
     line-height: 1.5rem;
 
   }
-	.p-tip >span{
-    font-size: 0.5rem;
-    margin-right: 0.9rem;
-    line-height: 1.5rem;
-    margin-left: 0.6rem;
+	.p-tip >img{
+    height: 100%;
   }
 
 /*标题title*/

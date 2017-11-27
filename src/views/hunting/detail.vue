@@ -24,14 +24,14 @@
 		<div class="hun-list">
 			<ul>
 				<li v-for="(item, index) in huntDetail.tracks" >
-					<a @click="playSong(index),selected(item)">
+					<a @click="playSong(index)">
 						<span>{{index+1}}</span>
 						<div>
 							<img :src="item.res_cover">
 						</div>
 						<div>
-							<h4 class="bolder" :class="{click: activeName==item }">{{item.songname}}</h4>
-							<p :class="{click: activeName==item }">{{item.singer}}</p>
+							<h4 class="bolder">{{item.songname}}</h4>
+							<p >{{item.singer}}</p>
 						</div>
 					</a>
 				</li>
@@ -101,7 +101,6 @@
 				oneTime:true, //只点击一次
 				huntDetail: '',
 				commentList: '',
-				activeName: '', //状态
 				page: 1,
         countState: true
 			}
@@ -146,10 +145,6 @@
           this.countState = false
         }
 			},
-
-			selected: function(item) {
-  	    this.activeName = item
-  	  },
 
       getGuid(){
         var data = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
@@ -206,7 +201,6 @@
         })*/
       },
   	  routeChange() {
-  	  	document.title = '猎乐专辑'
     		let timestamp = Date.parse(new Date()) / 1000
     		let token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/album/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
 
@@ -445,6 +439,15 @@
   	width: 100%;
   	height: 100%;
   	background-repeat: no-repeat center;
+    position: relative;
+  }
+  .hun-list >ul >li >a div:nth-child(2) >img:after{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: url('/static/img/placeholder_1.png?width=200');
   }
   .hun-list >ul >li >a div:nth-child(3){
   	margin-left: 0.6rem;
@@ -457,16 +460,20 @@
   .hun-list> ul >li >a div:nth-child(3) >h4 {
   	font-size: 0.65rem;
   	font-family: "PingFangSC-Medium";
-  	display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
     overflow: hidden;
-    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+
   }
 	.hun-list >ul >li >a div:nth-child(3) >p {
 		font-size: 12px;
 		color:#999999;
   	font-family: "PingFangSC-Regular";
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
 	}
 	.click{
 		color: #6178F0 !important;
@@ -499,7 +506,16 @@
 	.hun-list >.listen-person >ul>li>img{
 		width: 100%;
 		height: 100%;
+    position: relative;
 	}
+  .hun-list >.listen-person >ul>li>img:after{
+    width: 100%;
+    height: 100%;
+    position:absolute;
+    top: 0;
+    left: 0;
+    content: url('/static/img/placeholder_1.png?width=100');
+  }
 	.hun-list >.listen-person >p{
 		display: block;
 		width: 43%;

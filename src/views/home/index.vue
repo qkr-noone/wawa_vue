@@ -1,5 +1,5 @@
 <template>
-  <div id="index">
+  <div id="index" style="max-width: 640px;">
 
     <keep-alive>
       <router-view></router-view>
@@ -9,7 +9,7 @@
 
       <!-- banner -->
       <div class="banner" id="banner">
-        <mt-swipe :auto="4000">
+        <mt-swipe :auto="40000">
           <mt-swipe-item v-for="(item,index) in banners"><img :src="item['res_cover']" @click="getH(item.link)"></mt-swipe-item>
         </mt-swipe>
       </div>
@@ -244,37 +244,32 @@ export default {
   .mint-swipe-items-wrap > div >img{  
     width:100%;
   }
-/*  div.mint-swipe>.mint-swipe-indicators > div.mint-swipe-indicator {
-    background-color: rgba(98,107,237,1) !important;
-    background: rgba(98,107,237,1) !important;
-    z-index: 555;
-  }
   
-  div.mint-swipe>.mint-swipe-indicators>.mint-swipe-indicator.is-active{ background: rgba(98,107,237,1) !important;
-    opacity: 1 !important;}*/
-
-  .mint-swipe-indicators {
+  /*.mint-swipe-indicators {
     position: absolute;
     bottom: 10px;
     left: 0;
-    bottom: 0;
+    bottom: -3px;
     width: 100%;
+    display: -webkit-flex;
     display: flex;
-    background: transparent;
+    background: #E8EBFB;
   }
   .mint-swipe-indicator {
     width: 8px;
-    height: 2px;
+    height: 3px;
     display: inline-block;
     background: transparent;
     opacity: 1;
     margin: 0 0;
     flex-grow: 1;
+    -webkit-flex-grow: 1;
+    position: relative;
   }
   .mint-swipe-indicator.is-active {
     background: #6F83ED;
   }
-
+*/
   
 
 /*公共样式*/
@@ -308,11 +303,12 @@ export default {
   .m_box_title>h1{ height: 60px; line-height: 62px; margin-left: 12px; font-size: 20px; float: left; color: #555; }
   .m_box_title>a{ height: 44px; padding: 0 12px 0 40px; margin: 8px 0; float: right; color: #bbb; text-align: center; line-height: 44px; }
 
+
 /* 最新入驻 推荐单曲*/
   .m_blist{ box-sizing: border-box; overflow: hidden; }
   .m_blist> div {padding: 0 12px; }
-  .m_blist> div > li{ width: 32%; float: left; margin-right: 28px;  }
-  .m_blist> div > li >a{ position: relative; }
+  .m_blist> div > li{ width: 32%; float: left; margin-right: 28px; overflow: hidden; }
+  .m_blist> div > li >a{ position: relative; overflow: hidden; width: 100%;}
   .m_blist> div > li>a>button{ height: 36px; width: 36px; position: absolute; bottom: 50px; right: 0;     background: transparent;}
   .m_blist> div > li:last-child>a>button{
     margin-right: 8px;
@@ -328,8 +324,8 @@ export default {
    }
   .m_blist> div > li>a>div> img{width: 100%;height: 100%;background-repeat: no-repeat center;min-height: 4rem; background: url('/static/img/placeholder_1.png?width=500');}
   .m_blist> div > li>a>div> img:after{width: 100%;height: 100%;background-repeat: no-repeat center;min-height: 4rem; content: url('/static/img/placeholder_1.png?width=500');}
-  .m_blist> div > li>a>h1{ line-height: 20px; height: 20px; overflow: hidden; color: #555; font-size: 13px; margin-top:8px; text-align: left;}
-  .m_blist> div > li>a>h2{ line-height: 20px; height: 20px; font-size: 12px; color: #999999; margin-bottom:2px;  text-align: left;}
+  .m_blist> div > li>a>h1{ line-height: 20px; height: 20px; overflow: hidden; color: #555; font-size: 13px; margin-top:8px; text-align: left;text-overflow: ellipsis;}
+  .m_blist> div > li>a>h2{ line-height: 20px; height: 20px;text-overflow: ellipsis; font-size: 12px; color: #999999; margin-bottom:2px;  text-align: left; white-space: nowrap;overflow: hidden;}
 
 /* 隐藏滚动条*/
   #musician_news,#tracks {overflow: hidden;}
@@ -371,7 +367,6 @@ export default {
     width: 14.8rem;
     border-radius: 10px;
     overflow: hidden;
-    background: url('/static/img/placeholder_2.png?width=500');
     min-height: 8.5rem;
   }
   
@@ -379,11 +374,15 @@ export default {
     width: 100%;
     height: 100%;
     background-repeat: no-repeat center;
-    z-index: 555;
+    position: relative;
   }
   .m_alist>li>a>.wrap-img>img:after {
+    position: absolute;
     width: 100%;
     height: 100%;
+    content: url('/static/img/placeholder_1.png?width=420');
+    left: 0;
+    top: 0;
   }
   .m_alist>li>a>h1 {
     line-height: 27px;
@@ -430,6 +429,11 @@ export default {
       float: left;
       margin-right: 0.256rem;
     }
+    .m_listtags>span:nth-child(2)>p {
+      float: left;
+      line-height: 0.8rem;
+      height: 0.8rem;
+    }
     .m_listtags>span>a,
     .m_listtags>span>i {
       height: 0.8rem;
@@ -454,6 +458,7 @@ export default {
     overflow: hidden;
     width: 100%;
     padding: 0 0.6rem;
+    margin-top: -0.6rem;
   }
   
   .m_clist>li {
@@ -484,6 +489,16 @@ export default {
     width: 100%;
     height: 100%;
     background-repeat: no-repeat center;
+    position: relative;
+  }
+
+  .m_clist>li>a>.wrap>img:after {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    content: url('/static/img/placeholder_2.png?width=420');
+    left: 0;
+    top: 0;    
   }
   
   .m_clist>li>a>h1 {
@@ -535,6 +550,8 @@ export default {
     font-size: 10px;
     color: #cccccc;
   }
+
+  #add-top{margin-top: -0.6rem;}
 
 </style>
 

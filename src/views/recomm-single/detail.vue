@@ -288,7 +288,16 @@ export default {
 	.single-footer >.small-header	>img{
 		width: 100%;
 		height: 100%;
+    position: relative;
 	}
+  .single-footer >.small-header >img:after{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: url('/static/img/placeholder_2.png');
+  }
 	.single-footer >p {
 		text-align: center;
 	}

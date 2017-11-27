@@ -5,8 +5,7 @@
       <span class="mask"></span>
       <div>
         <div class="p-tip" @click="addPlayList()">
-            <i class="icon-play"></i>
-          <span>播放音乐人电台</span>
+          <img src="static/img/music_tip.png">
         </div>
         <div class="view">
           <i class="icon-view"></i>
@@ -23,18 +22,16 @@
         <span v-for="item in labelsData"><img :src="item.res_cover"></span>
       </p>
       <div class="a-cate">
-        <span><i class="bolder">&nbsp;{{detailList.dynamic_count?detailList.dynamic_count:'-'}}&nbsp;&nbsp;</i>动态</span>
-        <span><i class="bolder">&nbsp;{{detailList.video_count?detailList.video_count:'-'}}&nbsp;&nbsp;</i>视频</span>
-        <span><i class="bolder">&nbsp;{{detailList.photo_count?detailList.photo_count:'-'}}&nbsp;&nbsp;</i>相册</span>
+        <span @click="activeT(detailList.dynamic_count)"><i class="bolder">&nbsp;{{detailList.dynamic_count?detailList.dynamic_count:'-'}}&nbsp;&nbsp;</i>动态</span>
+        <span @clcik="videoT()"><i class="bolder">&nbsp;{{detailList.video_count?detailList.video_count:'-'}}&nbsp;&nbsp;</i>视频</span>
+        <span @click="photoT(detailList.photo_count)"><i class="bolder">&nbsp;{{detailList.photo_count?detailList.photo_count:'-'}}&nbsp;&nbsp;</i>相册</span>
       </div>
       <div class="scroll" v-if="detailList.sign">
         <div class=""></div>
-        <p v-if="detailList.sign.length>34"><marquee behavior="scroll" scrollamount="4"><span>{{detailList.sign}}</span></marquee></p>
+        <p v-if="detailList.sign.length>24"><marquee behavior="scroll" scrollamount="4"><span>{{detailList.sign}}</span></marquee></p>
         <p v-else>{{detailList.sign}}</p>
       </div>
-      <div class="a-headerimg" v-for="(item, index) in detailData.musicians">
-        <div><img :src="item.headimg"></div>
-      </div>
+      
       <p class="a-content" :class=" over ? 'show-content' : '' ">
         {{detailList.description}}
       </p>
@@ -48,10 +45,10 @@
       <h2 class="adetail-title bolder">热门歌曲(<span>{{detailData.tracks | formatLength}}</span>)</h2>
       <ul>
         <li v-for="(item, index) in detailData.tracks">
-          <a @click="playSong(index),selected(item)">
+          <a @click="playSong(index)">
             <div><img :src="item.res_cover + '?width=200'"></div>
             <div>
-              <h4 class="border" :class="{click: activeName==item }">{{item.songname}}</h4>
+              <h4 class="border" >{{item.songname}}</h4>
               <span v-for="item in detailList.labels" >&nbsp;{{item.label_zh}}</span>
               <span >·&nbsp;{{item.play_count}}&nbsp;次播放</span>
             </div>
@@ -96,22 +93,6 @@
           <p>{{item.description}}{{item.description}}</p>
           </router-link>
         </li>
-
-        <!-- <li v-for="(item, index) in articleData">
-          <router-link :to="{ path:'/article/detail', query: {id: item.id} }">
-            <div class="wrap-img"><img :src="item.res_cover + '?width=500'" /></div>
-            <h1 class="bolder">{{item.from_user_nickname}}：{{ item.title }}</h1>
-            <div class="m_listtags">
-              <span>文 / {{ item.author }}</span>
-              <span>
-                <i class="icon-view"></i>
-                <p>{{ item.view_count }}</p>
-              </span>
-            </div>
-            <p>{{item.description}}</p>
-            </router-link>
-          </li> -->
-
       </ul>
     </div>
 	</div>
@@ -128,7 +109,6 @@ export default {
       detailList: [],
       over:true,
       oneTime: true,
-      activeName: '',
       labelsData: '',
       descriptionL: '',
       tracksL: '',
@@ -180,7 +160,6 @@ export default {
 
   methods: {
     ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
-
     playSong: function(index) {
       if(this.playList!=this.detailData.tracks){
         this.setPlayList(this.detailData.tracks)
@@ -207,7 +186,19 @@ export default {
       this.setPlayerData(this.playList[this.currentIndex])
       this.setPlayState(true)
     },
-
+    activeT(activeN) {
+      if(activeN){
+        this.$router.push({ path:'/artist/dynamic',query:{id: this.$route.query.id} })
+      }
+      return false
+    },
+    photoT(choose) {
+      if(choose){
+        this.$router.push({ path:'/artist/photo',query:{id: this.$route.query.id} })
+      }
+      return false      
+    },
+    videoT() {},
     allContent: function() {
       this.over = !this.over
     },
@@ -264,9 +255,6 @@ export default {
       }).catch( rtn => {
         // console.log(rtn.error)
       })
-    },
-    selected: function(item) {
-      this.activeName = item
     },
     routeChange(){
       const timestamp = Date.parse(new Date()) / 1000
@@ -379,10 +367,6 @@ export default {
     height: 1.5rem;
     float: left;
     color: #ffffff;
-    font-family: "PingFangSC-Medium";
-    font-size: 0.5rem;
-    border: 0.075rem solid #ffffff;
-    border-radius: 2.5rem;
   }
   
  /* .a-detail-header> div>.p-tip >.playtracks{
@@ -412,11 +396,8 @@ export default {
     line-height: 1.5rem;
 
   }
-  .a-detail-header> div>.p-tip >span{
-    font-size: 0.5rem;
-    margin-right: 0.9rem;
-    line-height: 1.5rem;
-    margin-left: 0.6rem;
+  .a-detail-header> div>.p-tip >img{
+    height: 100%;
   }
       
   .a-detail-header> div> .view {
@@ -585,6 +566,15 @@ export default {
     width: 100%;
     height: 100%;
     background-repeat: no-repeat center;
+    position: relative;
+  }
+  .ahot-song > ul >li> a >div:nth-child(1) > img:after{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: url('/static/img/placeholder_2.png?width=200');
   }
   .ahot-song > ul >li> a >div:nth-child(2){
     margin-left: 0.9rem;
@@ -627,7 +617,12 @@ export default {
   .album-list> ul >li:nth-child(even){
     margin-left: 0.6rem;
   }
+  .album-list> ul >li >a{
+    width: 100%;
+    overflow: hidden;
+  }
   .album-list> ul >li >a >div{
+    width: 100%;
     overflow: hidden;
   }
   .album-list> ul >li >a >div:nth-child(1){
@@ -639,19 +634,35 @@ export default {
     width: 100%;
     height: 100%;
     background-repeat: no-repeat center;
+    position: relative;
+  }
+  .album-list> ul >li >a >div img:after{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: url('/static/img/placeholder_2.png?width=200');
   }
   .album-list> ul >li> a> h4{
     font-size: 0.7rem;
     color: #555555;
     padding-top: 0.44rem;
     text-align: left;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+    overflow: hidden;
   }
   .album-list> ul >li> a > p{
     color: #999999;
     font-size: 12px;
     padding-top: 0.1rem;
     text-align: left;
-    font-family: "PingFangSC-Light"
+    font-family: "PingFangSC-Light";
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
    }
 
 /*相关乐文*/
@@ -680,6 +691,7 @@ export default {
   .m_alist>li>a>.wrap-img {
     width: 14.8rem;
     border-radius: 8px;
+    height: 9.03rem;
     overflow: hidden;
   }
   
@@ -687,8 +699,16 @@ export default {
     width: 100%;
     height: 100%;
     background-repeat: no-repeat center;
+    position: relative;
   }
-  
+  .m_alist>li>a>.wrap-img>img:after {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    content: url('/static/img/placeholder_2.png?width=640');
+  }
   .m_alist>li>a>h1 {
     line-height: 27px;
     color: #555;

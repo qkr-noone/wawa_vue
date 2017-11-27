@@ -145,6 +145,7 @@ export default {
   section> ul >li:nth-child(even){
     margin-left: 0.6rem;
   }
+  section> ul >li >a{width: 100%;}
   section> ul >li >a >div{
     overflow: hidden;
   }
@@ -158,6 +159,15 @@ export default {
     width: 100%;
     height: 100%;
     background-repeat: no-repeat center;
+    position: relative;
+  }
+  section> ul >li >a >div img:after{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: url('/static/img/placeholder_2.png');
   }
   section> ul >li> a> h4{
     font-size: 0.7rem;
@@ -165,6 +175,8 @@ export default {
     text-align: left;
     white-space: nowrap;
     overflow: hidden;
+    width: 100%;
+    text-overflow: ellipsis;
     padding-top: 0.5rem;
     font-family: "PingFangSC-Medium";
   }
@@ -174,6 +186,8 @@ export default {
     text-align: left;
     white-space: nowrap;
     overflow: hidden;
+    width: 100%;
+    text-overflow: ellipsis;
     padding-top: 0.25rem;
     font-family: "PingFangSC-Light";
    }

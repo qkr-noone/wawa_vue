@@ -26,6 +26,9 @@
           </li>
       </ul>
 
+      <div class="load-state" v-show="loadState">
+        <img src="http://wawa.fm/static/img/app/loading.gif">
+      </div>
     </div>
   </div>
 </template>
@@ -40,7 +43,8 @@ export default {
       articleData:[],
       newLoad: '',
       page: 1,
-      flag: true
+      flag: true,
+      loadState: false
     }
   },
   created() {
@@ -94,6 +98,7 @@ export default {
     loadMore() {
       if (this.flag) {
         this.loading = true;
+        this.loadState = true
         setTimeout(() => {
         this.page++
         const timestamp = Date.parse(new Date()) / 1000
@@ -126,9 +131,12 @@ export default {
                 this.articleData.push(this.newLoad[i]);
               }
             } else {
+              this.loadState = false
+              this.flag = false
               return false
             }              
           this.loading = false;
+          this.loadState = false
         })
         }, 2500);
       }
@@ -175,15 +183,22 @@ export default {
     width: 14.8rem;
     border-radius: 10px;
     overflow: hidden;
-    background: url('/static/img/placeholder_2.png?width=500');
   }
   
   .m_alist>li>a>.wrap-img>img {
     width: 100%;
     height: 100%;
     background-repeat: no-repeat center;
+    position: relative;
   }
-  
+  .m_alist>li>a>.wrap-img>img:after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    content: url('/static/img/placeholder_2.png?width=500');
+  }
   .m_alist>li>a>h1 {
     line-height: 27px;
     color: #555;
@@ -247,5 +262,7 @@ export default {
       border-radius: 0.45rem;
       margin-right:1.5px;
     }
+    .load-state{ height: 30px; }
+    .load-state >img{height: 100%;text-align: center; margin: auto;}
 </style>
 

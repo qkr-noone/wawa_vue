@@ -17,7 +17,7 @@
 
       <div class="other-pro">
         <i class="icon-re_ring" @click="ring()"><img src="static/img/re_ring.svg"></i>
-        <i class="icon-re_give" @click="reward(playerData.id)"><img src="static/img/re_give.svg"></i>
+        <i class="icon-re_give" @click="reward(playerData.id)"><img :class="notRe" src="static/img/re_give.svg"></i>
         <i class="icon-player_list"  @click="listShow()"></i>
 
       </div>
@@ -81,7 +81,8 @@
         activeName: '', //状态
         currentTime: 0,
         duration: '0',
-        audio: ''
+        audio: '',
+        notReward: false
       }
     },
     created() {
@@ -103,13 +104,23 @@
         this.currentTime = e.target.currentTime
         this.duration = this.audio.duration
       })
+      
       if (this.playerData.id===this.playList[this.currentIndex].id) {
         this.selected(this.playerData.id)
       }
       
     },
     computed: {
-      ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
+      ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav']),
+      notRe(){
+        if(!(this.playerData.pay_on === 1)){
+          this.notReward = true 
+        }else {
+          this.notReward = false
+        }
+        return this.notReward ? 'not-reward' : ''
+      }
+
     },
     methods: {
       ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
@@ -411,6 +422,7 @@
     height: 1.05rem;
     line-height: 1.05rem;
   }
+  .not-reward{opacity: 0.36}
   .play-detail>.other-pro >i.icon-player_list{
     font-size: 0.767rem;
   }
