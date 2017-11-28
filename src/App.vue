@@ -85,7 +85,7 @@ export default {
   },
 
   created() {
-    /*if(!isMobile()){
+    if(!isMobile()){
       if(this.$route.path === '/home'){
          window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
       } else if(this.$route.path === '/artist'){
@@ -113,7 +113,7 @@ export default {
       } else {
         window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
       }
-    }*/
+    }
     function isMobile () {
       if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
         return true

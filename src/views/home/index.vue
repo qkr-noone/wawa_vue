@@ -9,7 +9,7 @@
 
       <!-- banner -->
       <div class="banner" id="banner">
-        <mt-swipe :auto="40000">
+        <mt-swipe :auto="4000">
           <mt-swipe-item v-for="(item,index) in banners"><img :src="item['res_cover']" @click="getH(item.link)"></mt-swipe-item>
         </mt-swipe>
       </div>
@@ -367,23 +367,16 @@ export default {
     width: 14.8rem;
     border-radius: 10px;
     overflow: hidden;
-    min-height: 8.5rem;
+    height: 9.03rem;
   }
   
   .m_alist>li>a>.wrap-img>img {
     width: 100%;
     height: 100%;
     background-repeat: no-repeat center;
-    position: relative;
+    background: url('/static/img/placeholder_1.png?width=420');
   }
-  .m_alist>li>a>.wrap-img>img:after {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    content: url('/static/img/placeholder_1.png?width=420');
-    left: 0;
-    top: 0;
-  }
+
   .m_alist>li>a>h1 {
     line-height: 27px;
     color: #555;
@@ -481,25 +474,16 @@ export default {
     width: 7.1rem;
     height: 7.1rem;
     border-radius: 10px;
-    overflow: hidden;
-    background-color: url('/static/img/placeholder_1.png?width=500');
+    overflow: hidden;    
   }
   
   .m_clist>li>a>.wrap>img {
     width: 100%;
     height: 100%;
     background-repeat: no-repeat center;
-    position: relative;
+    background: url('/static/img/placeholder_1.png?width=500');
   }
 
-  .m_clist>li>a>.wrap>img:after {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    content: url('/static/img/placeholder_2.png?width=420');
-    left: 0;
-    top: 0;    
-  }
   
   .m_clist>li>a>h1 {
     overflow: hidden;
