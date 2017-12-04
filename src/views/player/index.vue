@@ -376,7 +376,7 @@
     position: absolute;
     left: 0;
     top: 0;
-    content: url('/static/img/placeholder_2.png?width=200');
+    content: url('/static/h5/static/img/placeholder_2.png?width=200');
     width: 100%;
     height: 100%;
   }

@@ -292,7 +292,7 @@
     height: 8.87rem;
 		overflow: hidden;
 		margin-top: 0.81rem;
-    background-color: url('/static/img/placeholder_1.png?width=375');
+    background-color: url('/static/h5/static/img/placeholder_1.png?width=375');
 	}
 	.ban-article >div>img{
 		width: 100%;
@@ -305,7 +305,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    content: url('/static/img/placeholder_1.png?width=375');
+    content: url('/static/h5/static/img/placeholder_1.png?width=375');
   }
 
 /*相似推荐*/

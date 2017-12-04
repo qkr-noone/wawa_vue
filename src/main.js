@@ -10,7 +10,7 @@ import store from './store'
 
 import 'element-ui/lib/theme-default/index.css'
 import 'mint-ui/lib/style.css'
-import '../../fonts/font_h5/iconfont.css'
+// import '../../fonts/font_h5/iconfont.css'
 import '../../css/wawa.fonts.css'
 import '../../css/wa.web.content.css'
 import 'mint-ui/src/style/empty.css' // 需要的css文件

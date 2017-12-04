@@ -197,7 +197,7 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    content: url('/static/img/placeholder_2.png?width=500');
+    content: url('/static/5/static/img/placeholder_2.png?width=500');
   }
   .m_alist>li>a>h1 {
     line-height: 27px;

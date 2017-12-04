@@ -238,7 +238,7 @@ export default {
   div.mint-swipe{
     height: 55VW;
     visibility: visible;
-    background: url('/static/img/placeholder_2.png?width=500');
+    background: url(/static/h5/static/img/placeholder_2.png?width=500);
   }
   
   .mint-swipe-items-wrap > div >img{  
@@ -320,10 +320,10 @@ export default {
      width: 4.792rem; 
      height: 4.792rem; 
      visibility: visible;
-     background: url('/static/img/placeholder_1.png?width=500');
+     background: url(/static/h5/static/img/placeholder_1.png?width=500);
    }
-  .m_blist> div > li>a>div> img{width: 100%;height: 100%;background-repeat: no-repeat center;min-height: 4rem; background: url('/static/img/placeholder_1.png?width=500');}
-  .m_blist> div > li>a>div> img:after{width: 100%;height: 100%;background-repeat: no-repeat center;min-height: 4rem; content: url('/static/img/placeholder_1.png?width=500');}
+  .m_blist> div > li>a>div> img{width: 100%;height: 100%;background-repeat: no-repeat center;min-height: 4rem; background: url(/static/h5/static/img/placeholder_1.png?width=500);}
+  .m_blist> div > li>a>div> img:after{width: 100%;height: 100%;background-repeat: no-repeat center;min-height: 4rem; content: url(/static/h5/static/img/placeholder_1.png?width=500);}
   .m_blist> div > li>a>h1{ line-height: 20px; height: 20px; overflow: hidden; color: #555; font-size: 13px; margin-top:8px; text-align: left;text-overflow: ellipsis;}
   .m_blist> div > li>a>h2{ line-height: 20px; height: 20px;text-overflow: ellipsis; font-size: 12px; color: #999999; margin-bottom:2px;  text-align: left; white-space: nowrap;overflow: hidden;}
 
@@ -374,7 +374,7 @@ export default {
     width: 100%;
     height: 100%;
     background-repeat: no-repeat center;
-    background: url('/static/img/placeholder_1.png?width=420');
+    background: url(/static/h5/static/img/placeholder_1.png?width=420);
   }
 
   .m_alist>li>a>h1 {
@@ -481,7 +481,7 @@ export default {
     width: 100%;
     height: 100%;
     background-repeat: no-repeat center;
-    background: url('/static/img/placeholder_1.png?width=500');
+    background: url(/static/h5/static/img/placeholder_1.png?width=500);
   }
 
   

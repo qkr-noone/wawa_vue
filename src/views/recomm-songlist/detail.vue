@@ -244,7 +244,7 @@ export default {
 		height: 100%;
 		left: 0;
 		top: 0;
-		content: url('/static/img/placeholder_2.png');
+		content: url('/static/h5/static/img/placeholder_2.png');
 	}
 			
 	.songlist-header>.tip-wrap{
@@ -267,7 +267,7 @@ export default {
 		overflow: hidden;
 		margin: 0 0.6rem;
 		float: left;
-		background-color:url('/static/img/placeholder_1.png'); 
+		background-color:url('/static/h5/static/img/placeholder_1.png'); 
 	}
 	.img-wrap  img{
 		width: 100%;

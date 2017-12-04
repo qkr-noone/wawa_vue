@@ -334,7 +334,7 @@
 		width: 100%;
 		height: 100%;
 		position: absolute;
-		content: url('/static/img/placeholder_1.png?width=320');
+		content: url('/static/h5/static/img/placeholder_1.png?width=320');
 	}
 	.hun-detail-header .play {
 		position: absolute;
@@ -447,7 +447,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    content: url('/static/img/placeholder_1.png?width=200');
+    content: url('/static/h5/static/img/placeholder_1.png?width=200');
   }
   .hun-list >ul >li >a div:nth-child(3){
   	margin-left: 0.6rem;
@@ -514,7 +514,7 @@
     position:absolute;
     top: 0;
     left: 0;
-    content: url('/static/img/placeholder_1.png?width=100');
+    content: url('/static/h5/static/img/placeholder_1.png?width=100');
   }
 	.hun-list >.listen-person >p{
 		display: block;

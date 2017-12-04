@@ -221,7 +221,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  content: url('/static/img/placeholder_2.png?width=500');
+  content: url('/static/h5/static/img/placeholder_2.png?width=500');
 }
 
 .m_alist>li>a>h1 {

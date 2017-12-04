@@ -185,7 +185,7 @@ export default {
     position: absolute;
     top: 0;
     left: 0;
-    content: url('/static/img/placeholder_2.png');
+    content: url('/static/h5/static/img/placeholder_2.png');
   }
   .m_clist>li>a>h1 {
     overflow: hidden;
@@ -243,7 +243,7 @@ export default {
     position: absolute;
     top: 0;
     left: 0;
-    content: url('/static/img/placeholder_2.png');
+    content: url('/static/h5/static/img/placeholder_2.png');
   }
   .m_clist>li a>.m_c>span:nth-child(2){
     float: right;

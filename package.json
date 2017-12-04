@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "better-scroll": "^1.5.2",
     "create-keyframe-animation": "^0.1.0",
     "crypto": "^1.0.1",
     "css-loader": "^0.28.7",

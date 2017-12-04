@@ -240,7 +240,7 @@ export default {
 		height: 100%;
 		left: 0;
 		top: 0;
-		content: url('/static/img/placeholder_2.png');
+		content: url('/static/h5/static/img/placeholder_2.png');
 	}
 			
 	.albumlist-header>.tip-wrap{
@@ -263,7 +263,7 @@ export default {
 		overflow: hidden;
 		margin: 0 0.6rem;
 		float: left;
-		background-color:url('/static/img/placeholder_1.png'); 
+		background-color:url('/static/h5/static/img/placeholder_1.png'); 
 	}
 	.img-wrap  img{
 		width: 100%;
@@ -277,7 +277,7 @@ export default {
     position: absolute;
     top: 0;
     left: 0;
-    content: url('/static/img/placeholder_2.png');
+    content: url('/static/h5/static/img/placeholder_2.png');
   }
 	.descr {
 		float: left;
@@ -436,7 +436,7 @@ export default {
     position: absolute;
     top: 0;
     left: 0;
-    content: url('/static/img/placeholder_2.png')
+    content: url('/static/h5/static/img/placeholder_2.png')
   }
   .albumlist-content ul >li >a div:nth-child(3){
   	margin-left: 0.6rem;

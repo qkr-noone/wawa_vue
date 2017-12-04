@@ -193,7 +193,7 @@ export default {
     position: absolute;
     top: 0;
     left: 0;
-    content: url('/static/img/placeholder_2.png?width=320');
+    content: url('/static/h5/static/img/placeholder_2.png?width=320');
   }
 	.single-header > .single-mask{
 		width: 100%;
@@ -296,7 +296,7 @@ export default {
     position: absolute;
     top: 0;
     left: 0;
-    content: url('/static/img/placeholder_2.png');
+    content: url('/static/h5/static/img/placeholder_2.png');
   }
 	.single-footer >p {
 		text-align: center;

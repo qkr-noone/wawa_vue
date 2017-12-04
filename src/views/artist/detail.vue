@@ -353,7 +353,7 @@ export default {
     left: 0;
     top: 0;
     width: 100%;
-    content: url('/static/img/placeholder_2.png?width=320');
+    content: url('/static/h5/static/img/placeholder_2.png?width=320');
   }
   
   .a-detail-header> div {
@@ -574,7 +574,7 @@ export default {
     position: absolute;
     top: 0;
     left: 0;
-    content: url('/static/img/placeholder_2.png?width=200');
+    content: url('/static/h5/static/img/placeholder_2.png?width=200');
   }
   .ahot-song > ul >li> a >div:nth-child(2){
     margin-left: 0.9rem;
@@ -642,7 +642,7 @@ export default {
     position: absolute;
     top: 0;
     left: 0;
-    content: url('/static/img/placeholder_2.png?width=200');
+    content: url('/static/h5/static/img/placeholder_2.png?width=200');
   }
   .album-list> ul >li> a> h4{
     font-size: 0.7rem;
@@ -707,7 +707,7 @@ export default {
     position: absolute;
     left: 0;
     top: 0;
-    content: url('/static/img/placeholder_2.png?width=640');
+    content: url('/static/h5/static/img/placeholder_2.png?width=640');
   }
   .m_alist>li>a>h1 {
     line-height: 27px;
