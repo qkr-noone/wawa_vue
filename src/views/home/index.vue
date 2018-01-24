@@ -98,7 +98,7 @@
               </div>
               <h1 class="bolder">{{item['songname']}}</h1>
               <h2>{{item['singer']}}</h2>
-              <button><i class="icon-play" @click.stop="recomPlay(item)"  @click.prevent></i></button>
+              <button  @click.stop="recomPlay(item)"  @click.prevent ><i class="icon-play"></i></button>
               </router-link>
             </li>
           </div>          
@@ -201,6 +201,8 @@ export default {
     this.setIsDemaskNav(false)
   },
   mounted() {
+    let audio = document.getElementById("audio")
+    this.audio = audio
     if(this.$route.path){
       this.setRouterUrl(this.$route.path)
     }
@@ -228,7 +230,9 @@ export default {
           instance.close()
         },2500)
       }
+      this.audio.play()
       this.setPlayState(true)
+      return false
     }
   }
 }
@@ -240,7 +244,7 @@ export default {
     visibility: visible;
     background: url(/static/h5/static/img/placeholder_2.png?width=500);
   }
-  
+  div:focus,ul:focus,li:focus,a:focus,h1:focus,h2:focus,h3:focus,h4:focus,p:focus,span:focus,button:focus,i:focus{outline: none;}
   .mint-swipe-items-wrap > div >img{  
     width:100%;
   }
@@ -510,8 +514,7 @@ export default {
     height: 100%;
   }
   .m_clist>li a>.m_c>span:nth-child(1)> .mc-wrap{
-    width: 1.023rem;
-    height: 1.023rem;
+    height: 100%;
     overflow: hidden;
     border-radius: 100%;
     float: left;
@@ -524,7 +527,6 @@ export default {
     height: 100%;
   }
   .m_clist>li a>.m_c>span:nth-child(1)> .mc-wrap>img{
-    width: 100%;
     height: 100%;
   }
   .m_clist>li a>.m_c>span:nth-child(2){

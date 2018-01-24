@@ -186,6 +186,33 @@ canplaythrough
 
 test项目: verflow-y: auto;  -webkit-overflow-scrolling: touch;
 
+Error: listen EADDRINUSE :::8080  vue中端口被占用
+
+vue h5 项目bug 优化   
+  播放 this.audio.play()  
+  banner 传值id 网络数据请求不好  读取缓存
+  vue player 居中 
+    
+  vue player next 安卓返回退出时，歌曲暂停（nubia 流浪器） 
+    
+  乐文详情头部默认图位置 
+    
+  火狐浏览器不支持 line-clamp: 2  无法兼容  
+    乐人详情信息收起
+  菜单 menu 位置  
+
+  IOS safari 下audio 权限问题      
+ios 中safari浏览器的audio 很多属性不可用  ajax 请求中不能直接播放    
+  页面渲染是audio src资源需要有=》audio不能报错    
+  在vue中每次首次播放都需要有资源并且使其已播放或者已加载   
+ajax 请求中不能直接播放 ===》 "if (this.isIOS()) {     // ios单独处理 安卓不需要
+ this.$refs.audio.play()
+ this.$refs.audio.pause()
+}"    使其首次播放时播放暂停
+      
+ios audio 资源加载很慢 切换歌曲 资源太大 file320 调试为file192  资源格式调小   
+      
+
 
 ================== Q.js ====================
 http://www.xuanfengge.com/web-route-frame.html?utm_source=tuicool&utm_medium=referral

@@ -46,10 +46,10 @@
 		methods:{
 			...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
 			loadWa: function() {
-				window.location.href = 'https://wawa.fm/static/app/wawa/download.html'
+				window.location.href = 'https://wawa.fm/static/app/wawa/download.html?channel=wawa'
 			},
 			loadYu: function() {
-				window.location.href = 'https://wawa.fm/static/app/yuyin/download.html'
+				window.location.href = 'https://wawa.fm/static/app/yuyin/download.html?channel=wawa'
 			}
 		}
 	}

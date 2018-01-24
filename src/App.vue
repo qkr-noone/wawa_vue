@@ -39,8 +39,8 @@
     <div class="m_audio_playlist_demask-nav" id="navlist_demask" ref="demask" v-if="isDemaskNav" @click="hiddenNavList()" @touchmove.prevent> 
     </div>
     <!-- 
-        preload="metadata" controls="controls" style="height: 20px;width:100%;display: block; position: fixed;bottom: 68px;"    -->
-    <audio ref="audio" id="audio" :src="playerData.file320" @ended="audioEnd()" >
+        preload="metadata" crossOrigin="anonymous" controls="controls" style="height: 40px;width:100%;display: block; position: fixed;bottom: 68px;" -->
+    <audio  ref="audio" id="audio" :src="playerData.file192" @ended="audioEnd()" >
     </audio>
   </div>
 </template>
@@ -76,8 +76,8 @@ export default {
         res_cover: 'http://up.wawa.fm/18,01085cf606b183',
         songname: '挖哇电台',
         singer: '随便听听，也许有惊喜',
-        file320: ''
-      }      
+        file192: 'static/img/no1.mp3' //假数据
+      }   
     }
   },
   computed: {
@@ -85,7 +85,7 @@ export default {
   },
 
   created() {
-    if(!isMobile()){
+   /* if(!isMobile()){
       if(this.$route.path === '/home'){
          window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
       } else if(this.$route.path === '/artist'){
@@ -113,7 +113,7 @@ export default {
       } else {
         window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
       }
-    }
+    }*/
     function isMobile () {
       if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
         return true
@@ -236,13 +236,15 @@ export default {
         audio.pause()
         this.setPlayState(false)
       }else{
-        if(this.playerData.file320)
+        if(this.playerData.file192)
         {
           audio.play()
           this.setPlayState(true)
         } else{
           this.setCurrentIndex(0)
           this.setPlayerData(this.playList[this.currentIndex])
+          // audio.src = this.playerData.file192
+          // audio.play()
           this.setPlayState(true)
         }
       }
@@ -255,6 +257,7 @@ export default {
     next: function(){
       if(this.playList.length === 1){
         this.loop()
+        audio.play()
       } else {
         let index = this.currentIndex + 1
         if (index === this.playList.length){
@@ -262,6 +265,7 @@ export default {
         }
         this.setCurrentIndex(index)
         this.setPlayerData(this.playList[index])
+        audio.play()
         this.setPlayState(true)
       }      
 
@@ -345,6 +349,16 @@ export default {
     },
 
     playerData(newSong, oldSong){
+      if (oldSong.file192 == 'static/img/no1.mp3') {
+        this.$refs.audio.play()
+        this.$refs.audio.pause()
+      }
+      if (!newSong.id) {
+        return
+      }
+      if (newSong.id === oldSong.id) {
+        return
+      }
       clearTimeout(this.timer)
       this.timer = setTimeout( () => {
         this.$refs.audio.play()

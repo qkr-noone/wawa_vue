@@ -72,6 +72,8 @@ export default {
     this.$destroy()
   },
   mounted() {
+    let audio = document.getElementById("audio")
+    this.audio = audio
     this.setRouterUrl(this.$route.path)
     // 进入定位到顶端
     console.log( document.body.scrollTop)
@@ -87,6 +89,7 @@ export default {
       this.setPlayerData(this.singleSong)
       this.filterID(this.singleSong)
       this.setCurrentIndex(this.currentIndex+1)
+      this.audio.play()
       this.setPlayState(true)
 
     },
@@ -264,7 +267,7 @@ export default {
 	}
 	.single-content >pre {
 		font-family: "PingFangSC-Light";
-		font-size: 0.8rem;
+		font-size: 15px;
 		white-space: pre-wrap;
     word-wrap: break-word;
     color: #555555;

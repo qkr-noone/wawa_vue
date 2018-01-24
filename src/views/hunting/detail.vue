@@ -116,6 +116,7 @@
         }
 				this.setPlayerData(this.huntDetail.tracks[index])
 				this.iconState = true
+        this.audio.play()
   	    this.setPlayState(true)
         this.setCurrentIndex(index)
   	    let instance = this.$toast('即将播放..')
@@ -139,6 +140,7 @@
 				}
         this.setCurrentIndex(0)
         this.setPlayerData(this.playList[this.currentIndex])
+        this.audio.play()
         this.setPlayState(true)
         if(this.countState){
           this.addCount()
@@ -302,6 +304,8 @@
 			this.$destroy()
 		},
   	mounted() {
+      let audio = document.getElementById("audio")
+      this.audio = audio
     	this.setRouterUrl(this.$route.path)
       document.documentElement.scrollTop = 0
       document.body.scrollTop = 0
@@ -395,7 +399,7 @@
 	.hun-content >div pre{
 		margin-top: 0.8rem;
 		font-family: "PingFangSC-Light";
-		font-size: 0.68rem;
+		font-size: 15px;
 		white-space: pre-wrap;
     word-wrap: break-word;
     color: #555555;

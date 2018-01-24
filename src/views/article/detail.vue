@@ -47,6 +47,8 @@ export default {
     this.$destroy()
   },
   mounted() {
+    let audio = document.getElementById("audio")
+    this.audio = audio
     this.setRouterUrl(this.$route.path)
     document.documentElement.scrollTop = 0
     document.body.scrollTop = 0
@@ -63,6 +65,7 @@ export default {
       this.setPlayerData(this.detailData.track)
       this.filterID(this.detailData.track)
       this.setCurrentIndex(this.currentIndex+1)
+      this.audio.play()
       this.setPlayState(true)
     },
     filterID(data){
@@ -109,7 +112,9 @@ export default {
 
     addSongPlay(event){
         if(event.srcElement.id.length===11&&event.target.nodeName === 'I'){
-          
+          // IOS audio中ajax请求不能即时播放
+          this.audio.play()
+          this.audio.pause()          
           const user_id = 0
           const timestamp = Date.parse(new Date()) / 1000
           const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/track/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
@@ -132,6 +137,7 @@ export default {
             this.setPlayerData(rtn.data)
             this.filterID(this.data)
             this.setCurrentIndex(this.currentIndex+1)
+            this.audio.play()
             this.setPlayState(true)
           })
         }

@@ -151,6 +151,8 @@ export default {
     this.$destroy()
   },
   mounted() {
+    let audio = document.getElementById("audio")
+    this.audio = audio
     this.setRouterUrl(this.$route.path)
     document.documentElement.scrollTop = 0
     document.body.scrollTop = 0
@@ -165,6 +167,7 @@ export default {
         this.setPlayList(this.detailData.tracks)
       }
       this.setPlayerData(this.detailData.tracks[index])
+      this.audio.play()
       this.setPlayState(true)
       this.setCurrentIndex(index)
       let instance = this.$toast('即将播放..')
@@ -184,6 +187,7 @@ export default {
       }
       this.setCurrentIndex(0)
       this.setPlayerData(this.playList[this.currentIndex])
+      this.audio.play()
       this.setPlayState(true)
     },
     activeT(activeN) {
@@ -529,7 +533,7 @@ export default {
     width: 14.8rem;
     font-family: "PingFangSC-Light";
     color: #555555;
-    font-size: 0.7rem;
+    font-size: 15px;
     line-height: 1.2rem;    
   }
   .show-content{

@@ -148,6 +148,10 @@
   	  		setTimeout( () => {
   	  			instance.close()
   	  		},2500)
+
+          // IOS audio
+          this.audio.play()
+          this.audio.pause()
   	  		const user_id = 0
       		const timestamp = Date.parse(new Date()) / 1000
       		const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/track/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
@@ -169,8 +173,11 @@
       		 	}
       		}).then( rtn => {
       			this.data = rtn.data
-      			this.setPlayerData(rtn.data)
-      			this.playList.push(rtn.data)
+            this.playList.push(rtn.data)
+            let index = this.playList.length - 1
+            this.setCurrentIndex(index)            
+      			this.setPlayerData(this.playList[index])
+            this.audio.play()
       			this.setPlayState(true)
       	  })
   	  	  }
@@ -241,6 +248,8 @@
       this.setIsDemaskNav(false)
     },
   	mounted() {
+      let audio = document.getElementById("audio")
+      this.audio = audio
   		this.addSongPlay(event)
       this.setRouterUrl(this.$route.path)
       document.documentElement.scrollTop = 0

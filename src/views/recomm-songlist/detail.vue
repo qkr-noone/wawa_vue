@@ -103,6 +103,8 @@ export default {
     this.$destroy()
   },
 	mounted() {
+    let audio = document.getElementById("audio")
+    this.audio = audio
     this.setRouterUrl(this.$route.path)
     document.documentElement.scrollTop = 0
     document.body.scrollTop = 0
@@ -132,6 +134,7 @@ export default {
 			this.setCurrentIndex(index)
 			this.setPlayerData(this.songListDetail.tracks[index])
 			this.iconState = true
+      this.audio.play()
       this.setPlayState(true)
       let instance = this.$toast('即将播放..')
   	  setTimeout(() => {
@@ -152,6 +155,7 @@ export default {
   	   	},2500)
   	   	this.oneTime = false
 			}
+      this.audio.play()
 			this.setPlayState(true)
 			this.setCurrentIndex(0)
       this.setPlayerData(this.playList[this.currentIndex])

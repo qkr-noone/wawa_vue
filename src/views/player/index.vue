@@ -45,7 +45,7 @@
         <h1 class="bolder">播放列表</h1>
         <div>
           <ul>
-          <li v-for="(item,index) in playList" :data-file="item.file320" :data-key="item.id" >
+          <li v-for="(item,index) in playList" :data-file="item.file192" :data-key="item.id" >
             <a @click="player(item,index),selected(item.id)">
               <span :class="{click: activeName==item.id }">{{index+1}}</span>
               <div>
@@ -145,15 +145,15 @@
         }, 2500)
         this.setCurrentIndex(index)
         this.setPlayerData(this.playList[index])
-
+        this.audio.play()
         this.setPlayState(true)
       },
-      playPause: function(){
-             
+      playPause: function(){             
         this.setPlayState(!this.playState)
-        if(!this.playerData.file320){
+        if(this.playerData.file192 == 'static/img/no1.mp3'){
           this.setCurrentIndex(0)
           this.setPlayerData(this.playList[this.currentIndex])
+          this.audio.play()
           this.setPlayState(true)          
         }
         
@@ -173,6 +173,7 @@
           this.setPlayerData(this.playList[index])
           this.selected(this.playerData.id)
           this.addCount()
+          this.audio.play()
           this.setPlayState(true)
           return false
         } else {
@@ -191,21 +192,24 @@
       next(){
         if((this.playList.length === 1) ||(this.playList.length === 0&&this.playerData.id)){
           this.loop()
+          this.audio.play()
         } else {
           let index = this.currentIndex + 1
           if (index === this.playList.length||index>this.playList.length){
             index = 0
           }
-
           this.setCurrentIndex(index)
           this.setPlayerData(this.playList[index])
+          this.audio.play()
           this.setPlayState(true)
+
         }
 
       },
       pre(){
         if ((this.playList.length === 1) ||(this.playList.length === 0&&this.playerData.id)) {
           this.loop()
+          this.audio.play()
           return
         } else {
           let index = this.currentIndex - 1
@@ -216,6 +220,7 @@
           }
           this.setCurrentIndex(index)
           this.setPlayerData(this.playList[index])
+          this.audio.play()
           if (!this.playState) {
             this.playPause()
           }
@@ -355,8 +360,8 @@
 
   .play-detail> .detail-cont{
     width: 100%;
-    padding-top: 2.048rem;
-    padding-bottom: 1.28rem;
+    padding-top: 2rem;
+    padding-bottom: 1rem;
     box-sizing: border-box;
   }
   .detail-wrap{
@@ -381,7 +386,7 @@
     height: 100%;
   }
   .play-detail> .detail-cont h4{
-    margin-top: 2.048rem;
+    margin-top: 1.5rem;
     font-size: 0.64rem;
     font-family: "PingFangSC-Medium";
     color: #555555;
@@ -407,12 +412,12 @@
     justify-content: space-between;
     margin-left: 4rem;
     margin-right: 4rem;
-    margin-bottom: 1.13rem;
-    overflow: hidden;
+    margin-bottom: 1rem;
     font-size: 0.96rem;
+    height: 1.1rem;
+    overflow: hidden;
   }
   .play-detail>.other-pro >i{
-    font-size: 0.96rem;
     line-height: 0.96rem;
     width: 0.96rem;
     height: 0.96rem;
@@ -457,12 +462,12 @@
     position: absolute;
   }
   .play-detail>.play-nav{
-    margin-bottom: 1.5rem;
+    margin: 0.2rem 2.9rem  1.5rem; 
     display: flex;
     justify-content: space-between;
-    margin-left: 2.9rem;
-    margin-right: 2.9rem;
+    align-items: center;
     color: #777777;
+    height: 1.93rem;
   }
   .play-nav>i{
     line-height: 1.92rem;
