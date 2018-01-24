@@ -45,7 +45,7 @@
         <h1 class="bolder">播放列表</h1>
         <div>
           <ul>
-          <li v-for="(item,index) in playList" :data-file="item.file192" :data-key="item.id" >
+          <li v-for="(item,index) in playList" :data-file="item.file128" :data-key="item.id" >
             <a @click="player(item,index),selected(item.id)">
               <span :class="{click: activeName==item.id }">{{index+1}}</span>
               <div>
@@ -150,7 +150,7 @@
       },
       playPause: function(){             
         this.setPlayState(!this.playState)
-        if(this.playerData.file192 == 'static/img/no1.mp3'){
+        if(this.playerData.file128 == 'static/img/no1.mp3'){
           this.setCurrentIndex(0)
           this.setPlayerData(this.playList[this.currentIndex])
           this.audio.play()

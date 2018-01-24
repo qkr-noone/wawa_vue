@@ -40,7 +40,7 @@
     </div>
     <!-- 
         preload="metadata" crossOrigin="anonymous" controls="controls" style="height: 40px;width:100%;display: block; position: fixed;bottom: 68px;" -->
-    <audio  ref="audio" id="audio" :src="playerData.file192" @ended="audioEnd()" >
+    <audio  ref="audio" id="audio" :src="playerData.file128" @ended="audioEnd()" >
     </audio>
   </div>
 </template>
@@ -76,7 +76,7 @@ export default {
         res_cover: 'http://up.wawa.fm/18,01085cf606b183',
         songname: '挖哇电台',
         singer: '随便听听，也许有惊喜',
-        file192: 'static/img/no1.mp3' //假数据
+        file128: 'static/img/no1.mp3' //假数据
       }   
     }
   },
@@ -236,14 +236,14 @@ export default {
         audio.pause()
         this.setPlayState(false)
       }else{
-        if(this.playerData.file192)
+        if(this.playerData.file128)
         {
           audio.play()
           this.setPlayState(true)
         } else{
           this.setCurrentIndex(0)
           this.setPlayerData(this.playList[this.currentIndex])
-          // audio.src = this.playerData.file192
+          // audio.src = this.playerData.file128
           // audio.play()
           this.setPlayState(true)
         }
@@ -349,7 +349,7 @@ export default {
     },
 
     playerData(newSong, oldSong){
-      if (oldSong.file192 == 'static/img/no1.mp3') {
+      if (oldSong.file128 == 'static/img/no1.mp3') {
         this.$refs.audio.play()
         this.$refs.audio.pause()
       }
