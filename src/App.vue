@@ -50,13 +50,10 @@ import axios from 'axios'
 import md5 from 'js-md5'
 import { mapState, mapMutations } from 'vuex'
 import router from './router'
-import swipe from './components/home/swipe'
-import Scroll from './components/scroll/scroll'
 import { Swipe,SwipeItem,InfiniteScroll,Lazyload,Toast } from 'mint-ui'
 
 export default {
   name: 'app',
-  components: { swipe, Scroll},
   data() {
     return{
       navList:[ //导航菜单列表
@@ -85,35 +82,35 @@ export default {
   },
 
   created() {
-   /* if(!isMobile()){
-      if(this.$route.path === '/home'){
-         window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
-      } else if(this.$route.path === '/artist'){
-         window.location.href = 'http://wawa.fm/static/wawa/index.html#!artistList'
-      } else if(this.$route.path === '/artist/detail'){
-         window.location.href = 'http://wawa.fm/static/wawa/index.html#!artistInfo/artistid=' + this.$route.query.id
-      } else if(this.$route.path === '/article'){
-         window.location.href = 'http://wawa.fm/static/wawa/index.html#!articleList'
-      } else if(this.$route.path === '/article/detail'){
-         window.location.href = 'http://wawa.fm/static/wawa/index.html#!articleInfo/id=' + this.$route.query.id
-      } else if(this.$route.path === '/hunting'){
-         window.location.href = 'http://wawa.fm/static/wawa/index.html#!volList'
-      } else if(this.$route.path === '/hunting/detail'){
-         window.location.href = 'http://wawa.fm/static/wawa/index.html#!volInfo/id=' + this.$route.query.id
-      } else if(this.$route.path === '/recomm-single'){
-         window.location.href = 'http://wawa.fm/static/wawa/index.html#!musicList'
-      } else if(this.$route.path === '/recomm-single/detail'){
-         window.location.href = 'http://wawa.fm/static/wawa/index.html#!musicInfo/id=' + this.$route.query.id
-      } else if(this.$route.name === 'bannerArticle'){
-         window.location.href = 'http://wawa.fm/static/wawa/index.html#!articleInfo/id=' + this.$route.params.id
-      } else if(this.$route.path === '/download'){
-         window.location.href = 'http://wawa.fm/static/wawa/app.html'
-      } else if(this.$route.path === '/about'){
-         window.location.href = 'http://wawa.fm/static/wawa/about.html'
-      } else {
-        window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
-      }
-    }*/
+    // if(!isMobile()){
+    //   if(this.$route.path === '/home'){
+    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
+    //   } else if(this.$route.path === '/artist'){
+    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!artistList'
+    //   } else if(this.$route.path === '/artist/detail'){
+    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!artistInfo/artistid=' + this.$route.query.id
+    //   } else if(this.$route.path === '/article'){
+    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!articleList'
+    //   } else if(this.$route.path === '/article/detail'){
+    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!articleInfo/id=' + this.$route.query.id
+    //   } else if(this.$route.path === '/hunting'){
+    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!volList'
+    //   } else if(this.$route.path === '/hunting/detail'){
+    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!volInfo/id=' + this.$route.query.id
+    //   } else if(this.$route.path === '/recomm-single'){
+    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!musicList'
+    //   } else if(this.$route.path === '/recomm-single/detail'){
+    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!musicInfo/id=' + this.$route.query.id
+    //   } else if(this.$route.name === 'bannerArticle'){
+    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!articleInfo/id=' + this.$route.params.id
+    //   } else if(this.$route.path === '/download'){
+    //      window.location.href = 'http://wawa.fm/static/wawa/app.html'
+    //   } else if(this.$route.path === '/about'){
+    //      window.location.href = 'http://wawa.fm/static/wawa/about.html'
+    //   } else {
+    //     window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
+    //   }
+    // }
     function isMobile () {
       if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
         return true
@@ -210,7 +207,6 @@ export default {
       const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/home/radio@3ad3ebb04b5c94cd234e16a6aef9c8ae') 
       axios({
         method: 'get',
-        // urlApi=http://wawa.fm
         url: 'urlApi/app/v1/home/radio',
         params: {
           api_key: '0fcf845a413e11beb5606448eb8abbc4',
@@ -219,12 +215,10 @@ export default {
         headers:{
           'X-Requested-With': 'XMLHttpRequest',
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          // 'Access-Control-Allow-Origin':'http://localhost:8080',
           'Authorization':'wawa ' + token
         }
       }).then( rtn => {
           this.setPlayList(rtn.data)
-          // console.log(this.playList)
       })
     },
 
@@ -388,9 +382,8 @@ export default {
 
 }
 </script>
-
 <style lang="scss" scoped>
-/*app*/
+  /*app*/
   #app {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -479,6 +472,7 @@ export default {
   .m_list_singer{ height: 16px; line-height: 12px; color: #999; font-size: 12px; width: 100%; text-align: left; white-space: nowrap;}
   .m_audio_playlist_demask{ width: 100%; height: 100%; position: fixed; top: 0; left: 0; background-color: rgba(255,255,255,.6); z-index: 20; }
   .m_audio_playlist_demask-nav{ width: 100%; height: 100%; position: fixed; top: 0; left: 0; background-color: transparent; z-index: 20; }
+
 
 </style>
 

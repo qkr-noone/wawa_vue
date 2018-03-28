@@ -1,4 +1,4 @@
-<template>
+<template> 
 	<div id="album">
 		<keep-alive>
       <router-view></router-view>
@@ -15,7 +15,6 @@
           <img src="static/img/album_tip.png">
 				</div>
 			</div>
-
 		</div>
 
 		<div class="albumlist-title">
@@ -222,60 +221,60 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-	#album{
-		margin-bottom: 4rem;
-	}
+    #album{
+    margin-bottom: 4rem;
+  }
 /*头部header*/
-	.albumlist-header {
-		width: 16rem;
-		height: 16rem;
-		position: relative;
-	}
-	.albumlist-header> .wrap {
-		width: 100%;
-		height: 100%;
-	}
-	.albumlist-header> .wrap img{
-		width: 100%;
-		height: 100%;
-	}
-	.albumlist-header> .wrap img:after{
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		left: 0;
-		top: 0;
-		content: url('/static/h5/static/img/placeholder_2.png');
-	}
-			
-	.albumlist-header>.tip-wrap{
-		position: absolute;
-		left: 0;
-		bottom: 0;
-		right: 0;
-		top: 0;
-		background-color: rgba(0,0,0,0.36);
-	}
-	.list-tip{
-		margin-top: 0.6rem;
-		height: 1.5rem;
-		/*background-color: rgba(0,0,0,0.36);*/
-	}
-	.img-wrap {
-		width: 1.5rem;
-		height: 1.5rem;
-		border-radius: 50%;
-		overflow: hidden;
-		margin: 0 0.6rem;
-		float: left;
-		background-color:url('/static/h5/static/img/placeholder_1.png'); 
-	}
-	.img-wrap  img{
-		width: 100%;
-		height: 100%;
-		float: left;
+  .albumlist-header {
+    width: 16rem;
+    height: 16rem;
     position: relative;
-	}
+  }
+  .albumlist-header> .wrap {
+    width: 100%;
+    height: 100%;
+  }
+  .albumlist-header> .wrap img{
+    width: 100%;
+    height: 100%;
+  }
+  .albumlist-header> .wrap img:after{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    content: url('/static/h5/static/img/placeholder_2.png');
+  }
+      
+  .albumlist-header>.tip-wrap{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    background-color: rgba(0,0,0,0.36);
+  }
+  .list-tip{
+    margin-top: 0.6rem;
+    height: 1.5rem;
+    /*background-color: rgba(0,0,0,0.36);*/
+  }
+  .img-wrap {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 0.6rem;
+    float: left;
+    background-color:url('/static/h5/static/img/placeholder_1.png'); 
+  }
+  .img-wrap  img{
+    width: 100%;
+    height: 100%;
+    float: left;
+    position: relative;
+  }
   .img-wrap  img:after{
     width: 100%;
     height: 100%;
@@ -284,39 +283,39 @@ export default {
     left: 0;
     content: url('/static/h5/static/img/placeholder_2.png');
   }
-	.descr {
-		float: left;
-		height: 100%;
-		text-align: center;
-		color:#ffffff;
-	}
-	.descr> h4{
-		font-size: 0.6rem;
-		text-align: left;
-		line-height: 1.5rem;
-		font-family: "PingFangSC-Medium";
-		overflow: hidden;
-		color: #000;
-		float: left;
-		margin-right: 0.675rem;
-	}
-	.descr> p {
-		float: left;
-		width: 0.6rem;
-		height: 0.6rem;
-		margin: 0.45rem 0;
-		display: block;
-		border-radius: 50%;
-	}
-	.descr> p >img{
-		width: 100%;
-		height: 100%;
-	}
+  .descr {
+    float: left;
+    height: 100%;
+    text-align: center;
+    color:#ffffff;
+  }
+  .descr> h4{
+    font-size: 0.6rem;
+    text-align: left;
+    line-height: 1.5rem;
+    font-family: "PingFangSC-Medium";
+    overflow: hidden;
+    color: #000;
+    float: left;
+    margin-right: 0.675rem;
+  }
+  .descr> p {
+    float: left;
+    width: 0.6rem;
+    height: 0.6rem;
+    margin: 0.45rem 0;
+    display: block;
+    border-radius: 50%;
+  }
+  .descr> p >img{
+    width: 100%;
+    height: 100%;
+  }
 
-	.p-tip {
-		position: absolute;
-		bottom: 0.6rem;
-		left: 0.6rem;
+  .p-tip {
+    position: absolute;
+    bottom: 0.6rem;
+    left: 0.6rem;
     height: 1.5rem;
     overflow: hidden;
   }
@@ -325,40 +324,40 @@ export default {
     line-height: 1.5rem;
 
   }
-	.p-tip >img{
+  .p-tip >img{
     height: 100%;
   }
 
 /*标题title*/
-	.albumlist-title{
-	   color: rgba(85,85,85,1);
-	   margin-top: 0.6rem;
-	}
-	.albumlist-title > h2{
-		padding-left: 0.6rem;
-		padding-right: 0.6rem;
-	  font-size: 0.9rem;
-	  color: rgba(85,85,85,1);
-	  font-family: "PingFangSC-Medium";
-	  text-align: left;
-	}
-	
-	.albumlist-title > p{
-		font-size: 0.6rem;
-		margin-top: 0.2rem;
-		padding-left: 0.6rem;
-		text-align: left;
-	}
+  .albumlist-title{
+     color: rgba(85,85,85,1);
+     margin-top: 0.6rem;
+  }
+  .albumlist-title > h2{
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    font-size: 0.9rem;
+    color: rgba(85,85,85,1);
+    font-family: "PingFangSC-Medium";
+    text-align: left;
+  }
+  
+  .albumlist-title > p{
+    font-size: 0.6rem;
+    margin-top: 0.2rem;
+    padding-left: 0.6rem;
+    text-align: left;
+  }
 
 /*内容content*/
-	.albumlist-content{
+  .albumlist-content{
 
-	}
-	.albumlist-content > .play{
-		margin-top: 0.6rem;
+  }
+  .albumlist-content > .play{
+    margin-top: 0.6rem;
     /*overflow: hidden;*/
     float: left;
-	}
+  }
   .play>i.playtrack {
     position: relative;
     background: rgba(0,0,0,1) no-repeat center;
@@ -383,7 +382,7 @@ export default {
     top: 10.8px;
   }
   .albumlist-content >div.all{
-  	float: left;
+    float: left;
     font-size: 0.6rem;
     font-family: "PingFangSC-Light";
     color: #555555;
@@ -391,48 +390,48 @@ export default {
     margin-left: 0.6rem;
   }
   .albumlist-content> .line{
-  	width: 100%;
-  	background-color: #f0f0f0;
-  	height: 1px;
-  	margin-top: 0.6rem;
-  	margin-bottom: 0.45rem;
-  	float: left;
+    width: 100%;
+    background-color: #f0f0f0;
+    height: 1px;
+    margin-top: 0.6rem;
+    margin-bottom: 0.45rem;
+    float: left;
   }
   .albumlist-content ul{
-  	width: 100%;
-  	overflow: hidden;
+    width: 100%;
+    overflow: hidden;
   }
   .albumlist-content ul >li{
-  	margin: 0.9rem 0;
-  	
+    margin: 0.9rem 0;
+    
   }
   .albumlist-content ul >li >a{
-  	margin-left: 0.6rem;
-  	display: flex;
-  	flex-direction: row;
-  	justify-content: flex-start;
-  	color: #555555;
+    margin-left: 0.6rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    color: #555555;
   }
   .albumlist-content ul >li >a span{
-  	width: 0.5rem;
-  	font-size: 0.6rem;
-  	color: #999999;
-  	font-family: "PingFangSC-Medium";
-  	display: flex;
-  	justify-content: center;
-  	align-items: center;
+    width: 0.5rem;
+    font-size: 0.6rem;
+    color: #999999;
+    font-family: "PingFangSC-Medium";
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .albumlist-content ul >li >a div:nth-child(2){
-  	width: 2.25rem !important;
-  	height: 2.25rem !important;
-  	border-radius: 0.3rem;
-  	margin-left: 0.6rem;
-  	overflow: hidden;
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    border-radius: 0.3rem;
+    margin-left: 0.6rem;
+    overflow: hidden;
   }
   .albumlist-content ul >li >a div:nth-child(2) >img{
-  	width: 100%;
-  	height: 100%;
-  	background-repeat: no-repeat center;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat center;
     position: relative;
   }
   .albumlist-content ul >li >a div:nth-child(2) >img:after{
@@ -444,32 +443,32 @@ export default {
     content: url('/static/h5/static/img/placeholder_2.png')
   }
   .albumlist-content ul >li >a div:nth-child(3){
-  	margin-left: 0.6rem;
-  	width: 11rem;
-  	overflow: hidden;
-  	display: flex;
-  	flex-direction: column;
-  	justify-content: space-around;
+    margin-left: 0.6rem;
+    width: 11rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
   }
   .albumlist-content ul >li >a div:nth-child(3) >h4 {
-  	font-size: 0.65rem;
-  	font-family: "PingFangSC-Medium";
+    font-size: 0.65rem;
+    font-family: "PingFangSC-Medium";
     overflow: hidden;
     text-align: left;
     width: 100%;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-	.albumlist-content ul >li >a div:nth-child(3) >p {
-		font-size: 12px;
-		color:#999999;
-  	font-family: "PingFangSC-Regular";
+  .albumlist-content ul >li >a div:nth-child(3) >p {
+    font-size: 12px;
+    color:#999999;
+    font-family: "PingFangSC-Regular";
     width: 100%;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-	}
-	.click{
-		color: #6178F0 !important;
-	}
+  }
+  .click{
+    color: #6178F0 !important;
+  }
 </style>

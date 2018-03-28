@@ -303,6 +303,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  /*@import '../../assets/css/artist_d.css'*/
   #artist-detail {
     margin-bottom: 4rem;
   }
@@ -396,7 +397,7 @@ export default {
     
   }*/
   .icon-play{
-    margin-left: 0.9rem;
+    margin-left: 1rem;
     line-height: 1.5rem;
 
   }

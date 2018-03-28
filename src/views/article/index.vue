@@ -145,52 +145,130 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
+  /* 列表详情公用 */
+  .m_listtags {
+    overflow: hidden;
+    height: 0.8rem;
+    line-height: 0.8rem;
+    font-family: "PingFangSC-Regular";
+  }
 
-@font-face{ font-family: "AvenirLTStd-Light"; src: url('../../../../fonts/AvenirLTStd-Light.otf')}   
-@font-face{ font-family: "AvenirLTStd-Medium"; src: url('../../../../fonts/AvenirLTStd-Medium.otf')}
-@font-face{ font-family: "AvenirLTStd-Black"; src: url('../../../../fonts/AvenirLTStd-Black.otf')}
+  .m_listtags>span {
+    height: 0.8rem;
+    line-height: 0.8rem;
+    overflow: hidden;
+    font-size: 0.6rem;
+    color: #999999;
+  }
 
-#article {margin-bottom: 78px; margin-top: -12px}
-.m_box{ box-sizing: border-box; }
-.m24{ margin: 24px 0 }
-.bolder{ font-weight: bolder; font-family: "AvenirLTStd-Medium","Roboto-Light","PingFangSC-Medium","Microsoft YaHei",Helvetica,sans-serif;}
+  .m_listtags>span:nth-child(1) {
+    float: left;
+    margin-right: 1.024rem;
+  }
+
+  .m_listtags>span:nth-child(2) {
+    width: 10rem;
+  }
+
+  .m_listtags>span:nth-child(2)>i {
+    float: left;
+    margin-right: 0.256rem;
+    line-height: 0.8rem;
+  }
+
+  .m_listtags>span>a,
+  .m_listtags>span>i {
+    height: 0.8rem;
+    line-height: 0.8rem;
+  }
+
+  .m_listtags>span>i {
+    margin-right: 0.15rem;
+    color: #cccccc;
+    font-size: 0.45rem;
+  }
+
+  .m_listtags>span>img {
+    float: left;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 0.45rem;
+    margin-right: 1.5px;
+  }
 
 
 
-.m_alist {
+/* 列表 */
+  @font-face {
+    font-family: "AvenirLTStd-Light";
+    src: url('../../../../fonts/AvenirLTStd-Light.otf')
+  }
+
+  @font-face {
+    font-family: "AvenirLTStd-Medium";
+    src: url('../../../../fonts/AvenirLTStd-Medium.otf')
+  }
+
+  @font-face {
+    font-family: "AvenirLTStd-Black";
+    src: url('../../../../fonts/AvenirLTStd-Black.otf')
+  }
+
+  #article {
+    margin-bottom: 78px;
+    margin-top: -12px
+  }
+
+  .m_box {
+    box-sizing: border-box;
+  }
+
+  .m24 {
+    margin: 24px 0
+  }
+
+  .bolder {
+    font-weight: bolder;
+    font-family: "AvenirLTStd-Medium", "Roboto-Light", "PingFangSC-Medium", "Microsoft YaHei", Helvetica, sans-serif;
+  }
+
+
+
+  .m_alist {
     padding: 0 0.6rem;
     box-sizing: border-box;
     overflow: hidden;
     width: 100%;
   }
-  
+
   .m_alist>li {
     width: 100%;
     overflow: hidden;
   }
-  
+
   .m_alist>li a {
     width: 100%;
     overflow: hidden;
   }
-  
+
   .m_alist>li+li {
     box-sizing: border-box;
     padding-top: 1.7rem;
   }
-  
+
   .m_alist>li>a>.wrap-img {
     width: 14.8rem;
     border-radius: 10px;
     overflow: hidden;
   }
-  
+
   .m_alist>li>a>.wrap-img>img {
     width: 100%;
     height: 100%;
     background-repeat: no-repeat center;
     position: relative;
   }
+
   .m_alist>li>a>.wrap-img>img:after {
     position: absolute;
     top: 0;
@@ -199,6 +277,7 @@ export default {
     height: 100%;
     content: url('/static/5/static/img/placeholder_2.png?width=500');
   }
+
   .m_alist>li>a>h1 {
     line-height: 27px;
     color: #555;
@@ -206,7 +285,7 @@ export default {
     padding: 14px 0 4px 0;
     text-align: justify;
   }
-  
+
   .m_alist>li>a>p {
     font-size: 14px;
     font-size: 14px;
@@ -219,50 +298,17 @@ export default {
     overflow: hidden;
     text-align: left;
   }
-  
-    .m_listtags {
-      overflow: hidden;
-      height: 0.8rem;
-      line-height: 0.8rem;
-      font-family: "PingFangSC-Regular";
-    }
-    .m_listtags>span {
-      height: 0.8rem;
-      line-height: 0.8rem;
-      overflow: hidden;
-      font-size: 0.6rem;
-      color: #999999;
-    }
-    .m_listtags>span:nth-child(1) {
-      float: left;
-      margin-right: 1.024rem;
-    }
-    .m_listtags>span:nth-child(2){
-      width: 10rem;
-    }
-    .m_listtags>span:nth-child(2)>i {
-      float: left;
-      margin-right: 0.256rem;
-      line-height: 0.8rem;
-    }
-    .m_listtags>span>a,
-    .m_listtags>span>i {
-      height: 0.8rem;
-      line-height:0.8rem;
-    }
-    .m_listtags>span>i {
-      margin-right: 0.15rem;
-      color: #cccccc;
-      font-size: 0.45rem;
-    }
-    .m_listtags>span>img {
-      float: left;
-      width: 0.45rem;
-      height: 0.45rem;
-      border-radius: 0.45rem;
-      margin-right:1.5px;
-    }
-    .load-state{ height: 30px; }
-    .load-state >img{height: 100%;text-align: center; margin: auto;}
+
+  .load-state {
+    height: 30px;
+  }
+
+  .load-state>img {
+    height: 100%;
+    text-align: center;
+    margin: auto;
+  }
+
+
 </style>
 

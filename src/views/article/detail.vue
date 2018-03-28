@@ -204,13 +204,69 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  #article-detail {margin-bottom: 70px;}
+ /* 列表详情公用 */
+  .m_listtags {
+    overflow: hidden;
+    height: 0.8rem;
+    line-height: 0.8rem;
+    font-family: "PingFangSC-Regular";
+  }
+
+  .m_listtags>span {
+    height: 0.8rem;
+    line-height: 0.8rem;
+    overflow: hidden;
+    font-size: 0.6rem;
+    color: #999999;
+  }
+
+  .m_listtags>span:nth-child(1) {
+    float: left;
+    margin-right: 1.024rem;
+  }
+
+  .m_listtags>span:nth-child(2) {
+    width: 10rem;
+  }
+
+  .m_listtags>span:nth-child(2)>i {
+    float: left;
+    margin-right: 0.256rem;
+    line-height: 0.8rem;
+  }
+
+  .m_listtags>span>a,
+  .m_listtags>span>i {
+    height: 0.8rem;
+    line-height: 0.8rem;
+  }
+
+  .m_listtags>span>i {
+    margin-right: 0.15rem;
+    color: #cccccc;
+    font-size: 0.45rem;
+  }
+
+  .m_listtags>span>img {
+    float: left;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 0.45rem;
+    margin-right: 1.5px;
+  }
+
+
+/* 详情 */
+  #article-detail {
+    margin-bottom: 70px;
+  }
+
   .header-artic-detail {
     position: relative;
     padding: 0px 18px;
     overflow: hidden;
   }
-  
+
   .header-song {
     position: absolute;
     top: -2.5rem;
@@ -223,7 +279,7 @@ export default {
     /*border: 0.01rem solid rgba(255, 255, 255, 0.14);
     box-shadow: 0px 0px 0.04rem 0.04rem;*/
   }
-  
+
   .header-song>div {
     position: absolute;
     top: 0.5rem;
@@ -233,14 +289,13 @@ export default {
     overflow: hidden;
     border-radius: 100%;
   }
-  
+
   .header-song>div>img {
     height: 100%;
     background-repeat: no-repeat;
     background-size: auto 100%;
-    /*margin-left: -4.4rem;*/
   }
-  
+
   .header-song>i.playtrack {
     position: absolute;
     position: relative;
@@ -248,40 +303,46 @@ export default {
     height: 3rem;
     top: 6rem;
     left: 6rem;
-    background: rgba(0,0,0,1) no-repeat center;
+    background: rgba(0, 0, 0, 1) no-repeat center;
     opacity: 0.724;
     border-radius: 50%;
     background-size: 100%;
     cursor: pointer;
   }
-  .header-song>i.playtrack> i {
-    color: rgba(255,255,255,1);
-    font-size:1.18rem;
+
+  .header-song>i.playtrack>i {
+    color: rgba(255, 255, 255, 1);
+    font-size: 1.18rem;
     position: absolute;
     top: 0.91rem;
     left: 1.08rem;
   }
+  .header-artic-detail > .m_listtags { padding-top: 14px;}
+  
   .rotate {
-    animation:rotaD 18s linear infinite;
-    -webkit-animation:rotaD 18s linear infinite;
-    -moz-animation:rotaD 18s linear infinite;
-    -ms-animation:rotaD 18s linear infinite;
-    -o-animation:rotaD 18s linear infinite;
+    animation: rotaD 18s linear infinite;
+    -webkit-animation: rotaD 18s linear infinite;
+    -moz-animation: rotaD 18s linear infinite;
+    -ms-animation: rotaD 18s linear infinite;
+    -o-animation: rotaD 18s linear infinite;
   }
-  .pause{ 
+
+  .pause {
     animation-play-state: paused;
     -webkit-animation-play-state: paused;
     -moz-animation-play-state: paused;
     -ms-animation-play-state: paused;
-    -o-animation-play-state: paused; 
+    -o-animation-play-state: paused;
   }
-  .running{ 
+
+  .running {
     animation-play-state: running;
     -webkit-animation-play-state: running;
     -moz-animation-play-state: running;
     -ms-animation-play-state: running;
-    -o-animation-play-state: running; 
+    -o-animation-play-state: running;
   }
+
   @keyframes rotaD {
     from {
       transform: rotate(0deg)
@@ -290,6 +351,7 @@ export default {
       transform: rotate(360deg)
     }
   }
+
   @-webkit-keyframes rotaD {
     0% {
       -webkit-transform: rotate(0deg)
@@ -307,6 +369,7 @@ export default {
       -moz-transform: rotate(360deg)
     }
   }
+
   @-o-keyframes rotaD {
     100% {
       -o-transform: rotate(0deg)
@@ -316,55 +379,13 @@ export default {
     }
   }
 
-  
+
   .header-artic-detail>h1 {
     font-size: 24px;
     font-family: "PingFangSC-Semibold"
   }
-  
-  .m_listtags {
-    font-size: 14px;
-    color: rgba(153, 153, 153, 1);
-    font-family: "PingFangSC-Regular";
-    padding-top: 14px;
-    font-size: 0.6rem;
-  }
-  .m_listtags>span {
-      height: 0.8rem;
-      line-height: 0.8rem;
-      overflow: hidden;
-      font-size: 0.6rem;
-      color: #999999;
-    }
-    .m_listtags>span:nth-child(1) {
-      float: left;
-      margin-right: 1.024rem;
-    }
-    .m_listtags>span:nth-child(2){
-      width: 10rem;
-    }
-    .m_listtags>span:nth-child(2)>i {
-      float: left;
-      margin-right: 0.256rem;
-      line-height: 0.8rem;
-    }
-    .m_listtags>span>a,
-    .m_listtags>span>i {
-      height: 0.8rem;
-      line-height:0.8rem;
-    }
-    .m_listtags>span>i {
-      margin-right: 0.15rem;
-      color: #cccccc;
-      font-size: 0.45rem;
-    }
-    .m_listtags>span>img {
-      float: left;
-      width: 0.45rem;
-      height: 0.45rem;
-      border-radius: 0.45rem;
-      margin-right:1.5px;
-    }
-  
-  </style>
 
+
+
+
+</style>

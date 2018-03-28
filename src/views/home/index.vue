@@ -538,6 +538,5 @@ export default {
   }
 
   #add-top{margin-top: -0.6rem;}
-
 </style>
 

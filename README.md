@@ -212,7 +212,10 @@ ajax 请求中不能直接播放 ===》 "if (this.isIOS()) {     // ios单独处
       
 ios audio 资源加载很慢 切换歌曲 资源太大 file320 调试为file192  资源格式调小   
       
-
+提取文件内css独立出来需注意其受 scoped 作用域影响。在每个vue内都加上 scoped 还是在同class时出现效果影响。
+1.不提取独立css 文件
+2.增加命名空间，区分样式
+3.在子组件也会有影响，详情请看官方文档
 
 ================== Q.js ====================
 http://www.xuanfengge.com/web-route-frame.html?utm_source=tuicool&utm_medium=referral
