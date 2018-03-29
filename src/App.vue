@@ -82,35 +82,35 @@ export default {
   },
 
   created() {
-    // if(!isMobile()){
-    //   if(this.$route.path === '/home'){
-    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
-    //   } else if(this.$route.path === '/artist'){
-    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!artistList'
-    //   } else if(this.$route.path === '/artist/detail'){
-    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!artistInfo/artistid=' + this.$route.query.id
-    //   } else if(this.$route.path === '/article'){
-    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!articleList'
-    //   } else if(this.$route.path === '/article/detail'){
-    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!articleInfo/id=' + this.$route.query.id
-    //   } else if(this.$route.path === '/hunting'){
-    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!volList'
-    //   } else if(this.$route.path === '/hunting/detail'){
-    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!volInfo/id=' + this.$route.query.id
-    //   } else if(this.$route.path === '/recomm-single'){
-    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!musicList'
-    //   } else if(this.$route.path === '/recomm-single/detail'){
-    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!musicInfo/id=' + this.$route.query.id
-    //   } else if(this.$route.name === 'bannerArticle'){
-    //      window.location.href = 'http://wawa.fm/static/wawa/index.html#!articleInfo/id=' + this.$route.params.id
-    //   } else if(this.$route.path === '/download'){
-    //      window.location.href = 'http://wawa.fm/static/wawa/app.html'
-    //   } else if(this.$route.path === '/about'){
-    //      window.location.href = 'http://wawa.fm/static/wawa/about.html'
-    //   } else {
-    //     window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
-    //   }
-    // }
+    if(!isMobile()){
+      if(this.$route.path === '/home'){
+         window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
+      } else if(this.$route.path === '/artist'){
+         window.location.href = 'http://wawa.fm/static/wawa/index.html#!artistList'
+      } else if(this.$route.path === '/artist/detail'){
+         window.location.href = 'http://wawa.fm/static/wawa/index.html#!artistInfo/artistid=' + this.$route.query.id
+      } else if(this.$route.path === '/article'){
+         window.location.href = 'http://wawa.fm/static/wawa/index.html#!articleList'
+      } else if(this.$route.path === '/article/detail'){
+         window.location.href = 'http://wawa.fm/static/wawa/index.html#!articleInfo/id=' + this.$route.query.id
+      } else if(this.$route.path === '/hunting'){
+         window.location.href = 'http://wawa.fm/static/wawa/index.html#!volList'
+      } else if(this.$route.path === '/hunting/detail'){
+         window.location.href = 'http://wawa.fm/static/wawa/index.html#!volInfo/id=' + this.$route.query.id
+      } else if(this.$route.path === '/recomm-single'){
+         window.location.href = 'http://wawa.fm/static/wawa/index.html#!musicList'
+      } else if(this.$route.path === '/recomm-single/detail'){
+         window.location.href = 'http://wawa.fm/static/wawa/index.html#!musicInfo/id=' + this.$route.query.id
+      } else if(this.$route.name === 'bannerArticle'){
+         window.location.href = 'http://wawa.fm/static/wawa/index.html#!articleInfo/id=' + this.$route.params.id
+      } else if(this.$route.path === '/download'){
+         window.location.href = 'http://wawa.fm/static/wawa/app.html'
+      } else if(this.$route.path === '/about'){
+         window.location.href = 'http://wawa.fm/static/wawa/about.html'
+      } else {
+        window.location.href = 'http://wawa.fm/static/wawa/index.html#!home'
+      }
+    }
     function isMobile () {
       if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
         return true
