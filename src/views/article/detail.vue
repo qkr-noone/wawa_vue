@@ -25,8 +25,7 @@
 
 
 <script type="es6">
-import axios from 'axios'
-import md5 from 'js-md5'
+import { vueH5, getGuid } from '../../common/utils'
 import { mapState, mapMutations } from 'vuex'
 export default {
 	name: 'article-detail',
@@ -85,29 +84,18 @@ export default {
       }
     },
     routeChange() {
-      const user_id = 0
-      const timestamp = Date.parse(new Date()) / 1000
-      const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/doc/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
-    
-      axios({
+      vueH5.taskAxios({
         method: 'get',
-        url: 'urlApi/app/v1/doc/info',
-        params: {
-          api_key: '0fcf845a413e11beb5606448eb8abbc4',
-          timestamp: timestamp,
-          user_id: user_id,
+        url: 'doc/info',
+        data: {
+          user_id: 0,
           id: this.$route.query.id
-        },
-        headers:{
-          'X-Requested-With': 'XMLHttpRequest',
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Authorization':'wawa ' + token
         }
-      }).then( rtn => {
+      },(rtn => {
           this.detailData = rtn.data
-          this.$refs.imgContent.style.content = 'url('+this.detailData.res_cover+')'
+          this.$refs.imgContent.style.content = 'url('+this.detailData.res_cover+'?width=500)'
           this.$refs.imgContent.style.marginLeft = '-4.4rem'
-      })
+      }))
     },
 
     addSongPlay(event){
@@ -115,60 +103,32 @@ export default {
           // IOS audio中ajax请求不能即时播放
           this.audio.play()
           this.audio.pause()          
-          const user_id = 0
-          const timestamp = Date.parse(new Date()) / 1000
-          const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/track/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
-          axios({
+          vueH5.taskAxios({
             method: 'get',
-            url: 'urlApi/app/v1/track/info',
-            params: {
-              api_key: '0fcf845a413e11beb5606448eb8abbc4',
-              timestamp: timestamp,
-              user_id: user_id,
+            url: 'track/info',
+            data: {
+              user_id: 0,
               id: event.srcElement.id
-            },
-            headers:{
-              'X-Requested-With': 'XMLHttpRequest',
-              'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-              'Authorization':'wawa ' + token
             }
-          }).then( rtn => {
+          },( rtn => {
             this.data = rtn.data
             this.setPlayerData(rtn.data)
             this.filterID(this.data)
             this.setCurrentIndex(this.currentIndex+1)
             this.audio.play()
             this.setPlayState(true)
-          })
+          }))
         }
         
     },
-    getGuid(){
-      var data = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
-            j = 0,
-            k = 0,
-            res1 = '',
-            res2 = '';
-        for (var i = 0; i < 10; i++) {
-            j = Math.floor(Math.random() * 36);
-            k = Math.floor(Math.random() * 36);
-            res1 += data[j];
-            res2 += data[k];
-        }
-        return res1 + new Date().getTime() + res2;
-    },
     addCount(){
-      const timestamp = Date.parse(new Date()) / 1000
-      const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/log/add@3ad3ebb04b5c94cd234e16a6aef9c8ae')
       if(!localStorage.getItem('GUID')){
-        localStorage.setItem('GUID', this.getGuid())
+        localStorage.setItem('GUID', getGuid())
       }      
-      axios({
+      vueH5.taskAxiosForm({
         method: 'post',
-        url: 'urlApi/app/v1/log/add',
+        url: 'log/add',
         data: {
-          api_key: '0fcf845a413e11beb5606448eb8abbc4',
-          timestamp: timestamp,
           user_id: 0,
           product: 1,
           platform: 3,
@@ -176,25 +136,7 @@ export default {
           source_type: 4,
           source_id: this.$route.query.id,      
           category: 7
-        },
-        transformRequest: [
-          function(data){
-            let ret = ''
-            for (let it in data){
-              ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-            }
-            return ret
-          }
-        ],
-        headers:{
-          'X-Requested-With': 'XMLHttpRequest',
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Authorization':'wawa ' + token
         }
-      }).then( rtn => {
-        // console.log(rtn.data)
-      }).catch( rtn => {
-        // console.log(rtn.error)
       })
     },
     selected: function(item) {

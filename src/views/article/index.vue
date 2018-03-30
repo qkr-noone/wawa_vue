@@ -10,20 +10,7 @@
       v-infinite-scroll="loadMore"
       infinite-scroll-disabled="loading"
       infinite-scroll-distance="10">
-          <li v-for="(item, index) in articleData">
-          <router-link :to="{ path:'/article/detail', query: {id: item.id} }">
-            <div class="wrap-img"><img :src="item.res_cover + '?width=500'" /></div>
-            <h1 class="bolder">{{item.from_user_nickname}}：{{ item.title }}</h1>
-            <div class="m_listtags">
-              <span>文 / {{ item.author }}</span>
-              <span>
-                <i class="icon-view"></i>
-                <p>{{ item.view_count }}</p>
-              </span>
-            </div>
-            <p>{{item.description}}</p>
-            </router-link>
-          </li>
+          <recomBox :item="item" v-for="(item, index) in articleData"></recomBox>
       </ul>
 
       <div class="load-state" v-show="loadState">
@@ -34,9 +21,9 @@
 </template>
 
 <script type="es6">
-import axios from 'axios'
-import md5 from 'js-md5'
+import { vueH5 } from '../../common/utils'
 import { mapState, mapMutations } from 'vuex'
+import recomBox from '../../components/recomBox'
 export default {
   data(){
     return {
@@ -47,34 +34,21 @@ export default {
       loadState: false
     }
   },
+  components: { recomBox  },
   created() {
-    const timestamp = Date.parse(new Date()) / 1000
-    const category = 4
-    // const page = 1
-    const size = 10
-    const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/doc/list@3ad3ebb04b5c94cd234e16a6aef9c8ae') 
-    axios({
+    vueH5.taskAxios({
       method: 'get',
-      // urlApi=http://wawa.fm
-      url: 'urlApi/app/v1/doc/list',
-      params: {
-        api_key: '0fcf845a413e11beb5606448eb8abbc4',
-        timestamp: timestamp,
+      url: 'doc/list',
+      data: {
         page: this.page,
-        size: size,
-        category: category
-      },
-      headers:{
-        'X-Requested-With': 'XMLHttpRequest',
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        // 'Access-Control-Allow-Origin':'http://localhost:8080',
-        'Authorization':'wawa ' + token
+        size: 10,
+        category: 4
       }
-    }).then( rtn => {
+    }, ( rtn => {
         this.articleData = rtn.data
-    }).catch( rtn => {
+    }),( rtn => {
       console.log(rtn.error)
-    })
+    }))
   },
   activated() {
     this.flag = true
@@ -97,106 +71,39 @@ export default {
     ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
     loadMore() {
       if (this.flag) {
-        this.loading = true;
+        this.loading = true
         this.loadState = true
         setTimeout(() => {
-        this.page++
-        const timestamp = Date.parse(new Date()) / 1000
-        const category = 4
-        const size = 10
-        const user_id = ''
-        const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/doc/list@3ad3ebb04b5c94cd234e16a6aef9c8ae')
-        axios({
-          method: 'get',
-          // urlApi=http://wawa.fm
-          url: 'urlApi/app/v1/doc/list',
-          params: {
-            api_key: '0fcf845a413e11beb5606448eb8abbc4',
-            timestamp: timestamp,
-            page: this.page,
-            size: size,
-            category: category
-          },
-          headers:{
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Access-Control-Allow-Origin':'http://localhost:8080',
-            'Authorization':'wawa ' + token
-          }
-        }).then( rtnData => {
-            if (rtnData.data.length) {
-              // console.log(rtnData.data.length)
-              this.newLoad = rtnData.data
-              for (let i =0; i < rtnData.data.length; i++) {
-                this.articleData.push(this.newLoad[i]);
-              }
-            } else {
+          this.page++
+          vueH5.taskAxios({
+            method: 'get',
+            url: 'doc/list',
+            data: {
+              page: this.page,
+              size: 10,
+              category: 4
+            }
+          },( rtnData => {
+              if (rtnData.data.length) {
+                this.newLoad = rtnData.data
+                for (let i =0; i < rtnData.data.length; i++) {
+                  this.articleData.push(this.newLoad[i]);
+                }
+              } else {
+                this.loadState = false
+                this.flag = false
+                return false
+              }              
+              this.loading = false
               this.loadState = false
-              this.flag = false
-              return false
-            }              
-          this.loading = false;
-          this.loadState = false
-        })
-        }, 2500);
+          }))
+        }, 2500)
       }
     }
   }
 }
 </script>
 <style lang='scss' scoped>
-  /* 列表详情公用 */
-  .m_listtags {
-    overflow: hidden;
-    height: 0.8rem;
-    line-height: 0.8rem;
-    font-family: "PingFangSC-Regular";
-  }
-
-  .m_listtags>span {
-    height: 0.8rem;
-    line-height: 0.8rem;
-    overflow: hidden;
-    font-size: 0.6rem;
-    color: #999999;
-  }
-
-  .m_listtags>span:nth-child(1) {
-    float: left;
-    margin-right: 1.024rem;
-  }
-
-  .m_listtags>span:nth-child(2) {
-    width: 10rem;
-  }
-
-  .m_listtags>span:nth-child(2)>i {
-    float: left;
-    margin-right: 0.256rem;
-    line-height: 0.8rem;
-  }
-
-  .m_listtags>span>a,
-  .m_listtags>span>i {
-    height: 0.8rem;
-    line-height: 0.8rem;
-  }
-
-  .m_listtags>span>i {
-    margin-right: 0.15rem;
-    color: #cccccc;
-    font-size: 0.45rem;
-  }
-
-  .m_listtags>span>img {
-    float: left;
-    width: 0.45rem;
-    height: 0.45rem;
-    border-radius: 0.45rem;
-    margin-right: 1.5px;
-  }
-
-
 
 /* 列表 */
   @font-face {
@@ -241,62 +148,9 @@ export default {
     width: 100%;
   }
 
-  .m_alist>li {
-    width: 100%;
-    overflow: hidden;
-  }
-
-  .m_alist>li a {
-    width: 100%;
-    overflow: hidden;
-  }
-
   .m_alist>li+li {
     box-sizing: border-box;
     padding-top: 1.7rem;
-  }
-
-  .m_alist>li>a>.wrap-img {
-    width: 14.8rem;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .m_alist>li>a>.wrap-img>img {
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat center;
-    position: relative;
-  }
-
-  .m_alist>li>a>.wrap-img>img:after {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    content: url('/static/5/static/img/placeholder_2.png?width=500');
-  }
-
-  .m_alist>li>a>h1 {
-    line-height: 27px;
-    color: #555;
-    font-size: 18px;
-    padding: 14px 0 4px 0;
-    text-align: justify;
-  }
-
-  .m_alist>li>a>p {
-    font-size: 14px;
-    font-size: 14px;
-    color: #666;
-    line-height: 22px;
-    margin-top: 8px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
-    overflow: hidden;
-    text-align: left;
   }
 
   .load-state {

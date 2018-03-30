@@ -46,8 +46,7 @@
 </template>
 
 <script type="es6">
-import axios from 'axios'
-import md5 from 'js-md5'
+import { vueH5, getGuid } from './common/utils'
 import { mapState, mapMutations } from 'vuex'
 import router from './router'
 import { Swipe,SwipeItem,InfiniteScroll,Lazyload,Toast } from 'mint-ui'
@@ -120,48 +119,31 @@ export default {
     }
 
     // this.$route.query.track = 17050000132
-    // 单曲进入
+    // 单曲进入  Q.....没有下一首
     if (this.$route.query.track) {
       const singId = this.$route.query.track
       const user_id = 0
-      const timestamp = Date.parse(new Date()) / 1000
-      const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/track/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
-      axios({
-        method: 'get',
-        // urlApi=http://wawa.fm
-        url: 'urlApi/app/v1/track/info',
-        params: {
-          api_key: '0fcf845a413e11beb5606448eb8abbc4',
-          timestamp: timestamp,
-          user_id: user_id,
-          id: singId
-        },
-        headers:{
-          'X-Requested-With': 'XMLHttpRequest',
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Authorization':'wawa ' + token
-        }
-      }).then( rtn => {
-          this.setPlayerData(rtn.data)
-          this.setPlayState(true)
-      })
+      vueH5.taskAxios({
+        url: 'track/info',
+        data: { user_id: 0,id: singId }
+      },(rtn => {
+        this.setPlayerData(rtn.data)
+        this.setPlayState(true)
+      }))
     } else {
-      // 歌单
-
       //默认歌单
       this.playList.push(this.defaultData)
       this.setPlayerData(this.playList[this.currentIndex+1])
       // this.setPlayState(false)
       // currentIndex 默认为-1 
       //替换默认歌单(!!!在created 时才替换  如跳过会push)
-      this.loadData()
+      this.loadData() //歌单
     }
 
   },
 
   mounted() {
     this.setRouterUrl(this.$route.path)
-
   },
 
   //  Q: 1. 初始播放按钮.. 2.初始播放列表... 3.播放状态只修改，不刷新时，自动播放...
@@ -203,31 +185,19 @@ export default {
     },
     //加载播放列表
     loadData() {
-      const timestamp = Date.parse(new Date()) / 1000
-      const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/home/radio@3ad3ebb04b5c94cd234e16a6aef9c8ae') 
-      axios({
-        method: 'get',
-        url: 'urlApi/app/v1/home/radio',
-        params: {
-          api_key: '0fcf845a413e11beb5606448eb8abbc4',
-          timestamp: timestamp
-        },
-        headers:{
-          'X-Requested-With': 'XMLHttpRequest',
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Authorization':'wawa ' + token
-        }
-      }).then( rtn => {
-          this.setPlayList(rtn.data)
-      })
+      vueH5.taskAxios({
+        url:'home/radio',
+        method: 'get'
+      },(rtn => {
+        this.setPlayList(rtn.data)
+      }))
     },
 
     // 播放暂停
     playPause: function(){
       let audio = this.$refs.audio
       if(this.playState){
-        // console.log(22) 点击后暂停
-        audio.pause()
+        audio.pause() // 点击后暂停
         this.setPlayState(false)
       }else{
         if(this.playerData.file128)
@@ -266,8 +236,7 @@ export default {
     },
     
     //播放结束
-    audioEnd: function() {
-      
+    audioEnd: function() {      
       if(this.playList.length){        
         this.next()
       } else{
@@ -275,34 +244,16 @@ export default {
         console.log('..播放结束')
       }
     },
-    //生成电脑随机的GUID
-    getGuid(){
-        var data = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
-          j = 0,
-          k = 0,
-          res1 = '',
-          res2 = '';
-          for (var i = 0; i < 10; i++) {
-              j = Math.floor(Math.random() * 36);
-              k = Math.floor(Math.random() * 36);
-              res1 += data[j];
-              res2 += data[k];
-          }
-          return res1 + new Date().getTime() + res2;
-    },
+    
     addCount(){
-        const timestamp = Date.parse(new Date()) / 1000
-        const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/log/add@3ad3ebb04b5c94cd234e16a6aef9c8ae')
         if(!localStorage.getItem('GUID')){
-          localStorage.setItem('GUID', this.getGuid())
+          localStorage.setItem('GUID', getGuid())
         }
         
-        axios({
+        vueH5.taskAxiosForm({
+          url: 'log/add',
           method: 'post',
-          url: 'urlApi/app/v1/log/add',
           data: {
-            api_key: '0fcf845a413e11beb5606448eb8abbc4',
-            timestamp: timestamp,
             user_id: 0,
             product: 1,
             platform: 3,
@@ -310,25 +261,7 @@ export default {
             source_id: this.playerData.id,
             unionid: localStorage.getItem('GUID'),
             category: 1
-          },
-          transformRequest: [
-            function(data){
-              let ret = ''
-              for (let it in data){
-                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-              }
-              return ret
-            }
-          ],
-          headers:{
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization':'wawa ' + token
           }
-        }).then( rtn => {
-          // console.log(rtn.data)
-        }).catch( rtn => {
-          // console.log(rtn.error)
         })
     }
 

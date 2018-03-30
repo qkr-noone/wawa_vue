@@ -20,8 +20,6 @@
 	</div>
 </template>
 <script type="es6">
-	import md5 from 'js-md5'	
-	import axios from 'axios'
 	import { mapState, mapMutations } from 'vuex'
 	import router from '../../router'
 	export default {

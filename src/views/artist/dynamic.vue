@@ -1,8 +1,8 @@
 <template>
 	<div id="dynamic">
-    <div class="dy-content" v-for="(item,index) in dynamicData" @click="detail(item.id)">
+    <div class="dy-content" v-for="(item,index) in dynamicData" > <!-- @click="detail(item.id)" -->
       <div class="wrap">
-        <img :src="item.res_cover">
+        <img :src="item.res_cover +'?width=500'">
       </div>
       <h2 class="bolder">{{item.title}}</h2>
       <p>{{item.description}}</p>
@@ -27,8 +27,7 @@
 	</div>
 </template>
 <script type="es6">
-import axios from 'axios'
-import md5 from 'js-md5'
+import { vueH5 } from '../../common/utils'
 import { mapState, mapMutations } from 'vuex'
 export default {
 	data(){
@@ -36,31 +35,19 @@ export default {
 			dynamicData: ''
 		}
 	},
-  created() {
-    const timestamp = Date.parse(new Date()) / 1000
-    const page = 1 
-    const size = 10
-    const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/doc/listbyuid@3ad3ebb04b5c94cd234e16a6aef9c8ae')
-    axios({
+  created() { //点击后跳转到banner/article content 存在外部链接
+    vueH5.taskAxios({
       method: 'get',
-      url: 'urlApi/app/v1/doc/listbyuid',
-      params: {
-	      api_key: '0fcf845a413e11beb5606448eb8abbc4',
-        timestamp: timestamp,
-        page: page,
-        size: size,
+      url: 'doc/listbyuid',
+      data: {
+        page: 1,
+        size: 10,
         category: 5,
         user_id: this.$route.query.id
-      },
-      headers:{
-        'X-Requested-With': 'XMLHttpRequest',
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Authorization':'wawa ' + token
       }
-    }).then( rtn => {
+    },( rtn => {
         this.dynamicData = rtn.data
-        console.log(this.dynamicData)
-    })
+    }))
   },
   activated() {
   },

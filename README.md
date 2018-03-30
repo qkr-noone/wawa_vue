@@ -217,7 +217,46 @@ ios audio 资源加载很慢 切换歌曲 资源太大 file320 调试为file192 
 2.增加命名空间，区分样式
 3.在子组件也会有影响，详情请看官方文档
 
+### vue 命令行报错“Do not use ‘new’ for side effects“
+开始学习vue.js 对别人的项目敲，一路报错
+
+1.命令行报错“Do not use ‘new’ for side effects“
+
+main.js 的代码是 【没有用ESLint检查运行是没有问题的，使用了ESLint就会报标题的错误】
+
+new Vue({
+  router,
+  el: "#app",
+  render: h => h(App)
+})
+解决方法
+
+
+let vRouter = new Vue({
+    router,
+    el: '#app',
+    render: h => h(App)
+})
+Vue.use({
+    vRouter
+})
+
+### 在axios 请求时 如需转参数数据格式
+可以使用
+transformRequest: [
+  function (data) {
+    let ret = ''
+    for (let it in data) {
+      ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+    }
+    return ret
+  }
+]
+但需注意 参数的对象params===>Query String 与data（transformRequset）===> Form Data
+详见（common/ajax.js）
+
 ================== Q.js ====================
+
 http://www.xuanfengge.com/web-route-frame.html?utm_source=tuicool&utm_medium=referral
 
 1. Q.reg(注册路由)

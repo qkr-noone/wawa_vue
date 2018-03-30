@@ -23,16 +23,16 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 8083,
+    port: 8085,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-       '/urlApi': {
-         target: 'http://wawa.fm',
-         changeOrigin: true,
-         pathRewrite: {                //需要rewrite重写的, 如果在服务器端做了处理则可以不要这段
-         '^/urlApi': ''
+      '/urlApi': {
+        target: 'http://wawa.fm',
+        changeOrigin: true,
+        pathRewrite: { //需要rewrite重写的, 如果在服务器端做了处理则可以不要这段
+          '^/urlApi': ''
         }
       }
     },

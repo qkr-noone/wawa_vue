@@ -7,7 +7,7 @@
         
       <div class="detail-cont">
         <div class="detail-wrap">
-          <img :src="playerData.res_cover">
+          <img :src="playerData.res_cover +'?width=500'">
         </div>
         <!-- <marquee class ="marquee" scrollamount="1" direction="Left"> -->
         <h4 class="bolder">{{playerData.songname}}</h4>
@@ -69,8 +69,7 @@
 </template>
 
 <script type="es6">
-  import axios from 'axios'
-  import md5 from 'js-md5'
+  import { vueH5, getGuid } from '../../common/utils'
   import { mapState, mapMutations } from 'vuex'
   import router from '../../router'
   export default {
@@ -262,34 +261,15 @@
         }
         window.location.href = '//wawa.fm:8088/static/app/wawa/isp.html'+'?cucc=' + this.playerData.cucc_code +'&cmcc='+ this.playerData.cmcc_code + '&ctcc=' + this.playerData.ctcc_code +'&uid=0'
       },
-      //生成电脑随机的GUID
-      getGuid(){
-        var data = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
-              j = 0,
-              k = 0,
-              res1 = '',
-              res2 = '';
-          for (var i = 0; i < 10; i++) {
-              j = Math.floor(Math.random() * 36);
-              k = Math.floor(Math.random() * 36);
-              res1 += data[j];
-              res2 += data[k];
-          }
-          return res1 + new Date().getTime() + res2;
-      },
+      
       addCount(){
-        const timestamp = Date.parse(new Date()) / 1000
-        const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/log/add@3ad3ebb04b5c94cd234e16a6aef9c8ae')
         if(!localStorage.getItem('GUID')){
-          localStorage.setItem('GUID', this.getGuid())
-        }
-        
-        axios({
+          localStorage.setItem('GUID', getGuid())
+        }        
+        vueH5.taskAxiosForm({
           method: 'post',
-          url: 'urlApi/app/v1/log/add',
+          url: 'log/add',
           data: {
-            api_key: '0fcf845a413e11beb5606448eb8abbc4',
-            timestamp: timestamp,
             user_id: 0,
             product: 1,
             platform: 3,
@@ -297,25 +277,7 @@
             source_id: this.playerData.id,
             unionid: localStorage.getItem('GUID'),
             category: 1
-          },
-          transformRequest: [
-            function(data){
-              let ret = ''
-              for (let it in data){
-                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-              }
-              return ret
-            }
-          ],
-          headers:{
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization':'wawa ' + token
           }
-        }).then( rtn => {
-          console.log(rtn.data)
-        }).catch( rtn => {
-          console.log(rtn.error)
         })
       }
     },

@@ -54,8 +54,6 @@
 </template>
 
 <script type="es6">
-	import md5 from 'js-md5'	
-	import axios from 'axios'
 	import router from '../../router'
 	import { mapState, mapMutations } from 'vuex'
 	export default {

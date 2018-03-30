@@ -23,8 +23,7 @@
 
 
 <script type="es6">
-import axios from 'axios'
-import md5 from 'js-md5'
+import { vueH5 } from '../../common/utils'
 import { mapState, mapMutations } from 'vuex'
 export default {
 	data(){
@@ -36,28 +35,16 @@ export default {
 		}
 	},
   created() {
-    const timestamp = Date.parse(new Date()) / 1000
-    const size = 10
-    const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/track/recommend_list@3ad3ebb04b5c94cd234e16a6aef9c8ae')
-    axios({
+    vueH5.taskAxios({
       method: 'get',
-      // urlApi=http://wawa.fm
-      url: 'urlApi/app/v1/track/recommend_list',
-      params: {
-	      api_key: '0fcf845a413e11beb5606448eb8abbc4',
-        timestamp: timestamp,
-        size: size,
+      url: 'track/recommend_list',
+      data: {
+        size: 10,
         page:this.page
-      },
-      headers:{
-        'X-Requested-With': 'XMLHttpRequest',
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        // 'Access-Control-Allow-Origin':'http://localhost:8080',
-        'Authorization':'wawa ' + token
       }
-    }).then( rtn => {
+    },( rtn => {
         this.recommSong = rtn.data
-    }) 
+    })) 
 
   },
   // 防止跳出页面后滚动继续加载
@@ -84,41 +71,27 @@ export default {
     	if (this.flag) {
         this.loading = true;
         setTimeout(() => {
-        this.page++
-        const timestamp = Date.parse(new Date()) / 1000
-        const size = 10
-        const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/track/recommend_list@3ad3ebb04b5c94cd234e16a6aef9c8ae')
-       
-        if(this.databaseList){
-          axios({
-            method: 'get',
-            // urlApi=http://wawa.fm
-            url: 'urlApi/app/v1/track/recommend_list',
-            params: {
-              api_key: '0fcf845a413e11beb5606448eb8abbc4',
-              timestamp: timestamp,
-              page: this.page,
-              size: size
-            },
-            headers:{
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Access-Control-Allow-Origin':'http://localhost:8080',
-            'Authorization':'wawa ' + token
-            }
-          }).then( rtnData => {
-              if (rtnData.data.length) {
-                this.newLoad = rtnData.data
-                for (let i =0; i < rtnData.data.length; i++) {
-                  this.recommSong.push(this.newLoad[i]);
-                }
-              } else {
-                return this.databaseList=false
+          this.page++       
+          if(this.databaseList){
+            vueH5.taskAxios({
+              method: 'get',
+              url: 'track/recommend_list',
+              data: {
+                page: this.page,
+                size: 10
               }
-              this.loading = false;
-          })
-        }
-                  
+            },( rtnData => {
+                if (rtnData.data.length) {
+                  this.newLoad = rtnData.data
+                  for (let i =0; i < rtnData.data.length; i++) {
+                    this.recommSong.push(this.newLoad[i]);
+                  }
+                } else {
+                  return this.databaseList=false
+                }
+                this.loading = false;
+            }))
+          }                  
         }, 2500);
       }
     }

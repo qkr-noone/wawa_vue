@@ -46,8 +46,7 @@
 	</div>
 </template>
 <script type="es6">
-import axios from 'axios'
-import md5 from 'js-md5'
+import { vueH5 } from '../../common/utils'
 import { mapState, mapMutations } from 'vuex'
 export default {
 	data(){
@@ -57,29 +56,17 @@ export default {
 		}
 	},
   created() {
-    const timestamp = Date.parse(new Date()) / 1000
-    const page = 1 
-    const size = 10
-    const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/mp/photo/list@3ad3ebb04b5c94cd234e16a6aef9c8ae')
-    axios({
+    vueH5.taskAxios({
       method: 'get',
-      url: 'urlApi/app/v1/mp/photo/list',
-      params: {
-	      api_key: '0fcf845a413e11beb5606448eb8abbc4',
-        timestamp: timestamp,
-        page: page,
-        size: size,
+      url: 'mp/photo/list',
+      data: {
+        page: 1,
+        size: 10,
         user_id: this.$route.query.id
-      },
-      headers:{
-        'X-Requested-With': 'XMLHttpRequest',
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Authorization':'wawa ' + token
       }
-    }).then( rtn => {
+    },( rtn => {
         this.photoData = rtn.data
-        console.log(this.photoData)
-    })
+    }))
   },
   activated() {
   },

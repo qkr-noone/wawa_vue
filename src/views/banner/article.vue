@@ -9,7 +9,7 @@
 			<p>文 / {{bannerArticle.author}}</p>
 			<p>{{bannerArticle.review_at | dateFormat}} &nbsp;&nbsp;&nbsp;&nbsp;{{bannerArticle.view_count}}人看过</p>
 			<div>
-				<img :src="bannerArticle.res_cover">
+				<img :src="bannerArticle.res_cover +'?width=500'">
 			</div>
 		</div>
 		<div class="content" v-html="bannerArticle.content" @click="addSongPlay($event)">
@@ -62,8 +62,7 @@
 </template>
 
 <script type="es6">
-	import md5 from 'js-md5'
-	import axios from 'axios'
+import { vueH5, getGuid } from '../../common/utils'
 	import { mapState, mapMutations } from 'vuex'
 	export default {
 		data() {
@@ -89,59 +88,20 @@
 			...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
 
   	  routeChange() {
-    		let timestamp = Date.parse(new Date()) / 1000
-    		let token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/doc/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
-
-    		axios({
+    		vueH5.taskAxios({
     		  method: 'get',
-    		  // urlApi=http://wawa.fm
-    		  url: 'urlApi/app/v1/doc/info',
-    		  params: {
-	  		    api_key: '0fcf845a413e11beb5606448eb8abbc4',
-    		    timestamp: timestamp,
+    		  url: 'doc/info',
+    		  data: {
     		    user_id: 0,
     		    category: 2,
     		    id: this.$route.params.id
-    		  },
-    		  headers:{
-      		  'X-Requested-With': 'XMLHttpRequest',
-      		  'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      	  	// 'Access-Control-Allow-Origin':'http://localhost:8080',
-      	  	'Authorization':'wawa ' + token
-      		}
-    		}).then( rtn => {
+    		  }
+    		},( rtn => {
         	this.bannerArticle = rtn.data
-        	// console.log(this.bannerArticle)
-        	/*timestamp = Date.parse(new Date())
-        	token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/comment/list@3ad3ebb04b5c94cd234e16a6aef9c8ae')
-        	axios({
-    	  		method: 'get',
-    	  		// urlApi=http://wawa.fm
-    	  		url: 'urlApi/app/v1/comment/list',
-    	  		params: {
-	  	  		  api_key: '0fcf845a413e11beb5606448eb8abbc4',
-    	  		  timestamp: timestamp,
-    	  		  page: 1,
-    	  		  size: 10,
-    	  		  source_type: 2,
-    	  		  source_id: this.bannerArticle.id
-    	  		},
-    	  		headers:{
-      	  		'X-Requested-With': 'XMLHttpRequest',
-      	  		'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        			// 'Access-Control-Allow-Origin':'http://localhost:8080',
-        			'Authorization':'wawa ' + token
-      			}
-    			}).then( rtnData => {
-        		this.bannerComment = rtnData.data
-        		console.log(this.bannerComment)
-    			})*/
-    		})
+    		}))
   	  },
 
   	  addSongPlay(event){
-  	  	// console.log(event.srcElement.id.length)
-  	  	// console.log(event.srcElement.id)
         if(event){ // Q 1. 防止报错..
   	  	  if(event.target.getAttribute('id').length===11&&event.target.nodeName === 'I'){
   	  		let instance = this.$toast('即将播放..')
@@ -152,26 +112,14 @@
           // IOS audio
           this.audio.play()
           this.audio.pause()
-  	  		const user_id = 0
-      		const timestamp = Date.parse(new Date()) / 1000
-      		const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/track/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
-      		axios({
+      		vueH5.taskAxios({
       		 	method: 'get',
-      		 	// urlApi=http://wawa.fm
-      		 	url: 'urlApi/app/v1/track/info',
-      		 	params: {
-      		 	  api_key: '0fcf845a413e11beb5606448eb8abbc4',
-      		 	  timestamp: timestamp,
-      		 	  user_id: user_id,
+      		 	url: 'track/info',
+      		 	data: {
+      		 	  user_id: 0,
       		 	  id: event.srcElement.id
-      		 	},
-      		 	headers:{
-      		 	  'X-Requested-With': 'XMLHttpRequest',
-      		 	  'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      		 	  // 'Access-Control-Allow-Origin':'http://localhost:8080',
-      		 	  'Authorization':'wawa ' + token
       		 	}
-      		}).then( rtn => {
+      		},( rtn => {
       			this.data = rtn.data
             this.playList.push(rtn.data)
             let index = this.playList.length - 1
@@ -179,36 +127,18 @@
       			this.setPlayerData(this.playList[index])
             this.audio.play()
       			this.setPlayState(true)
-      	  })
+      	  }))
   	  	  }
         }
   	  },
-      getGuid(){
-        var data = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
-            j = 0,
-            k = 0,
-            res1 = '',
-            res2 = '';
-        for (var i = 0; i < 10; i++) {
-            j = Math.floor(Math.random() * 36);
-            k = Math.floor(Math.random() * 36);
-            res1 += data[j];
-            res2 += data[k];
-        }
-        return res1 + new Date().getTime() + res2;
-      },
       addCount(){
-        const timestamp = Date.parse(new Date()) / 1000
-        const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/log/add@3ad3ebb04b5c94cd234e16a6aef9c8ae')
         if(!localStorage.getItem('GUID')){
-          localStorage.setItem('GUID', this.getGuid())
+          localStorage.setItem('GUID', getGuid())
         }      
-        axios({
+        vueH5.taskAxiosForm({
           method: 'post',
-          url: 'urlApi/app/v1/log/add',
+          url: 'log/add',
           data: {
-            api_key: '0fcf845a413e11beb5606448eb8abbc4',
-            timestamp: timestamp,
             user_id: 0,
             product: 1,
             platform: 3,
@@ -216,25 +146,7 @@
             source_type: 4,
             source_id: this.$route.params.id,      
             category: 7
-          },
-          transformRequest: [
-            function(data){
-              let ret = ''
-              for (let it in data){
-                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-              }
-              return ret
-            }
-          ],
-          headers:{
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization':'wawa ' + token
           }
-        }).then( rtn => {
-          // console.log(rtn.data)
-        }).catch( rtn => {
-          // console.log(rtn.error)
         })
       }
 

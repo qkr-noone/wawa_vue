@@ -99,8 +99,7 @@
 </template>
 
 <script type="es6">
-import axios from 'axios'
-import md5 from 'js-md5'
+import { vueH5, getGuid } from '../../common/utils'
 import { mapState, mapMutations } from 'vuex'
 export default {
 	data(){
@@ -122,7 +121,7 @@ export default {
   filters: {
     imgFormat(value){
       if(value){ 
-        return value.headimg
+        return value.headimg + '?width=500'
       }
     },
     viewFormat(value){
@@ -206,32 +205,14 @@ export default {
     allContent: function() {
       this.over = !this.over
     },
-    getGuid(){
-      var data = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
-            j = 0,
-            k = 0,
-            res1 = '',
-            res2 = '';
-        for (var i = 0; i < 10; i++) {
-            j = Math.floor(Math.random() * 36);
-            k = Math.floor(Math.random() * 36);
-            res1 += data[j];
-            res2 += data[k];
-        }
-        return res1 + new Date().getTime() + res2;
-    },
     addCount(){
-      const timestamp = Date.parse(new Date()) / 1000
-      const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/log/add@3ad3ebb04b5c94cd234e16a6aef9c8ae')
       if(!localStorage.getItem('GUID')){
-        localStorage.setItem('GUID', this.getGuid())
+        localStorage.setItem('GUID', getGuid())
       }
-      axios({
+      vueH5.taskAxiosForm({
         method: 'post',
-        url: 'urlApi/app/v1/log/add',
+        url: 'log/add',
         data: {
-          api_key: '0fcf845a413e11beb5606448eb8abbc4',
-          timestamp: timestamp,
           user_id: 0,
           product: 1,
           platform: 3,
@@ -239,55 +220,15 @@ export default {
           source_type: 5,
           source_id: this.$route.query.id,
           category: 7
-        },
-        transformRequest: [
-          function(data){
-            let ret = ''
-            for (let it in data){
-              ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-            }
-            return ret
-          }
-        ],
-        headers:{
-          'X-Requested-With': 'XMLHttpRequest',
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Authorization':'wawa ' + token
         }
-      }).then( rtn => {
-        // console.log(rtn.data)
-      }).catch( rtn => {
-        // console.log(rtn.error)
       })
     },
     routeChange(){
-      const timestamp = Date.parse(new Date()) / 1000
-      const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/user/musician_homepage@3ad3ebb04b5c94cd234e16a6aef9c8ae')
-      axios({
+      vueH5.taskAxiosForm({
         method: 'post',
-        // urlApi=http://wawa.fm
-        url: 'urlApi/app/v1/user/musician_homepage',
-        data: {
-          id: this.$route.query.id,
-          api_key: '0fcf845a413e11beb5606448eb8abbc4',
-          timestamp: timestamp        
-        },
-        //转格式
-        transformRequest: [
-          function(data){
-            let ret = ''
-            for (let it in data){
-              ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-            }
-            return ret
-          }
-        ],
-        headers:{
-          'X-Requested-With': 'XMLHttpRequest',
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Authorization':'wawa ' + token
-        }
-      }).then( rtn => {
+        url: 'user/musician_homepage',
+        data: { id: this.$route.query.id }
+      },( rtn => {
           this.detailData = rtn.data
           this.detailList = this.detailData.user
           this.descriptionL = this.detailList.description
@@ -297,7 +238,7 @@ export default {
           if(this.detailData.user){
             this.labelsData = this.detailData.user.labels
           }
-      })
+      }))
     }
   }
 }

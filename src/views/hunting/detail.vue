@@ -23,23 +23,24 @@
 
 		<div class="hun-list">
 			<ul>
-				<li v-for="(item, index) in huntDetail.tracks" >
+        <huntingSongTemp :item="item" :index="index" :huntDetail="huntDetail" v-for="(item, index) in huntDetail.tracks"></huntingSongTemp>
+				<!-- <li v-for="(item, index) in huntDetail.tracks" >
 					<a @click="playSong(index)">
 						<span>{{index+1}}</span>
 						<div>
-							<img :src="item.res_cover">
+							<img :src="item.res_cover +'?width=200'">
 						</div>
 						<div>
 							<h4 class="bolder">{{item.songname}}</h4>
 							<p >{{item.singer}}</p>
 						</div>
 					</a>
-				</li>
+				</li> -->
 			</ul>
 			<div class="listen-person">
 				<ul>
 					<li v-for="(item, index) in huntDetail.listen" v-if="index < 5">
-						<img :src="item.headimg">
+						<img :src="item.headimg +'?width=100'">
 					</li>
 				</ul>
 				<p @click="loadWa()">下载挖哇App一起聆听</p>
@@ -91,9 +92,9 @@
 </template>
 
 <script type="es6">
-	import md5 from 'js-md5'	
-	import axios from 'axios'
+  import { vueH5, getGuid } from '../../common/utils'
 	import { mapState, mapMutations } from 'vuex'
+  import huntingSongTemp from '../../components/huntSingleSongList'
 	export default {
 		data() {
 			return {
@@ -105,6 +106,7 @@
         countState: true
 			}
 		},
+    components: { huntingSongTemp },
 		computed: {
   	  ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
   	},
@@ -148,32 +150,15 @@
         }
 			},
 
-      getGuid(){
-        var data = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
-            j = 0,
-            k = 0,
-            res1 = '',
-            res2 = '';
-        for (var i = 0; i < 10; i++) {
-            j = Math.floor(Math.random() * 36);
-            k = Math.floor(Math.random() * 36);
-            res1 += data[j];
-            res2 += data[k];
-        }
-        return res1 + new Date().getTime() + res2;
-      },
+    
       addCount(){
-        const timestamp = Date.parse(new Date()) / 1000
-        const token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/log/add@3ad3ebb04b5c94cd234e16a6aef9c8ae')
         if(!localStorage.getItem('GUID')){
-          localStorage.setItem('GUID', this.getGuid())
+          localStorage.setItem('GUID', getGuid())
         }      
-        axios({
+        vueH5.taskAxiosForm({
           method: 'post',
-          url: 'urlApi/app/v1/log/add',
+          url: 'log/add',
           data: {
-            api_key: '0fcf845a413e11beb5606448eb8abbc4',
-            timestamp: timestamp,
             user_id: 0,
             product: 1,
             platform: 3,
@@ -181,119 +166,24 @@
             source_type: 2,
             source_id: this.$route.query.id,      
             category: 1
-          },
-          transformRequest: [
-            function(data){
-              let ret = ''
-              for (let it in data){
-                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-              }
-              return ret
-            }
-          ],
-          headers:{
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization':'wawa ' + token
           }
-        }).then( rtn => {
-          // console.log(rtn.data)
-        })/*.catch( rtn => {
-          console.log(rtn.error)
-        })*/
+        })
       },
   	  routeChange() {
-    		let timestamp = Date.parse(new Date()) / 1000
-    		let token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/album/info@3ad3ebb04b5c94cd234e16a6aef9c8ae')
-
-    		axios({
+    		vueH5.taskAxios({
     		  method: 'get',
-    		  async: 'flase',
-    		  // urlApi=http://wawa.fm
-    		  url: 'urlApi/app/v1/album/info',
-    		  params: {
-	  		    api_key: '0fcf845a413e11beb5606448eb8abbc4',
-    		    timestamp: timestamp,
+    		  url: 'album/info',
+    		  data: {
     		    id: this.$route.query.id
-    		  },
-    		  headers:{
-      		  'X-Requested-With': 'XMLHttpRequest',
-      		  'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      	  	// 'Access-Control-Allow-Origin':'http://localhost:8080',
-      	  	'Authorization':'wawa ' + token
-      		}
-    		}).then( rtn => {
+    		  }
+    		},( rtn => {
         	this.huntDetail = rtn.data
-          // this.setPlayList(this.huntDetail.tracks)
-
-        	/*timestamp = Date.parse(new Date())
-        	token = md5('api_key=0fcf845a413e11beb5606448eb8abbc4&timestamp=' + timestamp + '&rest_url=/app/v1/comment/list@3ad3ebb04b5c94cd234e16a6aef9c8ae')
-        	axios({
-    	  		method: 'get',
-    	  		// urlApi=http://wawa.fm
-    	  		url: 'urlApi/app/v1/comment/list',
-    	  		params: {
-	  	  		  api_key: '0fcf845a413e11beb5606448eb8abbc4',
-    	  		  timestamp: timestamp,
-    	  		  page: 1,
-    	  		  size: 10,
-    	  		  source_type: 4,
-    	  		  source_id: this.huntDetail.id
-    	  		},
-    	  		headers:{
-      	  		'X-Requested-With': 'XMLHttpRequest',
-      	  		'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        			// 'Access-Control-Allow-Origin':'http://localhost:8080',
-        			'Authorization':'wawa ' + token
-      			}
-    			}).then( rtnData => {
-        		this.commentList = rtnData.data
-        		console.log(this.commentList)
-        		this.scrollbar()
-    			})*/
-    		})
+    		}))
   	  },
       loadWa() {
         window.location.href = 'https://wawa.fm/static/app/wawa/download.html'
-      },
-  	 /* preloadImages: function(arr) {
-            var newimages = [],
-                loadedimages = 0,
-                postaction = function() {};
-            arr = (typeof arr != "object") ? [arr] : arr;
-
-            function imageloadpost() {
-                loadedimages++
-                if (loadedimages == arr.length) {
-                    postaction(newimages);
-                }
-            }
-            for (var i = 0; i < arr.length; i++) {
-                newimages[i] = new Image()
-                newimages[i].src = arr[i]
-                newimages[i].onload = function() {
-                    imageloadpost()
-                }
-                newimages[i].onerror = function() {
-                    imageloadpost()
-                }
-            }
-            return {
-                done: function(f) {
-                    postaction = f || postaction
-                }
-            }
-        },*/
+      }
 		},
-		/*beforeCreate() {
-			this.preloadImages([
-           'http://up.wawa.fm/18,e0e2b2ce7111',   //灰1.64
-           'http://up.wawa.fm/15,e0e5dc7fcbc1',  //灰1                
-           'http://up.wawa.fm/20,e0e40b52d9ab',  //蓝1                
-           'http://up.wawa.fm/20,e0e341bffeb3',  //蓝1.64
-           'http://up.wawa.fm/20,e0e7b919093c'   //二维码
-       ]);
-		},*/
 		created() {
   		this.routeChange()
   	},
@@ -411,73 +301,6 @@
   .hun-list ul{
     width: 100%;
     overflow: hidden;
-  }
-  .hun-list >ul >li{
-    margin: 0.9rem 0;
-    
-  }
-  .hun-list ul >li >a{
-    margin-left: 0.6rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    color: #555555;
-  }
-  .hun-list >ul >li >a span{
-    width: 0.5rem;
-    font-size: 0.6rem;
-    color: #999999;
-    font-family: "PingFangSC-Medium";
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .hun-list >ul >li >a div:nth-child(2){
-    width: 2.25rem !important;
-    height: 2.25rem !important;
-    border-radius: 0.3rem;
-    margin-left: 0.6rem;
-    overflow: hidden;
-  }
-  .hun-list >ul >li >a div:nth-child(2) >img{
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat center;
-    position: relative;
-  }
-  .hun-list >ul >li >a div:nth-child(2) >img:after{
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    content: url('/static/h5/static/img/placeholder_1.png?width=200');
-  }
-  .hun-list >ul >li >a div:nth-child(3){
-    margin-left: 0.6rem;
-    width: 11rem;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-  }
-  .hun-list> ul >li >a div:nth-child(3) >h4 {
-    font-size: 0.65rem;
-    font-family: "PingFangSC-Medium";
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
-
-  }
-  .hun-list >ul >li >a div:nth-child(3) >p {
-    font-size: 12px;
-    color:#999999;
-    font-family: "PingFangSC-Regular";
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
   }
   .click{
     color: #6178F0 !important;
