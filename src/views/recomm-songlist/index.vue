@@ -10,7 +10,9 @@
       infinite-scroll-distance="10">
         <recomSongList :item="item" v-for="(item, index) in songList"></recomSongList>
       </ul>
-
+      <div class="load-state" v-show="loadState">
+        <img src="http://wawa.fm/static/img/app/loading.gif">
+      </div>
     </div>
   </div>
 </template>
@@ -27,7 +29,8 @@ export default {
 			songList: '',
 			page: 1,
 			databaseList: true, //判断是否还有请求的数据,防止持续请求
-      flag: true
+      flag: true,
+      loadState: false
 		}
 	},
   components: { recomSongList },
@@ -64,7 +67,8 @@ export default {
     ...mapMutations(['setPlayerData','setPlayState','setPlayList','setCurrentIndex','setRouterUrl','setNavToggle','setIsTr','setIsDemaskNav']),
     loadMore() {
       if (this.flag) {
-        this.loading = true;
+        this.loading = true
+        this.loadState = true
         setTimeout(() => {
         this.page++      
         if(this.databaseList){
@@ -83,8 +87,10 @@ export default {
                   this.songList.push(this.newLoad[i]);
                 }
               } else {
+                this.loadState = false
                 return this.databaseList=false
               }
+              this.loadState = false
               this.loading = false;
           }))
         }       
@@ -106,5 +112,6 @@ export default {
     width: 100%;
     padding: 0 0.6rem;
   }
-  
+  .load-state{ height: 30px; }
+  .load-state >img{height: 100%;text-align: center; margin: auto;}
 </style>

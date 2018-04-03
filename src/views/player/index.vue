@@ -103,8 +103,7 @@
         this.currentTime = e.target.currentTime
         this.duration = this.audio.duration
       })
-      
-      if (this.playerData.id===this.playList[this.currentIndex].id) {
+      if (this.playerData.id && this.playerData.id===this.playList[this.currentIndex].id) {
         this.selected(this.playerData.id)
       }
       

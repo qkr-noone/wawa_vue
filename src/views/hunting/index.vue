@@ -6,20 +6,6 @@
     <div>
       <ul class="m_alist" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
         <albumBox :album="item" v-for="item in huntingData"></albumBox>
-        <!-- <li v-for="item in huntingData">
-          <router-link :to="{ path:'/hunting/detail',query:{id: item.id} }">
-            <div class="wrap-img"><img :src="item.res_cover + '?width=1000'" /></div>
-            <h1 class="bolder">{{item.title}}</h1>
-            <div class="m_listtags">
-              <span>第{{item.number}}期</span>
-              <span>
-                <i class="icon-listen"></i>
-                <p>{{item.play_count}}</p>
-              </span>
-            </div>
-            <p>{{item.description}}</p>
-          </router-link>
-        </li> -->
       </ul>
 
       <div class="load-state" v-show="loadState">
@@ -84,7 +70,7 @@ export default {
     loadMore() {
       // 防止跳出页面后滚动继续加载
       if (this.flag) {
-        this.loading = true;
+        this.loading = true
         this.loadState = true
         setTimeout(() => {
           this.page++       

@@ -271,7 +271,7 @@ export default {
     playState(newState){
       let audio = this.$refs.audio
       this.$nextTick(() => {
-        newState ? audio.play() : audio.pause()
+        newState ? audio.play()  : audio.pause()
       })
     },
 

@@ -79,20 +79,7 @@
     <div class="relate-art all-info" v-if="documentsL.length">
       <h2 class="adetail-title bolder">相关乐文 (<span>{{detailData.documents | formatLength}}</span>)</h2>
       <ul class="m_alist">
-        <li v-for="(item, index) in detailData.documents">
-          <router-link :to="{ path:'/article/detail', query: {id: item.id} }">
-            <div class="wrap-img"><img :src="item.res_cover + '?width=500'" /></div>
-            <h1 class="bolder"> {{detailList.nickname}}：{{ item.title}}</h1>
-            <div class="m_listtags ">
-              <span>文/ {{item.author}}</span>
-              <span>
-                <i class="icon-view "></i>
-                <a>{{item.view_count}}</a>
-              </span>
-            </div>
-          <p>{{item.description}}{{item.description}}</p>
-          </router-link>
-        </li>
+        <recomBox :item="item" v-for="(item, index) in documentsL"></recomBox>
       </ul>
     </div>
 	</div>
@@ -101,6 +88,7 @@
 <script type="es6">
 import { vueH5, getGuid } from '../../common/utils'
 import { mapState, mapMutations } from 'vuex'
+import recomBox from '../../components/recomBox'
 export default {
 	data(){
 		return{
@@ -115,6 +103,7 @@ export default {
       documentsL: ''
 		}
 	},
+  components: { recomBox },
   computed: {
     ...mapState(['playerData','playState','playList','currentIndex','routerUrl','navToggle','isTr','isDemaskNav'])
   },
@@ -235,6 +224,13 @@ export default {
           this.tracksL = this.detailData.tracks
           this.albumsL = this.detailData.albums
           this.documentsL = this.detailData.documents
+          
+          if(this.documentsL.length){
+            for(let i = 0;i < this.documentsL.length;i++ ){
+              this.documentsL[i].nickname = this.detailList.nickname
+            }
+          }
+
           if(this.detailData.user){
             this.labelsData = this.detailData.user.labels
           }
@@ -499,11 +495,18 @@ export default {
     padding: 0.45rem 0.6rem;
   }
   .ahot-song > ul >li> a{
-
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-line-pack: justify;
+    align-content: space-between;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
   }
   .ahot-song > ul >li> a >div:nth-child(1){
-    width: 60px;
-    height: 60px;
+    width: 3rem;
+    height: 3rem;
     float: left;
     overflow: hidden;
     border-radius: 0.3rem;

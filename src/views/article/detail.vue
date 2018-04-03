@@ -118,7 +118,12 @@ export default {
             this.audio.play()
             this.setPlayState(true)
           }))
+        } else if (event.target.getAttribute('id') === "商品ID") {
+          window.location.href = event.target.getAttribute('link')
+        } else {
+          return
         }
+        return
         
     },
     addCount(){

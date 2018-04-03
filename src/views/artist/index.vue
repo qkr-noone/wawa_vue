@@ -116,8 +116,8 @@ export default {
 
 .artist-list li a{ display: flex; align-content: space-between;	box-sizing: border-box;height: 100%;}
 /*.artist-list li:nth-child(1){padding-bottom: 10px;padding-right: 8px;padding-left: 12px;}*/
-.artist-list li{padding: 15px 8px 15px 12px;height: 2.423rem;}
-.artist-list li >a> div:nth-child(1){ width:16%;height: 100%; border-radius: 50%;overflow: hidden;}
+.artist-list li{padding: 15px 8px 15px 12px;}
+.artist-list li >a> div:nth-child(1){ width: 3rem;height: 3rem; border-radius: 50%;overflow: hidden;}
 .artist-list li >a> div:nth-child(1)>img{width: 100%;height: 100%;position: relative;}
 .artist-list li >a> div:nth-child(1)>img:after{width: 100%;height: 100%;position: absolute;top:0; left: 0;content: url('/static/h5/static/img/placeholder_2.png?width=200');}
 .artist-list li >a> div:nth-child(2){ flex: auto; display: flex; flex-direction: column; justify-content:space-around;align-items: left; box-sizing: content-box; padding-left: 10px;}

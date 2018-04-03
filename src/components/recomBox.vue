@@ -58,7 +58,7 @@
     width: 100%;
     height: 100%;
     background-repeat: no-repeat center;
-    background: url(/static/h5/static/img/placeholder_1.png?width=420);
+    background: url(/static/h5/static/img/placeholder_1.png?width=500);
   }
 
   .m_ali>a>h1 {

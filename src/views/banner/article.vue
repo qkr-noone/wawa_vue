@@ -103,33 +103,38 @@ import { vueH5, getGuid } from '../../common/utils'
 
   	  addSongPlay(event){
         if(event){ // Q 1. 防止报错..
-  	  	  if(event.target.getAttribute('id').length===11&&event.target.nodeName === 'I'){
-  	  		let instance = this.$toast('即将播放..')
-  	  		setTimeout( () => {
-  	  			instance.close()
-  	  		},2500)
-
-          // IOS audio
-          this.audio.play()
-          this.audio.pause()
-      		vueH5.taskAxios({
-      		 	method: 'get',
-      		 	url: 'track/info',
-      		 	data: {
-      		 	  user_id: 0,
-      		 	  id: event.srcElement.id
-      		 	}
-      		},( rtn => {
-      			this.data = rtn.data
-            this.playList.push(rtn.data)
-            let index = this.playList.length - 1
-            this.setCurrentIndex(index)            
-      			this.setPlayerData(this.playList[index])
+  	  	  if(event.target.getAttribute('id').length ===11 && event.target.nodeName === 'I'){
+  	  		  let instance = this.$toast('即将播放..')
+  	  		  setTimeout( () => {
+  	  		  	instance.close()
+  	  		  },2500)
+    
+            // IOS audio
             this.audio.play()
-      			this.setPlayState(true)
-      	  }))
-  	  	  }
+            this.audio.pause()
+      		  vueH5.taskAxios({
+      		   	method: 'get',
+      		   	url: 'track/info',
+      		   	data: {
+      		   	  user_id: 0,
+      		   	  id: event.srcElement.id
+      		   	}
+      		  },( rtn => {
+      		  	this.data = rtn.data
+              this.playList.push(rtn.data)
+              let index = this.playList.length - 1
+              this.setCurrentIndex(index)            
+      		  	this.setPlayerData(this.playList[index])
+              this.audio.play()
+      		  	this.setPlayState(true)
+      	    }))
+  	  	  } else if (event.target.getAttribute('id') === "商品ID") {
+            window.location.href = event.target.getAttribute('link')
+          } else {
+            return
+          }
         }
+        return false
   	  },
       addCount(){
         if(!localStorage.getItem('GUID')){
@@ -162,7 +167,6 @@ import { vueH5, getGuid } from '../../common/utils'
   	mounted() {
       let audio = document.getElementById("audio")
       this.audio = audio
-  		this.addSongPlay(event)
       this.setRouterUrl(this.$route.path)
       document.documentElement.scrollTop = 0
       document.body.scrollTop = 0

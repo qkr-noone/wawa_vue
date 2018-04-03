@@ -17,6 +17,9 @@
           </router-link>
         </li>
       </ul>
+      <div class="load-state" v-show="loadState">
+        <img src="http://wawa.fm/static/img/app/loading.gif">
+      </div>
     </section>
   </div>
 </template>
@@ -31,7 +34,8 @@ export default {
 			recommSong: '',
 			page: 1,
 			databaseList: true, //判断是否还有请求的数据,防止持续请求
-      flag: true
+      flag: true,
+      loadState: false
 		}
 	},
   created() {
@@ -69,7 +73,8 @@ export default {
   	//  Q 1.到底了不要请求
     loadMore() {
     	if (this.flag) {
-        this.loading = true;
+        this.loading = true
+        this.loadState = true
         setTimeout(() => {
           this.page++       
           if(this.databaseList){
@@ -87,8 +92,10 @@ export default {
                     this.recommSong.push(this.newLoad[i]);
                   }
                 } else {
+                  this.loadState = false
                   return this.databaseList=false
                 }
+                this.loadState = false
                 this.loading = false;
             }))
           }                  
@@ -164,4 +171,6 @@ export default {
     padding-top: 0.25rem;
     font-family: "PingFangSC-Light";
    }
+  .load-state{ height: 30px; }
+  .load-state >img{height: 100%;text-align: center; margin: auto;}
 </style>
